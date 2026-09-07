@@ -16,7 +16,7 @@
 (setq mailcap-user-mime-data
       (append mailcap-user-mime-data
               '(((type . "application/pdf")
-                 (viewer . "esioyek")
+                 (viewer . "sioyek")
                  )))
       )
 
@@ -26,7 +26,7 @@
   (interactive "P")
   (let ((file (dired-get-file-for-visit)))
     (if (and file (string= (file-name-extension file) "pdf"))
-        (call-process "esioyek" nil 0 nil file)  ; 可替换为 zathura、evince 等
+        (call-process "sioyek" nil 0 nil file)  ; 可替换为 zathura、evince 等
       (dired-find-file))))
 ;; (define-key dired-mode-map (kbd "RET") #'open-pdf-externally-with-sioyek)
 

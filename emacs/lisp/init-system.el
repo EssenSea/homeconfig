@@ -19,7 +19,7 @@
   :init
   (setq woman-emulation 'troff)
   :config
-  (add-to-list 'woman-path "$MANPATH")
+  (setq woman-manpath (ignore-errors (split-string (getenv "MANPATH") ":" t)))
   :custom
   (custom-set-variables
    '(warning-suppress-log-types

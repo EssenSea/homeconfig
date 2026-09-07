@@ -28,8 +28,8 @@
 ;; performance Check during init process
 ;; =====================================================================
 ;; init.el 顶部，package-activate-all 之前
-(setq package-quickstart t)
 (require 'package)
+(setq package-quickstart t)
 (setq package-archives '(("gnu"
                           . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu"

@@ -302,9 +302,7 @@
   :custom
   (setq completion-at-point-functions
         (cons #'yasnippet-capf
-              completion-at-point-functions))
-  (debug)
-  )
+              completion-at-point-functions)))
 
 ;; =====================================================================
 
