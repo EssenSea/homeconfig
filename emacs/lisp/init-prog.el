@@ -29,7 +29,7 @@
                            ;; 'org-src-mode
                            )
                     (eglot-ensure))))
-   ((LaTeX-mode typst-ts-mode markdown-mode yaml-mode yaml-ts-mode)
+   ((LaTeX-mode typst-ts-mode markdown-mode markdown-ts-mode yaml-ts-mode)
     . eglot-ensure)
    )
 
@@ -56,6 +56,8 @@
 ;; 注意须用 customize-set-variable 触发 defcustom 的 :set，
 ;; 它才会把各语言 remap 到内置 *-ts-mode。
 (customize-set-variable 'treesit-enabled-modes t)
+;; markdown 不在内置 remap 列表中，手动补上
+(add-to-list 'major-mode-remap-alist '(markdown-mode . markdown-ts-mode))
 
 ;; (setq treesit-extra-load-path "/usr/lib64")
 
