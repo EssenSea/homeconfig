@@ -121,26 +121,16 @@
 (setopt minibuffer-help-form t)
 (use-package helpful
   :ensure t
-  ;; :demand t
-  :config
-  ;; Note that the built-in `describe-function' includes both functions
-  ;; and macros. `helpful-function' is functions only, so we provide
-  ;; `helpful-callable' as a drop-in replacement.
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key)
-  ;; Lookup the current symbol at point. C-c C-d is a common keybinding
- ;; for this in lisp modes.
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
-  ;; Look up *F*unctions (excludes macros).
-  ;; By default, C-h F is bound to `Info-goto-emacs-command-node'. Helpful
-  ;; already links to the manual, if a function is referenced there.
-  (global-set-key (kbd "C-h F") #'helpful-function)
-  ;; Look up *C*ommands.
-  ;; By default, C-h C is bound to describe `describe-coding-system'. I
-  ;; don't find this very useful, but it's frequently useful to only
-  ;; look at interactive functions.)
-  )
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+   ;; Lookup the current symbol at point.  C-c C-d is a common keybinding
+   ;; for this in Lisp modes.
+   ("C-c C-d" . helpful-at-point)
+   ;; By default, C-h F is bound to `Info-goto-emacs-command-node'.  Helpful
+   ;; already links to the manual, if a function is referenced there.
+   ("C-h F" . helpful-function)))
 
 ;; =====================================================================
 ;; Basic UI Setup
@@ -241,7 +231,6 @@
 ;;different color for different level of parens
 (use-package rainbow-delimiters
   :ensure t
-  :demand t
   :hook (prog-mode . rainbow-delimiters-mode)
   )
 
@@ -260,7 +249,6 @@
    ((t (:height 160 :width normal :family "Sarasa Term SC Nerd")))))
 
 (use-package shr
-  :demand t
   :init
   (setq shr-use-fonts nil)
   (setq shr-width fill-column)
@@ -299,7 +287,6 @@
 ;; (define-key dired-mode-map (kbd "RET") #'open-pdf-externally-with-sioyek)
 
 (use-package dired
-  :demand t
   :ensure nerd-icons-dired
   :hook
   (dired-mode . nerd-icons-dired-mode)
@@ -319,7 +306,6 @@
 ;; Buffers manipulations
 (use-package ibuffer
   :ensure nerd-icons-ibuffer
-  :demand t
   ;; :bind
   ;; ("C-x C-b" . ibuffer)
   :hook
@@ -372,7 +358,6 @@
 ;; instructed notes for striking keys
 (use-package which-key
   :ensure which-key-posframe
-  :demand t
   :init
   (which-key-mode)
   (which-key-posframe-mode)
@@ -389,7 +374,6 @@
 ;;   )
 (use-package switchy-window
   :ensure t
-  :demand t
   :custom (switchy-window-delay 1.5) ;; That's the default value.
   :bind
   (:map switchy-window-minor-mode-map
@@ -402,29 +386,23 @@
 ;; manupulate chars which are around cursor
 (use-package avy
   :ensure t
-  :demand t
   :bind (("M-j" . avy-goto-char-timer))
   )
 
 ;;undo-redo
 (use-package vundo
   :ensure t
-  :demand t
   :bind ("C-x u" . vundo)
   )
 
 (use-package undo-fu
   :ensure t
-  :demand t
-  :config
-  (global-unset-key (kbd "C-z"))
-  (global-set-key (kbd "C-z")   'undo-fu-only-undo)
-  (global-set-key (kbd "C-S-z") 'undo-fu-only-redo)
-  )
+  :bind
+  (("C-z" . undo-fu-only-undo)
+   ("C-S-z" . undo-fu-only-redo)))
 
 (use-package undo-fu-session
   :ensure t
-  :demand t
   :init
   (undo-fu-session-global-mode))
 
@@ -477,7 +455,6 @@
 
 ;; vertico: UI manipulation for minibuffer
 (use-package vertico
-  :demand t
   :ensure t
   :init
   (vertico-mode)
@@ -531,14 +508,12 @@
 ;; Marginalia sidenotes in minibuffer
 (use-package marginalia
   :ensure t
-  :demand t
   :bind (:map minibuffer-local-map
 	          ("M-A" . marginalia-cycle))
   :init (marginalia-mode))
 
 (use-package nerd-icons-completion
   :ensure t
-  :demand t
   :after marginalia
   :config
   (nerd-icons-completion-mode)
@@ -551,7 +526,6 @@
 ;; Consult: Supplimentary for search
 (use-package consult
   :ensure t
-  :demand t
   :bind
   (("C-s" . consult-line)                     ; 搜索当前缓冲区
    ("C-c C-s" . consult-ripgrep)              ; 项目内搜索
@@ -584,7 +558,6 @@
 ;; Embark: manipulate menus
 (use-package embark
   :ensure t
-  :demand t
   :bind
   (("C-." . embark-act)                      ; 全局操作菜单
    ("C-," . embark-dwim)                     ; 智能操作
@@ -596,7 +569,6 @@
 (use-package embark-consult
   :ensure t
   :after (embark consult)
-  :demand t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode)
   )
@@ -604,7 +576,6 @@
 (use-package vertico-posframe
   :ensure t
   :after vertico
-  :demand t
   :config
   ;; (add-to-list 'vertico-multiform-categories '(embark-keybinding grid))
   (setq vertico-posframe-border-width 6)
@@ -632,7 +603,6 @@
 ;;  Corfu UI
 (use-package corfu
   :ensure t
-  :demand t
   :init
   (global-corfu-mode 1)                ; 全局启用
   :custom
@@ -672,7 +642,6 @@
 (use-package kind-icon
   :ensure t
   :after corfu
-  :demand t
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 ;; (use-package nerd-icons-corfu
@@ -758,7 +727,6 @@
   :demand t)
 (use-package yasnippet-capf
   :ensure t
-  :demand t
   :custom
   (setq completion-at-point-functions
         (cons #'yasnippet-capf
@@ -1083,7 +1051,6 @@
 ;; =====================================================================
 (use-package pinentry
   :ensure t
-  :demand t
   :init
   (pinentry-start)
   )
