@@ -299,10 +299,8 @@
   :demand t)
 (use-package yasnippet-capf
   :ensure t
-  :custom
-  (setq completion-at-point-functions
-        (cons #'yasnippet-capf
-              completion-at-point-functions)))
+  :config
+  (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 
 ;; =====================================================================
 
