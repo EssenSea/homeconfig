@@ -18,3 +18,5 @@ custom.elc
 *~
 **/~
 lisp/#*#
+.cache/svg-lib/
+undo-fu-session/
