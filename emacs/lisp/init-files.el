@@ -16,19 +16,19 @@
 (setq mailcap-user-mime-data
       (append mailcap-user-mime-data
               '(((type . "application/pdf")
-                 (viewer . "sioyek")
+                 (viewer . "esioyek")
                  )))
       )
 
 (require 'dired)
-(defun open-pdf-externally-with-sioyek (&optional prefix)
+(defun open-pdf-externally-with-esioyek (&optional prefix)
   "在 Dired 中, 对 PDF 文件(也许是PREFIX)用外部程序打开, 其他文件正常处理."
   (interactive "P")
   (let ((file (dired-get-file-for-visit)))
     (if (and file (string= (file-name-extension file) "pdf"))
-        (call-process "sioyek" nil 0 nil file)  ; 可替换为 zathura、evince 等
+        (call-process "esioyek" nil 0 nil file)  ; 可替换为 zathura、evince 等
       (dired-find-file))))
-;; (define-key dired-mode-map (kbd "RET") #'open-pdf-externally-with-sioyek)
+;; (define-key dired-mode-map (kbd "RET") #'open-pdf-externally-with-esioyek)
 
 (use-package dired
   :ensure nerd-icons-dired
@@ -39,7 +39,7 @@
   (setq dired-kill-when-opening-new-dired-buffer t)
   (setq dired-listing-switches "-alh")
   (define-key dired-mode-map (kbd "RET")
-              #'open-pdf-externally-with-sioyek)
+              #'open-pdf-externally-with-esioyek)
   )
 
 
