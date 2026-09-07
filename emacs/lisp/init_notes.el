@@ -91,7 +91,7 @@
   (require 'ox-typst)
   ;; (require 'ox-typst)
   (setq org-file-apps
-      (append '(("\\.pdf\\'" . "esioyek '%s'"))
+      (append '(("\\.pdf\\'" . "esioyek '%s' &"))
               org-file-apps))
   (setq
    org-latex-create-formula-image-program 'xelatex

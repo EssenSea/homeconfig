@@ -16,17 +16,19 @@
 (setq mailcap-user-mime-data
       (append mailcap-user-mime-data
               '(((type . "application/pdf")
-                 (viewer . "esioyek")
+                 (viewer . "esioyek %s &")
                  )))
       )
 
 (require 'dired)
 (defun open-pdf-externally-with-esioyek (&optional prefix)
-  "在 Dired 中, 对 PDF 文件(也许是PREFIX)用外部程序打开, 其他文件正常处理."
+  "在 Dired 中, 对 PDF 文件(也许是PREFIX)用外部程序打开, 其他文件正常处理.
+
+用 `start-process' 异步启动, 打开后与 Emacs 完全分离."
   (interactive "P")
   (let ((file (dired-get-file-for-visit)))
     (if (and file (string= (file-name-extension file) "pdf"))
-        (call-process "esioyek" nil 0 nil file)  ; 可替换为 zathura、evince 等
+        (start-process "esioyek" nil "esioyek" file)
       (dired-find-file))))
 ;; (define-key dired-mode-map (kbd "RET") #'open-pdf-externally-with-esioyek)
 
