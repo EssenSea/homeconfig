@@ -83,6 +83,7 @@
 (use-package nerd-icons-completion
   :ensure t
   :after marginalia
+  :demand t
   :config
   (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
@@ -137,6 +138,7 @@
 (use-package embark-consult
   :ensure t
   :after (embark consult)
+  :demand t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode)
   )
@@ -144,6 +146,7 @@
 (use-package vertico-posframe
   :ensure t
   :after vertico
+  :demand t
   :config
   ;; (add-to-list 'vertico-multiform-categories '(embark-keybinding grid))
   (setq vertico-posframe-border-width 6)
@@ -210,6 +213,7 @@
 (use-package kind-icon
   :ensure t
   :after corfu
+  :demand t
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 ;; (use-package nerd-icons-corfu
