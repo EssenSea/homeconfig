@@ -41,7 +41,6 @@
 (package-activate-all)
 (require 'use-package)
 (setq package-native-compile t)
-(setq package-install-upgrade-built-in t)
 
 (require 'package-vc)
 (setq package-vc-allow-build-commands t)
