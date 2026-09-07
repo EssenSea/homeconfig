@@ -15,8 +15,7 @@
                 pinentry portage-modes prescient rainbow-delimiters
                 switchy-window tempel tempel-collection transient-posframe
                 treesit-auto typst-ts-mode undo-fu undo-fu-session vertico
-                vertico-posframe vlf vundo wgrep which-key-posframe yasnippet
-                yasnippet-capf yasnippet-snippets))
+                vertico-posframe vlf vundo wgrep which-key-posframe))
  '(vlf-application 'dont-ask))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

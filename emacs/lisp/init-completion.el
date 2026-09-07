@@ -270,38 +270,6 @@
   :demand t
   :after tempel)
 
-(use-package  yasnippet
-  :ensure t
-  :demand t
-  :hook
-  (prog-mode . yas-minor-mode )
-  :bind
-  ;; (:map yas-minor-mode-map ("M-C-i" . yas-expand))
-  :config
-  (yas-reload-all)
-  ;; add company-yasnippet to company-backends
-  ;; (defun company-mode/backend-with-yas (backend)
-  ;;   (if (and (listp backend) (member 'company-yasnippet backend))
-  ;;   backend
-  ;;     (append (if (consp backend) backend (list backend))
-  ;;             '(:with company-yasnippet))))
-  ;; (setq company-backends (mapcar #'company-mode/backend-with-yas
-  ;;   			                 company-backends))
-  ;; unbind <TAB> completion
-  (define-key yas-minor-mode-map [(tab)]        nil)
-  (define-key yas-minor-mode-map (kbd "TAB")    nil)
-  (define-key yas-minor-mode-map (kbd "<tab>")  nil)
-  )
-
-(use-package yasnippet-snippets
-  :after yasnippet
-  :ensure t
-  :demand t)
-(use-package yasnippet-capf
-  :ensure t
-  :config
-  (add-to-list 'completion-at-point-functions #'yasnippet-capf))
-
 ;; =====================================================================
 
 (provide 'init-completion)

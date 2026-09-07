@@ -194,7 +194,7 @@
   (LaTeX-mode . outline-minor-mode)
   (LaTeX-mode . TeX-fold-mode)
   (LaTeX-mode . tempel-abbrev-mode)
-  (LaTeX-mode . yas-minor-mode)
+  (LaTeX-mode . tempel-setup-capf)
   (LaTeX-mode . auto-fill-mode)
   (LaTeX-mode . TeX-source-correlate-mode)
   ;; (LaTeX-mode . preview-auto-setup)
@@ -202,8 +202,7 @@
   
   (LaTeX-mode . (lambda ()
                   (add-to-list 'completion-at-point-functions #'cape-tex)
-                  (add-to-list 'completion-at-point-functions #'yasnippet-capf)
-                  ;; (add-to-list 'completion-at-point-functions #'eglot-completion-at-point)
+                          ;; (add-to-list 'completion-at-point-functions #'eglot-completion-at-point)
                   )
               ))
   :config
