@@ -52,10 +52,10 @@
 
 (use-package empv
   :ensure t
-  :custom
+  :config
   (with-eval-after-load 'embark
     (empv-embark-initialize-extra-actions))
-  :config
+
   (setq empv-invidious-instance "https://inv.thepixora.com/api/v1"
         empv-youtube-use-tabulated-results t
         empv-reset-playback-speed-on-quit t

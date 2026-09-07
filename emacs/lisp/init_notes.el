@@ -158,7 +158,7 @@
   :after org
   :ensure t
   :defer t
-  :custom
+  :config
   (org-roam-db-autosync-mode))
 
 
