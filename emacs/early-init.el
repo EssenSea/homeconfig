@@ -76,15 +76,35 @@
                                    ,(format "-march=%s" my-cpu-architecture)))
 
 (defun my-add-package-info-dirs ()
-  "把已安装且带 info 文档的包的目录加入 `Info-directory-list'。"
+  "把已安装且带 info 文档的包的目录加入 `Info-directory-list'。
+
+兼容两种模式：
+- 普通模式：枚举 `package-alist'。
+- quickstart 模式：`package-alist' 为空，直接扫描
+  `package-user-dir' 与 `package-directory-list' 下的包目录。"
   (require 'info)
   (info-initialize)
-  (when (bound-and-true-p package-alist)
-    (dolist (entry package-alist)
-      (dolist (desc (cdr entry))
-        (let ((dir (package-desc-dir desc)))
-          (when (file-exists-p (expand-file-name "dir" dir))
-            (add-to-list 'Info-directory-list dir)))))))
+  ;; 普通模式（package-alist 已填充）
+  (dolist (entry (or (bound-and-true-p package-alist) nil))
+    (dolist (desc (cdr entry))
+      (let ((dir (package-desc-dir desc)))
+        (when (file-exists-p (expand-file-name "dir" dir))
+          (add-to-list 'Info-directory-list dir)))))
+  ;; quickstart 模式或 package-alist 为空时的兜底：
+  ;; 直接扫描包目录，若子目录含 *-pkg.el 且含 dir 文件，
+  ;; 即为一个带 Info 文档的包目录。
+  (dolist (root (cons package-user-dir package-directory-list))
+    (let (pkg-p)
+      (when (file-directory-p root)
+        (dolist (dir (directory-files root t "\\`[^.]"))
+          (setq pkg-p nil)
+          (dolist (f (directory-files dir nil "\\`[^.]"))
+            (when (string-suffix-p "-pkg.el" f)
+              (setq pkg-p t)))
+          (when (and (file-directory-p dir)
+                     pkg-p
+                     (file-exists-p (expand-file-name "dir" dir)))
+            (add-to-list 'Info-directory-list dir))))))
 (add-hook 'after-init-hook #'my-add-package-info-dirs)
 
 (add-hook 'emacs-startup-hook
