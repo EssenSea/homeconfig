@@ -76,7 +76,7 @@
                                    ,(format "-march=%s" my-cpu-architecture)))
 
 (defun my-add-package-info-dirs ()
-  "把已安装且带 info 文档的包的目录加入 `Info-directory-list'。
+  "把已安装且带 info 文档的包的目录加入 `Info-directory-list'.
 
 兼容两种模式：
 - 普通模式：枚举 `package-alist'。
@@ -85,7 +85,7 @@
   (require 'info)
   (info-initialize)
   ;; 普通模式（package-alist 已填充）
-  (dolist (entry (or (bound-and-true-p package-alist) nil))
+  (dolist (entry (or (bound-and-true-p package-alist)))
     (dolist (desc (cdr entry))
       (let ((dir (package-desc-dir desc)))
         (when (file-exists-p (expand-file-name "dir" dir))
@@ -98,13 +98,13 @@
       (when (file-directory-p root)
         (dolist (dir (directory-files root t "\\`[^.]"))
           (setq pkg-p nil)
-          (dolist (f (directory-files dir nil "\\`[^.]"))
-            (when (string-suffix-p "-pkg.el" f)
-              (setq pkg-p t)))
-          (when (and (file-directory-p dir)
-                     pkg-p
-                     (file-exists-p (expand-file-name "dir" dir)))
-            (add-to-list 'Info-directory-list dir))))))
+          (when (file-directory-p dir) ; 先排除 .signed 等文件条目
+            (dolist (f (directory-files dir nil "\\`[^.]"))
+              (when (string-suffix-p "-pkg.el" f)
+                (setq pkg-p t)))
+            (when (and pkg-p
+                       (file-exists-p (expand-file-name "dir" dir)))
+              (add-to-list 'Info-directory-list dir))))))))
 (add-hook 'after-init-hook #'my-add-package-info-dirs)
 
 (add-hook 'emacs-startup-hook
