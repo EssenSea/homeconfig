@@ -14,7 +14,7 @@
                 olivetti orderless org-roam org-superstar ox-typst perspective
                 pinentry portage-modes prescient rainbow-delimiters
                 switchy-window tempel tempel-collection transient-posframe
-                treesit-auto typst-ts-mode undo-fu undo-fu-session vertico
+                typst-ts-mode undo-fu undo-fu-session vertico
                 vertico-posframe vlf vundo wgrep which-key-posframe))
  '(vlf-application 'dont-ask))
 (custom-set-faces

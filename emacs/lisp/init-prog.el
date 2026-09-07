@@ -52,13 +52,10 @@
 ;; Treesit
 ;; =====================================================================
 (require 'treesit)
-(use-package treesit-auto
-  :ensure t
-  :config
-  (setq treesit-auto-install t
-        global-treesit-auto-mode t
-        )
-  )
+;; 31.1 内置 tree-sitter：启用所有可用 ts 模式。
+;; 注意须用 customize-set-variable 触发 defcustom 的 :set，
+;; 它才会把各语言 remap 到内置 *-ts-mode。
+(customize-set-variable 'treesit-enabled-modes t)
 
 ;; (setq treesit-extra-load-path "/usr/lib64")
 
