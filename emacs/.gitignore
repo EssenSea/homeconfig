@@ -1,0 +1,14 @@
+# Emacs runtime state — regenerated, not configuration
+history
+recentf
+eshell/
+savefile/
+tramp
+url/
+*.elc
+custom.elc
+
+# Backups and autosaves
+*~
+**/~
+lisp/#*#
