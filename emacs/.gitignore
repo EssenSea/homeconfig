@@ -1,10 +1,16 @@
 # Emacs runtime state — regenerated, not configuration
 history
 recentf
+recentf.eld
 eshell/
 savefile/
 tramp
 url/
+var/
+eln-cache/
+elpa/
+emms/
+package-quickstart.el
 *.elc
 custom.elc
 
