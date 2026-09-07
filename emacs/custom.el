@@ -11,7 +11,7 @@
                 embark embark-consult emms empv eselect-news gptel helpful
                 kaolin-themes kind-icon llm logview magit marginalia minuet
                 nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer nov
-                olivetti orderless org-roam org-superstar ox-typst perspective
+                olivetti orderless org-roam org-superstar ox-typst
                 pinentry portage-modes prescient rainbow-delimiters
                 switchy-window tempel tempel-collection transient-posframe
                 typst-ts-mode undo-fu undo-fu-session vertico

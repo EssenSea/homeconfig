@@ -13,8 +13,7 @@
 ;; Buffers manipulations
 (use-package ibuffer
   :ensure nerd-icons-ibuffer
-  ;; :bind
-  ;; ("C-x C-b" . ibuffer)
+  :bind ("C-x C-b" . ibuffer)
   :hook
   (ibuffer-mode . nerd-icons-ibuffer-mode)
   (ibuffer-mode . ibuffer-auto-mode)
@@ -37,24 +36,6 @@
    ("C-x M-a b" . activities-switch-buffer)
    ("C-x M-a g" . activities-revert)
    ("C-x M-a l" . activities-list))
-  )
-
-(use-package perspective
-  :demand t
-  :ensure t
-  :init
-  (require 'ibuffer)   ; persp-ibuffer 依赖 ibuffer，C-x C-b 前确保已加载
-  (persp-mode)
-  :bind
-  ("C-x C-b" . persp-ibuffer)         ; or use a nicer switcher, see below
-  ("C-x k" . persp-kill-buffer*)
-  ;; ("C-x b" . persp-switch-to-buffer*)
-  :config
-  (setq
-   persp-show-modestring nil
-   persp-modestring-short nil)
-  :custom
-  (persp-mode-prefix-key (kbd "C-x M-p"))  ; pick your own prefix key here
   )
 
 ;; =====================================================================

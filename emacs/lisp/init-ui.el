@@ -70,9 +70,6 @@
   :hook (after-init . doom-modeline-mode)
   :init
   (setq doom-modeline-mu4e t
-        doom-modeline-persp-icon nil
-        doom-modeline-persp-name nil
-        doom-modeline-persp-display-default-name nil
         doom-modeline-total-line-number t
         ))
 

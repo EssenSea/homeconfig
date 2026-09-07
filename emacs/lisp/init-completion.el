@@ -119,9 +119,7 @@
   (setq
    consult-async-default-split-function
    #'consult-async-split-style-default)
-  ;; Integrated with perspective
-  (consult-customize consult-source-buffer :hidden t :default nil)
-  (add-to-list 'consult-buffer-sources persp-consult-source)
+  ;; 默认 consult-buffer 源（移除 perspective 后保留默认 buffer 源）
   )
 
 ;; Embark: manipulate menus
