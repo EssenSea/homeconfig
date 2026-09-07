@@ -43,6 +43,7 @@
   :demand t
   :ensure t
   :init
+  (require 'ibuffer)   ; persp-ibuffer 依赖 ibuffer，C-x C-b 前确保已加载
   (persp-mode)
   :bind
   ("C-x C-b" . persp-ibuffer)         ; or use a nicer switcher, see below
