@@ -1,0 +1,17 @@
+font=CodeNewRoman_Nerd_Font 16
+background-color=#272e33b0
+text-color=#d3c6aa
+width=1200
+height=1200
+border-size=4
+border-color=#a7c080
+border-radius=12
+icons=0
+max-icon-size=36
+text-alignment=center
+default-timeout=9000
+max-visible=3
+layer=overlay
+anchor=top-center
+
+format=<b>%a</b> \n%s \n %b 

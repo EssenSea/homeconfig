@@ -1,0 +1,21 @@
+defaults
+account essensea@qq.com
+host smtp.qq.com
+port 587
+tls on
+tls_starttls on
+auth on
+user essensea
+passwordeval pass mail/qmail
+from 1036969856@qq.com
+account default : essensea@qq.com
+
+account ESSENSEA@outlook.com
+host smtp-mail.outlook.com
+port 587
+tls on
+tls_starttls on
+auth login
+user ESSENSEA@outlook.com
+passwordeval pass mail/outlook
+from ESSENSEA@outlook.com

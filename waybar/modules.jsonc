@@ -1,0 +1,306 @@
+{
+	"clock": {
+		"format": "  {:%d %a %R %Z}",
+		"format-alt": "{:%W %A %B %d %Y (%R %Z)}",
+		"tooltip": true,
+		"tooltip-format": "<big>{:%W %A %B %d %Y (%R %Z)}\n{tz_list}</big>\n<tt><small>{calendar}</small></tt>",
+		"calendar": {
+			"mode": "month",
+			"mode-mon-col"	: 4,
+			"weeks-pos"		: "right",
+			"on-scroll"		: 3,
+			"on-click-right": "mode",
+			"format": {
+				"months":	  "<span color='#a9c080'><b>{}</b></span>",
+				"days":		  "<span color='#d3c6aa'><b>{}</b></span>",
+				"weeks":	  "<span color='#7fbbb3'><b>W{}</b></span>",
+				"weekdays":   "<span color='#7fbbb3'><b>{}</b></span>",
+				"today":	  "<span color='#a7c080'><b><u>{}</u></b></span>"
+				}
+			},
+		"timezones": [
+			"Asia/Shanghai",
+			"Etc/UTC",
+			"America/New_York"
+		],
+	"actions": {
+		"on-click-right": "mode",
+		"on-click-forward": "tz_up",
+		"on-click-backward": "tz_down",
+		"on-scroll-up": "shift_up",
+		"on-scroll-down": "shift_down"
+		}
+	},
+
+	"disk":{
+        "path": "/home",
+		"interval": 1,
+		"format": "{used}({percentage_used}%) ",
+		"unit": "GB",
+		"on-click": "yazi"
+	},
+
+	"cpu":{
+		"interval": 1,
+		"format":"{usage}% ",
+	},
+
+	"memory":{
+		"interval":1,
+		"format":"{percentage}% "
+	},
+
+	"wireplumber": {
+		"format": "{volume}% {icon}",
+		"format-muted": "",
+		"on-click": "pavucontrol",
+		"format-icons": ["", "", ""],
+		"format-bluetooth": "{volume}% "
+    },
+    "bluetooth": {
+    	"format": "{status} ",
+    	"format-connected": "{device_alias} ",
+    	"format-connected-battery": "{device_alias}  {device_battery_percentage}%",
+    	"format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+    	"tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    	"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    	"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    	"tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
+    },
+	"battery": {
+		// "bat": "BAT1",
+		"interval":1,
+		"states": {
+			// "good": 95,
+			"warning": 30,
+			"critical": 15
+		},
+		"format": "{capacity}% {icon}",
+		"format-charging": "{capacity}% ",
+		"format-plugged": "{capacity}% ",
+		"format-alt": "{time}{icon}",
+		// "format-good": "", // An empty format will hide the module
+		// "format-full": "",
+		"format-icons": ["", "", "", "", ""]
+	},
+
+	"temperature": {
+		"thermal-zone" : "/sys/class/thermal/cooling_device0/",
+		"hwmon-path" : [
+			"/sys/class/hwmon/howmon5/temp1_input",
+			"/sys/class/hwmon/howmon5/temp2_input",
+			"/sys/class/hwmon/howmon5/temp3_input",
+			"/sys/class/hwmon/howmon5/temp4_input",
+			"/sys/class/hwmon/howmon5/temp5_input",
+			"/sys/class/hwmon/howmon5/temp6_input",
+			"/sys/class/hwmon/howmon5/temp7_input",
+			"/sys/class/thermal/cooling_device0/temp",
+			"/sys/class/thermal/cooling_device1/temp",
+			"/sys/class/thermal/cooling_device2/temp",
+			"/sys/class/thermal/cooling_device3/temp",
+			"/sys/class/thermal/cooling_device4/temp",
+			"/sys/class/thermal/cooling_device5/temp",
+			"/sys/class/thermal/cooling_device6/temp",
+			"/sys/class/thermal/cooling_device7/temp",
+			"/sys/class/thermal/cooling_device8/temp",
+			"/sys/class/thermal/cooling_device9/temp",
+			"/sys/class/thermal/cooling_device10/temp",
+			"/sys/class/thermal/cooling_device11/temp",
+			"/sys/class/thermal/cooling_device12/temp"
+		  ],
+		// "critical-threshold": 80,
+		// "format-critical": "{temperatureC}°C ",
+		"interval": 1,
+		"format": "{temperatureC}°C "
+	},
+
+	"network": {
+		"interface": "wlan0",
+        "interval": 1,
+		"format": "{ifname}",
+		"format-wifi": "   {bandwidthUpBits} {bandwidthDownBits} {signalStrength}% ",
+		"format-ethernet": "{ifname} ",
+	// "format-disconnected": "", //An empty format will hide the module.
+		"format-disconnected": "disconnected ",
+		"tooltip-format": "{ifname}",
+		"tooltip-format-wifi" : "{essid} ({signalStrength}%)  ",
+		"tooltip-format-ethernet" : "{ifname}  ",
+		"tooltip-format-disconnected" : "Disconnected",
+		"max-length": 40
+	},
+
+	"backlight": {
+		"format": "{icon}",
+		"format-icons": ["", ""],
+		"on-scroll-down": "brightnessctl -d intel_backlight s 5%- | cut -d'.' -f1 > $SWAYSOCK.wob",
+		"on-scroll-up": "brightnessctl -d intel_backlight s +5%+ | cut -d'.' -f1 > $SWAYSOCK.wob",
+		"on-click": "gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'",
+		"on-click-right": "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
+	},
+
+	"tray": {
+					// "icon-size": 21,
+					"spacing": 10
+	},
+
+	"mpd": {
+		"format": "{stateIcon} {consumeIcon} {randomIcon} {repeatIcon} {singleIcon} {artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ",
+		"format-disconnected": "Disconnected ",
+		"format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon} Stopped ",
+		"unknown-tag": "N/A",
+		"interval": 2,
+		"consume-icons": {
+			"on": " "
+		},
+		"random-icons": {
+			"off": "<span color=\"#f53c3c\"></span> ",
+			"on": " "
+		},
+		"repeat-icons": {
+			"on": " "
+		},
+		"single-icons" : {
+			"on": "1 "
+		},
+		"state-icons": {
+			"paused": "",
+			"playing": ""
+		},
+		"tooltip-format": "MPD (connected)",
+		"tooltip-format-disconnected": "MPD (disconnected)"
+	},
+
+	// "hyprland/window": {
+	// 	"format": "👉 {}",
+	// 	"rewrite": {
+	// 	"(.*) — Mozilla Firefox" : "🌎 $1",
+	// 	"(.*) — bash"	: " $1",
+	// 	"(.*) - bash"  : " $1",
+	// 	"(.*) - GNU Emacs at Gentoo"  : "ξ $1",
+	// 	"bash(.*)"	: " $1",
+	// 	//"(.*) — nvim"  : "  $1",
+	// 	//" nvim (.*)"	: "  $1",
+	// 	"(.*) — vi"  : "  $1",
+	// 	// "(.*) - vi"  : "	$1",
+	// 	"vi - (.*)"  : "	$1",
+	// 	"vi(.*)"  : "  $1"
+	// 	},
+	// 	"separate-outputs": true
+	// 	// "icon" : true
+	// 	//"icon-size" : 14
+	// },
+
+  "niri/window": {
+	"format": "👉 {}",
+	"rewrite": {
+		"(.*) — Mozilla Firefox": "🌎 $1",
+		"(.*) — Mozilla Firefox": "🌎 $1",
+		"(.*) - GNU Emacs at Gentoo"  : "ξ $1",
+		"(.*) - zsh": "> [$1]",
+		"(.*) - bash": "> [$1]",
+		"(.*) - fish": "> [$1]"
+		},
+	"sepatate-outputs": true
+	},
+
+	"sway/window": {
+		"format": "👉 {}",
+		"max-length": 50,
+		"tooltip": true,
+		"all-outputs": true,
+		"rewrite": {
+			"(.*) — Mozilla Firefox" : "🌎 $1",
+			"(.*) — GNU Emacs at Gentoo"  : "ξ $1",
+			"(.*) - GNU Emacs at Gentoo"  : "ξ $1",
+			"(.*) - bash": "> [$1]"
+			}
+	},
+
+   // "sway/workspaces": {
+   //	   "disable-scroll": true,
+   //	   "all-outputs": true,
+   //	   "format": "{name}: {icon}",
+   //	   "format-icons": {
+   //			"1": "",
+   //			"2": "",
+   //			"3": "",
+   //			"4": "",
+   //			"5": "",
+   //			"high-priority-named": [ "1", "2" ],
+   //			"urgent": "",
+   //			"focused": "",
+   //			"default": ""
+   //	   }
+   // },
+
+	"sway/workspaces": {
+		// "format": "<span size=’larger’>{name}</span> {windows}",
+		"format": "{icon} <sub>{index}</sub>",
+		"format-icons": {
+			"focused": "",
+			"default": ""
+		},
+		// "format-window-separator": " | ",
+		// "window-format": "<span color=’#e0e0e0’>{name}</span>",
+		// "window-rewrite": {
+		//	   "class<firefox>": "",
+		//	   "class<kitty>": "k",
+		//	   "title<.* - (.*) - VSCodium>": "codium $1"  // captures part of the window title and formats it into output
+		// },
+		"persistent-workspaces": {
+			"1": ["HDMI-A-1"],
+			"2": ["HDMI-A-1"],
+			"3": ["HDMI-A-1"],
+			"4": ["HDMI-A-1"],
+			"5": ["HDMI-A-1"],
+			"6": ["eDP-1"],
+			"7": ["eDP-1"],
+			"8": ["eDP-1"],
+			"9": ["eDP-1"],
+		}
+	},
+
+	"hyprland/workspaces": {
+		// "format": "{icon} <sub>{id}</sub>",
+		"format": "{name}: {icon}",
+		"format-icons": {
+			"active": "",
+			"default": ""
+		},
+		"all-outputs": false,
+		"persistent-workspaces": {
+			"HDMI-A-1": [1,2,3,4,5],
+			"eDP-1": [6,7,8,9]
+		}
+	},
+
+  //"hyprland/workspaces": {
+  //	"format": "<sub>{icon}</sub>\n{windows}",
+  //	"format-window-separator": "\t",
+  //	"window-rewrite-default": "",
+  //	"window-rewrite": {
+  //		"title<.*youtube.*>": "", // Windows whose titles contain "youtube"
+  //		"class<firefox>": "", // Windows whose classes are "firefox"
+  //		"class<firefox> title<.*github.*>": "", // Windows whose class is "firefox" and title contains "github". Note that "class" always comes first.
+  //		"kitty": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
+  //		"code": "󰨞",
+  //		},
+  //	},
+
+	"niri/workspaces": {
+		"all-outputs": false,
+		"format": "{icon} <sub>{index}</sub>",
+		"on-update": true,
+        "current-only": false,
+		"format-icons": {
+		// Named workspaces
+		// (you need to configure them in niri)
+		"browser": "",
+		"discord": "",
+		"chat": "<b></b>",
+		// Icons by state
+		"active": "",
+		"default": ""
+		}
+	},
+}

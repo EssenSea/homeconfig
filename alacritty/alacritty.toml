@@ -1,0 +1,49 @@
+#
+#  █████╗ ██╗      █████╗  ██████╗██╗████████╗████████╗██████╗ ██╗   ██╗
+# ██╔══██╗██║     ██╔══██╗██╔════╝██║╚══██╔══╝╚══██╔══╝██╔══██╗╚██╗ ██╔╝
+# ███████║██║     ███████║██║     ██║   ██║      ██║   ██████╔╝ ╚████╔╝
+# ██╔══██║██║     ██╔══██║██║     ██║   ██║      ██║   ██╔══██╗  ╚██╔╝
+# ██║  ██║███████╗██║  ██║╚██████╗██║   ██║      ██║   ██║  ██║   ██║
+# ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝   ╚═╝
+#
+# Alacritty Config File by Arfan Zubi
+
+
+general.live_config_reload = true
+
+[window]
+position =  { x = 0, y = 0 }
+padding = { x = 0, y = 0 }
+dynamic_padding = true
+decorations = "Full"
+opacity = 0.6
+resize_increments = true
+
+[font]
+normal = { family = "Sarasa Term  SC Nerd", style = "semibold" }
+size = 16
+builtin_box_drawing = true
+
+[colors]
+primary = { foreground = "#d3c6aa", background = "#272e33" }
+
+[colors.normal]
+black = "#51576D"
+blue = "#8CAAEE"
+cyan = "#8fC8C0"
+green = "#A6D189"
+magenta = "#F4BBE4"
+red = "#EE8888"
+white = "#B5BFE2"
+yellow = "#E5C890"
+
+[cursor]
+style = { shape = "Underline", blinking = "Always" }
+
+[mouse]
+hide_when_typing = true
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Key1"
+mods = "Control"

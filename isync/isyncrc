@@ -1,0 +1,55 @@
+IMAPAccount qmail
+Host imap.foxmail.com
+User essensea@foxmail.com
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.password-store/mail/qmail.gpg"
+TLSType IMAPS
+TLSVersions +1.2
+
+IMAPStore qmail-remote
+Account qmail
+
+MaildirStore qmail
+Path ~/.local/share/mail/qmail/
+Inbox ~/.local/share/mail/qmail/INBOX
+SubFolders Verbatim
+
+Channel qmail
+Far :qmail-remote:
+Near :qmail:
+Patterns "*" # "*" All folders
+Create Both
+Expunge Both
+SyncState *
+CopyArrivalDate yes
+
+IMAPAccount gmail
+Host imap.gmail.com
+User yueqrgg@gmail.com
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.password-store/mail/gmail.gpg"
+TLSType IMAPS
+TLSVersions +1.2
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail
+Path ~/.local/share/mail/gmail/
+Inbox ~/.local/share/mail/gmail/INBOX
+SubFolders Verbatim
+
+# Channel gmail-inbox
+# Far :gmail-remote:
+# Near :gmail-local:
+# Patterns "INBOX"
+# Create Both
+# Expunge Both
+# SyncState *
+
+Channel gmail
+Far :gmail-remote:
+Near :gmail:
+Patterns "*" # "*" All folders
+Create Both
+Expunge Both
+SyncState *
+CopyArrivalDate yes

@@ -1,0 +1,18 @@
+include everforest
+# include ~/.config/zathura/catppuccin-frappe
+# 将选中的文本发送到 trans 命令进行中译英（默认行为可自己修改）
+set selection-clipboard clipboard
+
+# # 定义一个命令 'translate'，它执行：将选中的文本用 trans 翻译并显示在通知中
+# define translate %{
+# #     # 将选中的文本复制到剪贴板
+#     execute -save-selection clipboard
+# #     # 执行shell命令：获取剪贴板内容，用trans翻译，并通过notify-send发送桌面通知
+#     execute -no-shell-escape sh -c "notify-send \"翻译结果\" \"$(trans -b :zh \"$(xclip -o -selection clipboard)\")\""
+# }
+# #
+# # # 将快捷键 't' 绑定到 translate 命令
+# map t translate
+# map t exec /home/moonsea/dotfiles/homeconfig/zathura/trans.sh
+map t exec notify-send "Zathura 测试" "Spawn 命令有效！"
+# map t spawn -- echo "Hello from Zathura!"

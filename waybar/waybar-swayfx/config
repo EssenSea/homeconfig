@@ -1,0 +1,131 @@
+{
+	"layer": "top", // Waybar at top layer
+	"position": "bottom", // Waybar position (top|bottom|left|right)
+	"height": 22, // Waybar height (to be removed for auto height)
+	"margin": "2 3 8 3",
+	"spacing": 0,
+	// "width": 1280, // Waybar width
+	// Choose the order of the modules
+	"modules-left": ["idle_inhibitor", "network", "wireplumber"],
+	"modules-center": ["clock", "battery", "sway/workspaces"],
+	"modules-right": ["custom/deadbeef", "cpu", "custom/scratchpad_indicator", "memory", "tray"],
+	// Modules configuration
+	//"sway/workspaces": {
+	//	  "disable-scroll": true,
+	//	   "all-outputs": true,
+	//	   "format": "{name}: {icon}",
+	//	   "format-icons": {
+	//		   "1": "",
+	//		   "2": "",
+	//		   "3": "",
+	//		   "4": "",
+	//		   "5": "",
+	//		   "urgent": "",
+	//		   "focused": "",
+	//		   "default": ""
+	//	   }
+	// },
+	"sway/mode": {
+		"format": "<span style=\"italic\">{}</span>"
+	},
+	"custom/deadbeef": {
+		"format": " {}",
+		"max-length": 50,
+		"interval": 10,
+		"exec": "deadbeef --nowplaying-tf '{\"text\": \"%title%\", \"tooltip\":\"%artist% - %title%\",\"class\":\"$if(%isplaying%,playing,not-playing)\"}'",
+		"return-type": "json",
+		"exec-if": "pgrep deadbeef",
+		"on-click": "deadbeef --toggle-pause"
+	},
+	"mpd": {
+		"format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ",
+		"format-disconnected": "Disconnected ",
+		"format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
+		"unknown-tag": "N/A",
+		"interval": 2,
+		"consume-icons": {
+			"on": " "
+		},
+		"random-icons": {
+			"off": "<span color=\"#f53c3c\"></span> ",
+			"on": " "
+		},
+		"repeat-icons": {
+			"on": " "
+		},
+		"single-icons": {
+			"on": "1 "
+		},
+		"state-icons": {
+			"paused": "",
+			"playing": ""
+		},
+		"tooltip-format": "MPD (connected)",
+		"tooltip-format-disconnected": "MPD (disconnected)"
+	},
+	"idle_inhibitor": {
+		"format": "{icon}",
+		"format-icons": {
+			"activated": "",
+			"deactivated": ""
+		}
+	},
+	"tray": {
+		// "icon-size": 21,
+		"spacing": 10
+	},
+	"clock": {
+		// "timezone": "America/New_York",
+		"format": "{:%I:%M:%p}",
+		"tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+		"format-alt": "{:%d-%m-%Y}"
+	},
+	"custom/scratchpad_indicator": {
+	   "interval": 1,
+	   "exec": "swaymsg -t get_tree | jq 'recurse(.nodes[]) | first(select(.name==\"__i3_scratch\")) | .floating_nodes | length | select(. >= 1)'",
+	   "format": "{} ",
+	   "on-click": "swaymsg 'scratchpad show'",
+	   "on-click-right": "swaymsg 'move scratchpad'"
+	},
+	"custom/cyclebg":{
+		"format": "",
+		"on-click": "~/.config/sway/cyclebg.sh",
+		"tooltip": false,
+  },
+	"cpu": {
+		"format": "{usage}% ",
+		"tooltip": false
+	},
+	"memory": {
+		"format": "{}% "
+	},
+	"battery": {
+		"states": {
+			// "good": 95,
+			"warning": 30,
+			"critical": 15
+		},
+		"format": "{capacity}% {icon}",
+		"format-charging": "{capacity}% ",
+		"format-plugged": "{capacity}% ",
+		"format-alt": "{time} {icon}",
+		// "format-good": "", // An empty format will hide the module
+		// "format-full": "",
+		"format-icons": ["", "", "", "", ""]
+	},
+	"network": {
+		// "interface": "wlp2*", // (Optional) To force the use of this interface
+		"format-wifi": "{essid} ",
+		"format-ethernet": "{ipaddr}/{cidr} ",
+		"tooltip-format": "{ifname} via {gwaddr} ",
+		"format-linked": "{ifname} (No IP) ",
+		"format-disconnected": "⚠",
+		"format-alt": "{ifname}: {ipaddr}/{cidr}"
+	},
+	"wireplumber": {
+	"format": "{volume}% {icon}",
+	"format-muted": "",
+	"on-click": "helvum",
+	"format-icons": ["", "", ""]
+	},
+}

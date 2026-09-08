@@ -1,0 +1,25 @@
+set titlecolor orange
+set statuscolor black,orange
+set numbercolor orange
+set promptcolor  black,orange
+set stripecolor black,orange
+set keycolor orange
+set minicolor black,orange
+set selectedcolor black,orange
+set functioncolor orange
+set spotlightcolor black,orange
+set boldtext
+set fill 72
+set guidestripe 73
+set tabsize 4
+set tabstospaces
+set minibar
+set linenumbers
+set trimblanks
+set softwrap
+
+syntax "everthing" ".*"
+color orange "^.*$"
+
+syntax nanohelp
+color orange "^.*$"

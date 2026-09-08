@@ -1,0 +1,38 @@
+{
+	"layer": "top",
+	// "output":"eDP-1",
+	"position": "top",
+	// "height": 40,
+	// "weight": 1920,
+	// "margin": 8,
+	// "padding":8,
+	// "spacing": 8,
+	// "mode": "top",
+	"fixed-center": true,
+	"passthrough":"true",
+	"reload-style-on-change": true,
+	"include": "/home/moonsea/.config/waybar/modules.jsonc",
+	"modules-left":[
+		"niri/workspaces",
+    "niri/window",
+		"network",
+		"wireplumber"
+	],
+	"modules-center":[
+		"clock"
+	],
+	"modules-right":[
+		"group/hardware",
+		"tray"
+	],
+	"group/hardware": {
+		"orientation": "horizontal",
+		"modules": [
+			"disk",
+			"cpu",
+			"memory",
+			"temperature",
+			"battery"
+		]
+	}
+}
