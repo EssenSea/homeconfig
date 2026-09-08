@@ -143,11 +143,10 @@ call plug#begin()
 
     " --- tmux -----------------------------------------
     " --- tmux -----------------------------------------
-    Plug 'tmux-plugins/vim-tmux-focus-events'
     Plug 'roxma/vim-tmux-clipboard'
     Plug 'christoomey/vim-tmux-navigator'
-    " --- language
 
+    " --- language / syntax / lint ----------------------
     " --- 语言 / 语法 / 检查 ----------------------------
     Plug 'w0rp/ale'
     Plug 'maximbaz/lightline-ale'
@@ -182,6 +181,19 @@ syntax on
 " ============================================================================
 " 2. Appearance / colorscheme / 外观与配色
 " ============================================================================
+" Native terminal focus-event support (Vim >= 8.2.2345).
+" Vim 原生终端焦点事件支持（Vim >= 8.2.2345）。
+" tmux must have 'focus-events on' (tmux-sensible enables it automatically).
+" 要求 tmux 开启 focus-events（tmux-sensible 会自动开启）。
+if !has('gui_running') && &term =~# '^\%(screen\|tmux\)'
+    " Enable focus-event tracking: CSI ? 1004 h/l
+    " 启用焦点事件跟踪：CSI ? 1004 h/l
+    let &t_fe = "\<Esc>[?1004h"
+    let &t_fd = "\<Esc>[?1004l"
+    execute "set <FocusGained>=\<Esc>[I"
+    execute "set <FocusLost>=\<Esc>[O"
+endif
+
 set termguicolors
 set t_Co=256
 set background=dark
