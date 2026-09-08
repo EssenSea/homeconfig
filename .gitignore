@@ -1,2 +1,8 @@
 # tmux plugins are fetched dependency checkouts
 tmux/plugins/
+
+# Sensitive / session files not intended for version control
+fanyi/.fanyirc
+sioyek/translate.py
+go-musicfox/cookie
+go/telemetry/
