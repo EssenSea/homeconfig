@@ -7,7 +7,6 @@
 "   Put this at ~/.vimrc or $XDG_CONFIG_HOME/vim/vimrc and restart vim.
 "
 " REMOVED PLUGINS AND REASONS
-"   vim-cool                      - hlsearch is toggled off explicitly below
 "   wikitopian/hardmode           - only rarely useful; disruptive to keep loaded
 "   justinmk/vim-sneak            - easymotion covers two-char jump needs
 "   tpope/vim-unimpaired          - nice but not needed for this setup
@@ -210,7 +209,9 @@ nnoremap <silent> g* g*zz
 nnoremap <C-o> <C-o>zz
 nnoremap <C-i> <C-i>zz
 
-" quickly clear search highlight with <C-h> in normal mode
+" <C-h> manual clear-search-highlight is intentionally left disabled;
+" vim-cool automatically disables hlsearch after a search settles.
+" Re-enable only if you prefer manual control:
 " nnoremap <silent> <C-h> :nohlsearch<CR>
 
 " ============================================================================
