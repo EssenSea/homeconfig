@@ -306,7 +306,7 @@ set foldmethod=indent
 " ============================================================================
 let g:mapleader = " "
 let g:maplocalleader = ","
-set timeoutlen=700
+set timeoutlen=250
 
 " Window/tab/buffer basics / 窗口、标签页、缓冲区基础操作
 nnoremap <Leader>tn :tabnew<CR>
@@ -350,8 +350,11 @@ nnoremap <Leader>s  :source $MYVIMRC<CR>
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 " Tagbar toggle / Tagbar 开关（函数/类列表）
 nnoremap <silent> <C-u> :TagbarToggle<CR>
-" Goyo: distraction-free writing / Goyo：无干扰写作模式
-nnoremap <C-g> :Goyo<CR>
+" Goyo: distraction-free writing (moved from <C-g>)
+" Goyo：无干扰写作模式（原来绑定在 <C-g>，现在移到 <Leader>go）
+" <Leader>go = toggle Goyo
+" <Leader>go = 开关 Goyo
+nnoremap <silent> <Leader>go :Goyo<CR>
 
 " Translation / 翻译（vim-translator）
 " <Leader>tt = translate word/selection / 翻译单词或选区
