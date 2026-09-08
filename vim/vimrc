@@ -1,53 +1,76 @@
 " ============================================================================
 " File:        vimrc
-" Description: Legacy Vim script config (cleaned/organized version)
+" Description: Main Vim configuration file
+" 描述：Vim 主配置文件
 " ============================================================================
 "
-" HOW TO USE
+" HOW TO USE / 使用方法
 "   Put this at ~/.vimrc or $XDG_CONFIG_HOME/vim/vimrc and restart vim.
+"   将此文件放到 ~/.vimrc 或 $XDG_CONFIG_HOME/vim/vimrc，然后重启 Vim。
 "
-" REMOVED PLUGINS AND REASONS
-"   wikitopian/hardmode           - only rarely useful; disruptive to keep loaded
-"   justinmk/vim-sneak            - easymotion covers two-char jump needs
-"   tpope/vim-unimpaired          - nice but not needed for this setup
-"   tpope/vim-endwise             - language-specific magic; too intrusive
-"   godlygeek/tabular             - vim-easy-align covers most alignment cases
-"   simnalamburt/vim-mundo        - undo tree can be added back on demand
-"   wellle/context.vim            - nice but heavy; can re-enable if needed
-"   vim-startify                  - fzf already provides the start screen
+" EXTERNAL DEPENDENCIES / 外部依赖
+"   The following external commands are needed by some mappings/plugins.
+"   以下外部命令会被某些映射 / 插件调用，需提前安装：
+"   - fzf        : used by :Files, :History, etc.
+"   - rg         : used by :Rg (ripgrep full-text search)
+"   - locate     : used by :Locate; on Gentoo install plocate or mlocate
+"   - git        : used by fugitive / gv.vim / GitFiles
+"   - lualatex   : used by VimTeX (latexmk with lualatex engine)
+"   - python3    : required by UltiSnips snippet engine
+"
+" REMOVED PLUGINS AND REASONS / 已移除插件及原因
+"   wikitopian/hardmode           - too intrusive; 仅偶尔有用，干扰较大
+"   justinmk/vim-sneak            - easymotion covers two-char jump; easymotion 已覆盖双字符跳转
+"   tpope/vim-unimpaired          - nice but not needed; 有部分帮助但当前不需要
+"   tpope/vim-endwise             - language-specific magic; 语言相关自动补全，过于侵入
+"   godlygeek/tabular             - vim-easy-align covers alignment; 对齐由 vim-easy-align 提供
+"   simnalamburt/vim-mundo        - undo tree; 撤销树，需要时可再加
+"   wellle/context.vim            - nice but heavy; 功能好但偏重
+"   vim-startify                  - fzf entry points cover recent files; 启动页由 fzf 相关入口承担
 "
 " ============================================================================
 set nocompatible
+" Disable compatibility with Vi. / 关闭与 Vi 的兼容模式。
 
 if has("syntax") && has("eval")
     packadd! matchit
 endif
+" Enable matchit when available. / 可用时启用 matchit（% 扩展匹配）。
 packadd! justify
 packadd! helptoc
+" Optimize justify and helptoc behaviour. / 优化 justify / helptoc 插件行为。
 runtime ftplugin/man.vim
+" Load the built-in man page ftplugin. / 加载内置 man 帮助文件类型插件。
 
 " ---------------------------------------------------------------------------
 " Completion plugin variables MUST be set before plug#end() loads the plugins.
+" 补全插件的变量必须写在 plug#end() 加载插件之前才会生效。
 " ---------------------------------------------------------------------------
-" auto-pairs: disable noisy shortcut toggles (set before auto-pairs loads)
+" auto-pairs: disable noisy shortcut toggles (must be set before plugins load).
+" auto-pairs：关闭较嘈杂的快捷键开关（必须在插件加载前设置）。
 let g:AutoPairsShortcutToggle = ""
 let g:AutoPairsShortcutFastWrap = ""
 let g:AutoPairsShortcutBackInsert = ""
 let g:AutoPairsShortcutJump = ""
-" We orchestrate <CR> and <Space> manually so mucomplete / UltiSnips /
-" auto-pairs do not fight over those keys.  Their auto-pairs behaviors
-" are still explicitly invoked via <Plug>AutoPairsReturn / AutoPairsSpace().
+
+" We orchestrate <CR>/<Space> manually so mucomplete / UltiSnips / auto-pairs
+" do not fight over those keys.  auto-pairs' return/space logic is still
+" explicitly invoked via <Plug>AutoPairsReturn / AutoPairsSpace().
+" 我们手动编排 <CR>/<Space>，避免 mucomplete / UltiSnips / auto-pairs 争抢按键。
+" auto-pairs 的回车 / 空格逻辑仍通过 <Plug>AutoPairsReturn / AutoPairsSpace() 显式调用。
 let g:AutoPairsMapCR = 0
 let g:AutoPairsMapSpace = 0
 
-" UltiSnips: keep snippet keys away from Tab (set before UltiSnips maps keys)
+" UltiSnips: use C-j/C-k so Tab stays available for mucomplete.
+" UltiSnips：使用 C-j/C-k，把 Tab 留给 mucomplete 前后切换。
 let g:UltiSnipsExpandTrigger = "<C-j>"
 let g:UltiSnipsJumpForwardTrigger = "<C-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 let g:UltiSnipsListSnippets = "<C-l>"
 let g:UltiSnipsEditSplit = "vertical"
 
-" mucomplete: disable its own <Tab> mappings because we define them ourselves
+" mucomplete: we define <Tab>/<S-Tab> ourselves, disable its built-ins.
+" mucomplete：我们自行定义 <Tab>/<S-Tab>，关闭其内置映射。
 let g:mucomplete#no_mappings = 1
 let g:mucomplete#enable_auto_at_startup = 1
 let g:mucomplete#chains = {
@@ -58,22 +81,38 @@ let g:mucomplete#chains = {
 
 filetype off
 call plug#begin()
-    " --- search / open -------------------------------
+    " --- search / open ------------------------------
+    " --- 搜索 / 打开 --------------------------------
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    Plug 'romainl/vim-cool'               " Disables highlight when search is done
+    " vim-cool: automatically disable hlsearch after search.
+    " vim-cool：搜索结束后自动清除搜索高亮。
+    Plug 'romainl/vim-cool'
 
-    " --- movement -------------------------------------
+    " --- movement ------------------------------------
+    " --- 移动 --------------------------------------
     Plug 'easymotion/vim-easymotion'
+    " --- text objects
 
-    " --- text objects / editing -----------------------
+    " --- 文本对象 / 编辑 ------------------------------
     Plug 'tpope/vim-surround'
+    " surround text: ys/cs/ds, plus text objects as/is
+    " 包围文本操作：ys 添加、cs 修改、ds 删除；文本对象 as/is
     Plug 'tpope/vim-repeat'
+    " let . repeat plugin actions
+    " 让 . 可重复部分插件操作
     Plug 'tpope/vim-commentary'
+    " comment code with gc
+    " 用 gc 快速注释/取消注释代码
     Plug 'junegunn/vim-easy-align'
+    " alignment tool
+    " 对齐工具
     Plug 'foosoft/vim-argwrap'
+    " toggle argument wrapping
+    " 切换函数参数的单行/多行形式
 
     " --- completion -----------------------------------
+    " --- 补全 ----------------------------------------
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
     Plug 'https://codeberg.org/lifepillar/vim-mucomplete'
@@ -81,10 +120,12 @@ call plug#begin()
     Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
 
     " --- file / project -------------------------------
+    " --- 文件 / 工程 ----------------------------------
     Plug 'preservim/nerdtree'
     Plug 'tpope/vim-eunuch'
 
-    " --- UI -------------------------------------------
+    " --- UI ------------------------------------------
+    " --- 界面 ----------------------------------------
     Plug 'majutsushi/tagbar'
     Plug 'frazrepo/vim-rainbow'
     Plug 'liuchengxu/vim-which-key'
@@ -94,17 +135,20 @@ call plug#begin()
     Plug 'kshenoy/vim-signature'
 
     " --- git ------------------------------------------
+    " --- 版本控制 -------------------------------------
     Plug 'airblade/vim-gitgutter'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-rhubarb'
     Plug 'junegunn/gv.vim'
 
     " --- tmux -----------------------------------------
+    " --- tmux -----------------------------------------
     Plug 'tmux-plugins/vim-tmux-focus-events'
     Plug 'roxma/vim-tmux-clipboard'
     Plug 'christoomey/vim-tmux-navigator'
+    " --- language
 
-    " --- language / syntax / lint ---------------------
+    " --- 语言 / 语法 / 检查 ----------------------------
     Plug 'w0rp/ale'
     Plug 'maximbaz/lightline-ale'
     Plug 'lervag/vimtex'
@@ -115,13 +159,16 @@ call plug#begin()
     Plug 'isobit/vim-caddyfile'
 
     " --- writing --------------------------------------
+    " --- 写作 / 专注 ------------------------------------
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
 
     " --- native helpers -------------------------------
+    " --- 原生辅助工具 ----------------------------------
     Plug 'voldikss/vim-translator'
 
-    " --- colorscheme (only one kept active) -----------
+    " --- colorschemes (everforest active; others via :Colors)
+    " --- 配色方案（everforest 当前启用，其余通过 :Colors 切换）
     Plug 'cocopon/iceberg.vim'
     Plug 'sainnhe/everforest'
     Plug 'catppuccin/vim', { 'as': 'catppuccin' }
@@ -133,16 +180,20 @@ filetype indent on
 syntax on
 
 " ============================================================================
-" 2. Appearance / colorscheme
+" 2. Appearance / colorscheme / 外观与配色
 " ============================================================================
 set termguicolors
 set t_Co=256
 set background=dark
+" Use Everforest as the active colorscheme. / 启用 Everforest 配色。
 colorscheme everforest
 
 let g:rainbow_active = 1
+" Rainbow parentheses on. / 开启彩虹括号。
+
 set noshowmode
 set laststatus=2
+" Always show a statusline. / 始终显示状态栏。
 
 if has("gui_running")
     set guifont=CodeNewRoman\ Nerd\ Font\ 15
@@ -150,7 +201,7 @@ if has("gui_running")
 endif
 
 " ============================================================================
-" 3. Editor basics
+" 3. Editor basics / 编辑器基础
 " ============================================================================
 set encoding=utf-8
 set fileencodings=utf-8,gbk,gb2312,latin1
@@ -191,7 +242,7 @@ set hidden
 set completeopt=menu,menuone,noselect,popup
 
 " ============================================================================
-" 4. Search settings
+" 4. Search settings / 搜索设置
 " ============================================================================
 set incsearch
 set hlsearch
@@ -200,7 +251,7 @@ set smartcase
 set nowrapscan
 set wildignore+=*/.git/*,*/tmp/*,*.swp
 
-" Recenter after common search movements
+" Recenter after common search movements / 搜索/跳转后自动居中
 nnoremap <silent> n nzz
 nnoremap <silent> N Nzz
 nnoremap <silent> * *zz
@@ -210,12 +261,14 @@ nnoremap <C-o> <C-o>zz
 nnoremap <C-i> <C-i>zz
 
 " <C-h> manual clear-search-highlight is intentionally left disabled;
-" vim-cool automatically disables hlsearch after a search settles.
-" Re-enable only if you prefer manual control:
+" vim-cool clears hlsearch automatically after a search settles.
+" <C-h> 手动清除搜索高亮当前保持禁用；
+" vim-cool 会在搜索结束并稳定后自动清除高亮。
+" Re-enable / 如需启用改为：
 " nnoremap <silent> <C-h> :nohlsearch<CR>
 
 " ============================================================================
-" 5. Persistence: undo / backup
+" 5. Persistence: undo / backup / 持久化：撤销与备份
 " ============================================================================
 if has("persistent_undo")
     let s:undodir = expand("~/.config/vim/undodir")
@@ -229,7 +282,7 @@ set nobackup
 set nowritebackup
 
 " ============================================================================
-" 6. Folding
+" 6. Folding / 折叠
 " ============================================================================
 set foldenable
 set foldlevelstart=10
@@ -237,126 +290,197 @@ set foldnestmax=10
 set foldmethod=indent
 
 " ============================================================================
-" 7. Leader / general key mappings
+" 7. Leader / general key mappings / Leader 与常用快捷键
 " ============================================================================
 let g:mapleader = " "
 let g:maplocalleader = ","
 set timeoutlen=700
 
+" Window/tab/buffer basics / 窗口、标签页、缓冲区基础操作
 nnoremap <Leader>tn :tabnew<CR>
+" new tab
+" 新标签页
+
 nnoremap <Leader>x  :tabclose<CR>
+" close tab
+" 关闭标签页
+
 nnoremap <Leader>bn :bn<CR>
+" next buffer
+" 下一个缓冲区
+
 nnoremap <Leader>bp :bp<CR>
+" previous buffer
+" 上一个缓冲区
+
 nnoremap <Leader>bd :bd<CR>
+" delete buffer
+" 删除缓冲区
+
 nnoremap <Leader>hc :helpclose<CR>
+" close help
+" 关闭帮助窗口
+
 nnoremap <Leader>bl :ls<CR>
+" list buffers
+" 列出缓冲区
+
 nnoremap <Leader>e  :edit $MYVIMRC<CR>
+" edit vimrc
+" 编辑 vimrc
+
 nnoremap <Leader>s  :source $MYVIMRC<CR>
+" reload vimrc
+" 重新加载 vimrc
 
-" Window / NERDTree
+
+" NERDTree toggle / NERDTree 开关
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
-
-" Tagbar
+" Tagbar toggle / Tagbar 开关（函数/类列表）
 nnoremap <silent> <C-u> :TagbarToggle<CR>
-
-" Goyo / limelight
+" Goyo: distraction-free writing / Goyo：无干扰写作模式
 nnoremap <C-g> :Goyo<CR>
 
-" Translation
+" Translation / 翻译（vim-translator）
+" <Leader>tt = translate word/selection / 翻译单词或选区
 nmap <silent> <Leader>tt <Plug>Translate
 vmap <silent> <Leader>tt <Plug>TranslateV
+" <Leader>tw = translate word under cursor / 翻译光标下单词
 nnoremap <silent> <Leader>tw <Plug>TranslateW
 vnoremap <silent> <Leader>tw <Plug>TranslateWV
 
 " --- alignment / argument wrapping -------------------
-" <Leader>ag : vim-easy-align. In Normal mode follow with a motion; in
-"              Visual mode selection is already made by the time you hit it.
+" --- 对齐 / 参数折行 --------------------------------
+" <Leader>ag : vim-easy-align. Normal mode: follow with motion.
+"              Visual mode: selection already made.
+" <Leader>ag：vim-easy-align 对齐。普通模式先触发再给 motion；
+"             可视模式选中后触发即可。
 nmap <silent> <Leader>ag <Plug>(EasyAlign)
 xmap <silent> <Leader>ag <Plug>(EasyAlign)
-" <Leader>aw : vim-argwrap. Toggle wrapping function arguments between one
-"              line and one-line-per-argument.
+" <Leader>aw : vim-argwrap toggle between single-line and multi-line args.
+" <Leader>aw：vim-argwrap 在“函数参数单行/多行”之间切换。
 nnoremap <silent> <Leader>aw :ArgWrap<CR>
 
 " --- git (fugitive / gv.vim) -------------------------
-" g* commands use <Leader>g prefix.  (Do not confuse with fzf's <Leader>fg,
-" which is GitFiles — that one is under the fzf <Leader>f family.)
-" <Leader>gs = git status window
+" --- Git（fugitive / gv.vim）-------------------------
+" <Leader>gs = git status / git 状态窗口
 nnoremap <silent> <Leader>gs  :Gstatus<CR>
-" <Leader>gd = diff current file
+" <Leader>gd = diff current file / 比较当前文件改动
 nnoremap <silent> <Leader>gd  :Gdiffsplit<CR>
-" <Leader>gb = blame current file
+" <Leader>gb = blame current file / 查看当前文件 blame
 nnoremap <silent> <Leader>gb  :Gblame<CR>
-" <Leader>gl = repository commit graph
+" <Leader>gl = commit graph / 仓库提交历史图
 nnoremap <silent> <Leader>gl  :GV<CR>
-" <Leader>gw = stage / write file to git
+" <Leader>gw = stage/write file / 暂存并写入当前文件
 nnoremap <silent> <Leader>gw  :Gwrite<CR>
 
+" --- surround text-objects (vim-surround) ----
+" ys = add surround / 添加包围
+" cs = change surround / 修改包围
+" ds = delete surround / 删除包围
+" is = inner surround / 包围的内部（不含括号本身）
+" as = a surround / 整个包围结构（含括号）
+" 示例：cs(" 将 () 换成 “”；cis 修改内部内容。
+
 " --- fzf.vim shortcuts -------------------------------
-" Multi-key chords are written with NO space after the prefix, e.g. the
-" <Leader> f i chord is <Leader>fi; Vim waits for the complete chord.
-" <Leader>f + <first letter> for the main fzf commands:
+" --- fzf.vim 快捷键 --------------------------------
+" Multi-key chords: NO space after the prefix, e.g. <Leader>fi = <Space> f i.
+" 多键组合写法：<Leader> 后不加空格，如 <Leader>fi 即依次按 <Space> f i。
+" <Leader>f + <identifier> for the main fzf commands / 主要 fzf 命令：
 nnoremap <silent> <Leader>ff  :Files<CR>
+" Files
+" 文件搜索
 nnoremap <silent> <Leader>fi  :History<CR>
+" History
+" 最近文件历史
 nnoremap <silent> <Leader>fb  :Buffers<CR>
+" Buffers
+" 缓冲区切换
 nnoremap <silent> <Leader>fc  :Commands<CR>
+" Commands
+" Ex 命令面板
 nnoremap <silent> <Leader>fl  :BLines<CR>
+" BLines
+" 当前文件行搜索
 nnoremap <silent> <Leader>fr  :Rg<CR>
+" Rg
+" ripgrep 全文搜索
 nnoremap <silent> <Leader>fg  :GitFiles<CR>
+" GitFiles
+" git 跟踪文件
 nnoremap <silent> <Leader>ft  :Tags<CR>
+" Tags
+" 项目 tags 符号
 nnoremap <silent> <Leader>fs  :Snippets<CR>
+" Snippets
+" 代码片段
 nnoremap <silent> <Leader>fj  :Jumps<CR>
+" Jumps
+" 跳转历史
 nnoremap <silent> <Leader>fm  :Marks<CR>
+" Marks
+" 标记列表
 nnoremap <silent> <Leader>fw  :Windows<CR>
-" Other fzf entry points:
+" Windows
+" 窗口列表
+" Other fzf entry points / 其它 fzf 入口：
 nnoremap <silent> <Leader>tf  :Filetypes<CR>
+" Filetypes
+" 文件类型
 nnoremap <silent> <Leader>lf  :Lines<CR>
+" Lines
+" 所有 buffer 行
 nnoremap <silent> <Leader>ll  :Locate<CR>
+" Locate
+" locate 系统文件
 nnoremap <silent> <Leader>hh  :Helptags<CR>
+" Helptags
+" 帮助标签
 nnoremap <silent> <Leader>th  :Colors<CR>
+" Colors
+" 配色主题
 nnoremap <silent> <Leader>mm  :Maps<CR>
+" Maps
+" 按键映射列表
 
-
-" easymotion
+" easymotion / 快速跳转
+" <Leader><Leader> + f/s/l/w 开头的跳转
 nmap <Leader><Leader>f <Plug>(easymotion-overwin-f)
 nmap <Leader><Leader>s <Plug>(easymotion-overwin-f2)
 nmap <Leader><Leader>l <Plug>(easymotion-overwin-line)
 nmap <Leader><Leader>w <Plug>(easymotion-overwin-w)
 
 " ============================================================================
-" 8. Which-key
+" 8. Which-key / 按键提示
 " ============================================================================
+" <Leader> (space) opens WhichKey for the space prefix. / 空格键打开按键引导。
 nnoremap <silent> <leader>      :WhichKey ' ' <CR>
 xnoremap <silent> <leader>      :WhichKeyVisual ' ' <CR>
+" , is used as localleader for buffer-local keys. / 逗号为局部 leader。
 nnoremap <silent> <localleader> :WhichKey ',' <CR>
 xnoremap <silent> <localleader> :WhichKeyVisual ',' <CR>
 
 " ============================================================================
 " 9. Completion optimization (mucomplete + UltiSnips + auto-pairs)
+"    补全协同优化（mucomplete + UltiSnips + auto-pairs）
 " ============================================================================
-" NOTE: all plugin -specific variables are configured BEFORE plug#begin()
-"       so they take effect when plugins are loaded by plug#end().
-"       Here we only define the cooperation mappings.
-
+" Plugin variables must be set before plug#end() loads plugins.
+" 插件级变量必须在 plug#end() 前设置才会生效。
 " Tab / S-Tab: forward/backward in the mucomplete popup.
-" (mucomplete#no_mappings is set above, so these are the ONLY <Tab> bindings)
+" Tab / S-Tab：在 mucomplete 补全菜单中前后选择。
 imap <silent> <Tab>   <Plug>(MUcompleteFwd)
 imap <silent> <S-Tab> <Plug>(MUcompleteBwd)
 
-" <CR> cooperation (mucomplete + UltiSnips + auto-pairs):
-"   - if a completion popup is visible:
-"       <C-y> accepts the item; if it is a '[snip]' candidate from the
-"       mucomplete 'ulti' chain, UltiSnips#ExpandSnippet() is invoked too
-"       and remains in Insert mode for placeholder jumping.
-"       AutoPairsReturn is NOT executed here, because its <Esc>-based
-"       handling would kick us out of the just-expanded snippet.
-"   - otherwise:
-"       do a normal <CR> and then auto-pairs' AutoPairsReturn (bracket
-"       return indent).  The <CR> is returned directly by the expr mapping
-"       so it is not recursively re-mapped.
+" <CR> cooperation logic:
+"   - if popup visible: accept candidate; if it is a [snip] item, expand it.
+"   - otherwise: normal CR, then auto-pairs' return handling.
+" <CR> 协同逻辑：
+"   - 补全菜单出现时：接受候选；若为 [snip] 片段则展开 UltiSnips。
+"   - 无菜单时：先执行普通回车，再执行 auto-pairs 的括号内缩进逻辑。
 function! CompleteCRUltiExpand() abort
   if pumvisible()
-    " popup open → official mucomplete path handles both ordinary
-    " completion (accept only, no newline) and [snip] expansion.
+    " Deal with both plain completion and [snip] expansion.
+    " 同时处理普通补全与 [snip] 片段展开。
     return mucomplete#ultisnips#expand_snippet("")
   endif
   return "\<CR>\<Plug>AutoPairsReturn"
@@ -364,15 +488,15 @@ endfunction
 inoremap <silent> <expr> <Plug>UltiExpand CompleteCRUltiExpand()
 imap <CR> <Plug>UltiExpand
 
-" <Space> cooperation: because g:AutoPairsMapSpace=0 above, re-invoke
-" AutoPairsSpace() when there is no completion popup, otherwise leave the
-" <Space> to normal input/completion.
+" Space handling: give mucomplete/Space priority when popup is open,
+" otherwise call auto-pairs' Space logic.
+" 空格处理：补全菜单打开时原样输出空格，否则调用 auto-pairs 的空格逻辑。
 imap <silent> <expr> <Space> pumvisible()
       \ ? "\<Space>"
       \ : "\<C-r>=AutoPairsSpace()\<CR>"
 
 " ============================================================================
-" 10. ALE
+" 10. ALE / 异步代码检查 / 修复
 " ============================================================================
 let g:ale_enabled = 1
 let g:ale_lint_on_enter = 1
@@ -389,11 +513,12 @@ let g:ale_fixers = {
     \ 'json': ['prettier'],
     \ 'yaml': ['prettier'],
     \}
+" Jump to previous / next ALE diagnostic / 跳转到上/下一个诊断
 nmap <silent> [a <Plug>(ale_previous_wrap)
 nmap <silent> ]a <Plug>(ale_next_wrap)
 
 " ============================================================================
-" 11. VimTeX / TeX
+" 11. VimTeX / TeX / LaTeX 配置
 " ============================================================================
 let g:tex_flavor = "lualatex"
 let g:tex_conceal = "abdmg"
@@ -401,7 +526,9 @@ set conceallevel=1
 set ambiwidth=double
 highlight Conceal ctermbg=none
 syntax enable
+" Use Sioyek as PDF viewer / 使用 Sioyek 作为 PDF 阅读器
 let g:vimtex_view_method = "sioyek"
+" Use latexmk to compile / 使用 latexmk 编译
 let g:vimtex_compiler_method = "latexmk"
 let g:vimtex_compiler_latexmk = {
     \ 'callback': 0,
@@ -416,7 +543,8 @@ augroup vimrc_tex
 augroup END
 
 " ============================================================================
-" 12. Filetype specific augroups (all grouped, no naked autocmd!)
+" 12. Filetype specific augroups (grouped; no naked autocmd)
+"     按文件类型分组的自动命令（全部收纳于 augroup，无游离 autocmd）
 " ============================================================================
 augroup vimrc_text
     autocmd!
@@ -429,17 +557,17 @@ augroup END
 
 augroup vimrc_overwrite
     autocmd!
-    " Reload config easier when editing this file
+    " Reload config while editing itself / 编辑本 vimrc 时保存即自动加载
     autocmd BufWritePost .vimrc,vimrc source <afile>
 augroup END
 
 " ============================================================================
-" 13. Misc / convenience
+" 13. Misc / convenience / 其它便捷设置
 " ============================================================================
-" Help in vertical window for :Man
+" Open :Man in a vertical window / 让 :Man 在纵向窗口打开
 let g:ft_man_open_mode = "vert"
 
-" Lightline + ALE status (single dict assignment, no nested-let pitfalls)
+" Lightline + ALE status / 状态栏与 ALE 诊断状态
 let g:lightline = {
     \ 'colorscheme': 'everforest',
     \ 'component_expand': {
@@ -463,7 +591,7 @@ augroup vimrc_status
     autocmd User ALELint,LightlineUpdate call lightline#update()
 augroup END
 
-" Limelight integrated with Goyo
+" Limelight is integrated with Goyo / Limelight 与 Goyo 联动
 let g:limelight_conceal_ctermfg = "gray"
 augroup vimrc_goyo
     autocmd!
@@ -471,7 +599,8 @@ augroup vimrc_goyo
     autocmd User GoyoLeave Limelight!
 augroup END
 
-" NERDTree opens when vim starts with a directory argument
+" Open NERDTree when Vim starts with a directory argument
+" 当以目录参数启动 Vim 时自动打开 NERDTree
 function! StartNerdTreeFromArg()
     if argc() != 1 || !isdirectory(argv()[0])
         return
@@ -487,6 +616,7 @@ augroup vimrc_nerdtree
 augroup END
 
 " Open help and man pages in a vertical split on the LEFT side
+" 帮助与 man 页面在左侧纵向分割中打开
 augroup vimrc_help_man_left
     autocmd!
     autocmd FileType help wincmd H
