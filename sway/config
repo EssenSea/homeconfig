@@ -59,7 +59,7 @@ exec wl-paste --type image --watch cliphist store
 # exec gentoo-pipewire-launcher restart &
 # exec waybar -c ~/.config/waybar/sway.jsonc -s ~/.config/waybar/style.css
 exec mako
-exec_always autotitling
+exec_always autotiling
 exec_always fcitx5 -dr
 exec_always /usr/libexec/polkit-gnome-authentication-agent-1
 
