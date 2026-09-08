@@ -267,6 +267,13 @@ vmap <silent> <Leader>tt <Plug>TranslateV
 nnoremap <silent> <Leader>tw <Plug>TranslateW
 vnoremap <silent> <Leader>tw <Plug>TranslateWV
 
+" --- fzf.vim shortcuts -------------------------------
+" All are multi-key chords with NO space after the prefix, e.g. the
+" <Leader> f i chord is written <Leader>fi; Vim waits for all letters.
+nnoremap <silent> <Leader>fi  :History<CR>
+nnoremap <silent> <Leader>hh  :Helptags<CR>
+nnoremap <silent> <Leader>th  :Colors<CR>
+
 " easymotion
 nmap <Leader><Leader>f <Plug>(easymotion-overwin-f)
 nmap <Leader><Leader>s <Plug>(easymotion-overwin-f2)
