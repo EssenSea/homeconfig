@@ -100,7 +100,97 @@
   ;; (setq desktop-path (list user-emacs-directory)
   ;;       desktop-auto-save-timeout 600)
   ;; (desktop-save-mode 1)
+
+  ;; ---------- buffer 重名显示策略（Purcell init-uniquify.el） ----------
+  ;; 不同目录下的同名文件打开后，Emacs 默认显示 filename<2>；
+  ;; 改成 reverse 风格“目录信息后缀”后更直观，如 a.txt<~/proj1/>。
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'reverse
+        uniquify-separator " • "
+        uniquify-after-kill-buffer-p t
+        uniquify-ignore-buffers-re "^\\*")
+
+  ;; ---------- 主题/安全设置（Purcell init-themes.el 中通用部分） ----------
+  ;; 首次加载新主题不再反复询问“是否信任该主题”
+  (setq custom-safe-themes t)
+
+  ;; ---------- 杂项通用（Purcell init-misc.el） ----------
+  ;; 用 y/n 代替 yes/no 长确认（更快的日常反馈）
+  (if (boundp 'use-short-answers)
+      (setq use-short-answers t)
+    (fset 'yes-or-no-p 'y-or-n-p))
+  ;; 保存脚本文件后若发现 shebang 自动赋予可执行权限
+  (add-hook 'after-save-hook
+            #'executable-make-buffer-file-executable-if-script-p)
+  ;; 在 Program/Conf 模式中把网址/邮箱变成可点击链接
+  (add-hook 'prog-mode-hook #'goto-address-prog-mode)
+  (add-hook 'conf-mode-hook #'goto-address-prog-mode)
+  (setq goto-address-mail-face 'link)
+
+  ;; ---------- 通用 mode / help 增强 ----------
+  ;; 有可用 eldoc 的 buffer 都显示行内文档（你已用 eglot/flymake 等，
+  ;; 该设置保证其它支持 eldoc 的主模式也统一享受）
+  (when (fboundp 'global-eldoc-mode)
+    (global-eldoc-mode 1))
+  ;; C-h A 直接查看某个 face（Purcell 加的常用帮助入口）
+  (with-eval-after-load 'help
+    (define-key help-map "A" #'describe-face))
+
+  ;; ---------- 通用文件操作小函数（Purcell init-utils.el） ----------
+  ;; 这三个函数不依赖包，直接提供高频“删除/重命名/浏览器打开当前文件”。
+  (defun psgeneral/delete-this-file ()
+    "删除当前文件并关闭对应 buffer。"
+    (interactive)
+    (unless (buffer-file-name)
+      (error "No file is currently being edited"))
+    (when (yes-or-no-p
+           (format "Really delete '%s'?"
+                   (file-name-nondirectory (buffer-file-name))))
+      (delete-file (buffer-file-name))
+      (kill-buffer)))
+  (global-set-key (kbd "C-c D") #'psgeneral/delete-this-file)
+
+  (defun psgeneral/rename-this-file-and-buffer (new-name)
+    "同时把当前 buffer 和磁盘文件重命名为 NEW-NAME。"
+    (interactive "sNew name: ")
+    (let ((name (buffer-name))
+          (filename (buffer-file-name)))
+      (unless filename
+        (error "Buffer '%s' is not visiting a file!" name))
+      (when (file-exists-p filename)
+        (rename-file filename new-name 1))
+      (set-visited-file-name new-name)
+      (rename-buffer new-name)))
+  (global-set-key (kbd "C-c R") #'psgeneral/rename-this-file-and-buffer)
+
+  (defun psgeneral/browse-current-file ()
+    "用系统浏览器打开当前文件对应的 file:// URL。"
+    (interactive)
+    (let ((file-name (buffer-file-name)))
+      (if (and (fboundp 'tramp-tramp-file-p)
+               (tramp-tramp-file-p file-name))
+          (error "Cannot open tramp file")
+        (browse-url (concat "file://" file-name)))))
+  (global-set-key (kbd "C-c B") #'psgeneral/browse-current-file)
   )
+
+;;; --- 窗口像素尺寸 / 字号缩放（Purcell init-gui-frames） ---
+;; 窗口按像素缩放更平滑（新版 Emacs 通常默认，这里显式开启）
+(use-package emacs
+  :ensure nil
+  :config
+  (setq-default window-resize-pixelwise t
+                frame-resize-pixelwise t))
+
+;; 全局字号缩放：C-x C-+ / C-x C-- / C-x C-0
+;; （Purcell 还用来绑定 C-M-滚轮，这里保留基础键即可）
+(use-package default-text-scale
+  :ensure t
+  :hook (after-init . default-text-scale-mode)
+  :config
+  (dolist (bind '("C-<wheel-down>" "C-<wheel-up>"
+                  "C-<mouse-4>" "C-<mouse-5>"))
+    (define-key global-map (kbd bind) nil)))
 
 ;; =====================================================================
 ;; B. 编辑“生活化小包”（Purcell 有、我目前没有）
@@ -201,6 +291,31 @@
   (with-eval-after-load 'info
     (add-hook 'Info-selection-hook #'info-colors-fontify-node)))
 
+;; 保存时自动清除行尾空白 / 多余空行（Purcell init-whitespace.el）
+;; 注意：如果你不希望“保存即清理”，可注释；它会改变文件内容。
+(use-package whitespace-cleanup-mode
+  :ensure t
+  :hook (after-init . global-whitespace-cleanup-mode)
+  :config
+  (when (fboundp 'diminish)
+    (diminish 'whitespace-cleanup-mode)))
+
+;; 在 prog/text/conf 模式显示行尾空格，帮助主动发现“脏空白”
+(use-package emacs
+  :ensure nil
+  :config
+  (defun psgeneral/show-trailing-whitespace ()
+    "本 buffer 显示行尾空白。"
+    (setq-local show-trailing-whitespace t))
+  (dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook))
+    (add-hook hook #'psgeneral/show-trailing-whitespace))
+  ;; 把“压缩多个空格”换成 cycle-spacing（可循环 1/多/全空格）
+  (global-set-key [remap just-one-space] 'cycle-spacing))
+
+;; Unicode 字符浏览辅助（查看某 font 支持的字符/别称，Purcell 的小工具）
+;; (use-package list-unicode-display
+;;   :ensure t)
+
 ;; =====================================================================
 ;; C. 文件 / Dired / Ibuffer
 ;; =====================================================================
@@ -234,12 +349,28 @@
   (require 'dired-x))
 
 ;; Dired / 编辑区里显示版本控制改动标记
+;; 同时补上 Purcell init-vc.el：Magit 刷新后同步高亮、fringe 点击跳转 hunk、
+;; M-C-[ / M-C-] 在改动块之间前后跳。
 (use-package diff-hl
   :ensure t
   :config
   (global-diff-hl-mode)
+  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
   (with-eval-after-load 'dired
-    (add-hook 'dired-mode-hook #'diff-hl-dired-mode)))
+    (add-hook 'dired-mode-hook #'diff-hl-dired-mode))
+  (with-eval-after-load 'diff-hl
+    (define-key diff-hl-mode-map (kbd "<left-fringe> <mouse-1>")
+      #'diff-hl-diff-goto-hunk)
+    (define-key diff-hl-mode-map (kbd "M-C-]") #'diff-hl-next-hunk)
+    (define-key diff-hl-mode-map (kbd "M-C-[") #'diff-hl-previous-hunk)))
+
+;; 代码/区域折叠：Purcell 用 origami（你目前已在 prog-mode 启用 hs-minor-mode，
+;; 二者会冲突，因此默认整段注释；若想换用 origami 再放开）
+;; (use-package origami
+;;   :ensure t
+;;   :config
+;;   (define-key origami-mode-map (kbd "C-c f") #'origami-recursively-toggle-node)
+;;   (define-key origami-mode-map (kbd "C-c F") #'origami-toggle-all-nodes))
 
 ;; Ibuffer：按 Git/VC 根分组，显示人类可读大小、VC 相对路径等
 ;; Purcell 会整框打开；我这里尽量用你现有风格整合
