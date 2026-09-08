@@ -19,7 +19,6 @@
 "   - python3    : required by UltiSnips snippet engine
 "
 " REMOVED PLUGINS AND REASONS / 已移除插件及原因
-"   wikitopian/hardmode           - too intrusive; 仅偶尔有用，干扰较大
 "   justinmk/vim-sneak            - easymotion covers two-char jump; easymotion 已覆盖双字符跳转
 "   tpope/vim-unimpaired          - nice but not needed; 有部分帮助但当前不需要
 "   tpope/vim-endwise             - language-specific magic; 语言相关自动补全，过于侵入
@@ -92,8 +91,11 @@ call plug#begin()
     " --- movement ------------------------------------
     " --- 移动 --------------------------------------
     Plug 'easymotion/vim-easymotion'
-    " --- text objects
+    Plug 'wikitopian/hardmode'
+    " hardmode: disables arrow/hjkl navigation to force advanced motions
+    " hardmode：禁用方向键/hjkl 移动，逼自己使用高级移动命令
 
+    " --- text objects / editing -----------------------
     " --- 文本对象 / 编辑 ------------------------------
     Plug 'tpope/vim-surround'
     " surround text: ys/cs/ds, plus text objects as/is
@@ -457,6 +459,12 @@ nnoremap <silent> <Leader>th  :Colors<CR>
 nnoremap <silent> <Leader>mm  :Maps<CR>
 " Maps
 " 按键映射列表
+
+" HardMode toggle: <Leader>ht
+" HardMode 开关：<Leader>ht
+" Turns off arrow/hjkl navigation; call :EasyMode to exit.
+" 关闭方向键/hjkl 移动；用 :EasyMode 退出。
+nnoremap <silent> <Leader>ht :call ToggleHardMode()<CR>
 
 " easymotion / 快速跳转
 " <Leader><Leader> + f/s/l/w 开头的跳转
