@@ -343,15 +343,24 @@ imap <silent> <S-Tab> <Plug>(MUcompleteBwd)
 " <CR> cooperation (mucomplete + UltiSnips + auto-pairs):
 "   - if a completion popup is visible:
 "       <C-y> accepts the item; if it is a '[snip]' candidate from the
-"       mucomplete 'ulti' chain, UltiSnips#ExpandSnippet() is invoked too.
+"       mucomplete 'ulti' chain, UltiSnips#ExpandSnippet() is invoked too
+"       and remains in Insert mode for placeholder jumping.
+"       AutoPairsReturn is NOT executed here, because its <Esc>-based
+"       handling would kick us out of the just-expanded snippet.
 "   - otherwise:
-"       <CR> behaves normally, then auto-pairs's AutoPairsReturn() runs so
-"       that Enter inside a bracket pair still gets the desired indent.
-" (Official mucomplete docs: UltiSnips + Auto Pairs section.)
-inoremap <silent> <expr> <Plug>UltiExpand
-      \ mucomplete#ultisnips#expand_snippet("\<CR>")
-imap <Plug>MyCR <Plug>UltiExpand<Plug>AutoPairsReturn
-imap <CR> <Plug>MyCR
+"       do a normal <CR> and then auto-pairs' AutoPairsReturn (bracket
+"       return indent).  The <CR> is returned directly by the expr mapping
+"       so it is not recursively re-mapped.
+function! CompleteCRUltiExpand() abort
+  if pumvisible()
+    " popup open → official mucomplete path handles both ordinary
+    " completion (accept only, no newline) and [snip] expansion.
+    return mucomplete#ultisnips#expand_snippet("")
+  endif
+  return "\<CR>\<Plug>AutoPairsReturn"
+endfunction
+inoremap <silent> <expr> <Plug>UltiExpand CompleteCRUltiExpand()
+imap <CR> <Plug>UltiExpand
 
 " <Space> cooperation: because g:AutoPairsMapSpace=0 above, re-invoke
 " AutoPairsSpace() when there is no completion popup, otherwise leave the
