@@ -1,68 +1,21 @@
 " ============================================================================
 " File:        vimrc
 " Description: Legacy Vim script config (cleaned/organized version)
-"              Based on ~/.config/vim/vimrc, converted back from the
-"              temporary vim9script experiment to the traditional syntax.
 " ============================================================================
 "
 " HOW TO USE
 "   Put this at ~/.vimrc or $XDG_CONFIG_HOME/vim/vimrc and restart vim.
 "
-" WHAT CHANGED vs ORIGINAL (~/.config/vim/vimrc)
-"   1. Now uses traditional / legacy Vim script (not vim9script).
-"   2. Dead/duplicated options were removed.
-"   3. Real bugs fixed:
-"        - removed invalid: autocmd FileType all ...
-"        - removed non-matching rtp check: plugged/tokyonight.nvim
-"        - removed the global 'set paste' + InsertEnter/Leave hack
-"        - removed ~150 lines of dead, commented-out Coc.nvim config
-"        - removed no-op and duplicate 'syntax on' / 'set mouse' etc.
-"   4. Plugin count reduced from ~57 active to ~36 active.
-"
 " REMOVED PLUGINS AND REASONS
 "   vim-cool                      - hlsearch is toggled off explicitly below
-"   incsearch.vim                 - built-in incsearch + fzf is enough
-"   incsearch-easymotion.vim      - too much overlap with easymotion
 "   wikitopian/hardmode           - only rarely useful; disruptive to keep loaded
 "   justinmk/vim-sneak            - easymotion covers two-char jump needs
-"   tpope/vim-sensible            - options are set explicitly in this file
 "   tpope/vim-unimpaired          - nice but not needed for this setup
 "   tpope/vim-endwise             - language-specific magic; too intrusive
 "   godlygeek/tabular             - vim-easy-align covers most alignment cases
-"   joom/vim-commentary (fork)    - use canonical tpope/vim-commentary instead
-"   iamcco/markdown-preview.nvim  - nvim-oriented / browser-based; use fzf/ale
 "   simnalamburt/vim-mundo        - undo tree can be added back on demand
-"   tveskag/nvim-blame-line       - Neovim-only plugin, void in Vim
-"   ryanoasis/vim-devicons        - needs patched terminal font; keep clean for TTY
 "   wellle/context.vim            - nice but heavy; can re-enable if needed
-"   sainnhe/everforest            - colorscheme not active; only iceberg is used
-"   ghifarit53/tokyonight-vim     - inactive colorscheme; also its rtp hack was broken
-"   vim-airline / vim-airline-themes  - inactive; lightline is the only statusline
-"   preservim/nerdcommenter       - replaced by tpope/vim-commentary
-"   xuyuanp/nerdtree-git-plugin   - it was commented out already
 "   vim-startify                  - fzf already provides the start screen
-"   vim-oscyank                   - was commented out; clipboard handled natively
-"
-" COMPLETION COORDINATION (mucomplete + UltiSnips + auto-pairs)
-"   Avoid fighting over <Tab> / <CR> / <C-j>:
-"     * auto-pairs only handles paired text (brackets, quotes, etc.).
-"     * mucomplete drives normal/phrase/path completion.
-"     * UltiSnips drives snippet expansion.
-"   Key reservation:
-"     - <C-j> / <C-k>  : UltiSnips expand + jump
-"     - <Tab> / <S-Tab>: mucomplete cycle forward/backward
-"     - <CR>           : confirm mucomplete (auto-pairs' <CR> handling is
-"                        disabled to avoid two plugins owning <CR>)
-"     - If UltiSnips is active at the popup, Tab remains reserved for it.
-"
-" NOTE ON 'set paste'
-"   Removed.  In modern Vim there is no need for the old
-"   InsertEnter/InsertLeave paste-toggle hack.  Use terminal bracketed-paste
-"   support (default in recent Vim) or 'clipboard=unnamedplus'.
-"
-" ENVIRONMENT REQUIRED
-"   - vim-plug installed at ~/.config/vim/autoload/plug.vim
-"   - Run ':PlugInstall' after first start.
 "
 " ============================================================================
 set nocompatible
