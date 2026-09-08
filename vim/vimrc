@@ -268,9 +268,25 @@ nnoremap <silent> <Leader>tw <Plug>TranslateW
 vnoremap <silent> <Leader>tw <Plug>TranslateWV
 
 " --- fzf.vim shortcuts -------------------------------
-" All are multi-key chords with NO space after the prefix, e.g. the
-" <Leader> f i chord is written <Leader>fi; Vim waits for all letters.
+" Multi-key chords are written with NO space after the prefix, e.g. the
+" <Leader> f i chord is <Leader>fi; Vim waits for the complete chord.
+" <Leader>f + <first letter> for the main fzf commands:
+nnoremap <silent> <Leader>ff  :Files<CR>
 nnoremap <silent> <Leader>fi  :History<CR>
+nnoremap <silent> <Leader>fb  :Buffers<CR>
+nnoremap <silent> <Leader>fc  :Commands<CR>
+nnoremap <silent> <Leader>fl  :BLines<CR>
+nnoremap <silent> <Leader>fr  :Rg<CR>
+nnoremap <silent> <Leader>fg  :GitFiles<CR>
+nnoremap <silent> <Leader>ft  :Tags<CR>
+nnoremap <silent> <Leader>fs  :Snippets<CR>
+nnoremap <silent> <Leader>fj  :Jumps<CR>
+nnoremap <silent> <Leader>fm  :Marks<CR>
+nnoremap <silent> <Leader>fw  :Windows<CR>
+" Other fzf entry points:
+nnoremap <silent> <Leader>tf  :Filetypes<CR>
+nnoremap <silent> <Leader>lf  :Lines<CR>
+nnoremap <silent> <Leader>ll  :Locate<CR>
 nnoremap <silent> <Leader>hh  :Helptags<CR>
 nnoremap <silent> <Leader>th  :Colors<CR>
 
