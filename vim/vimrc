@@ -268,6 +268,29 @@ vmap <silent> <Leader>tt <Plug>TranslateV
 nnoremap <silent> <Leader>tw <Plug>TranslateW
 vnoremap <silent> <Leader>tw <Plug>TranslateWV
 
+" --- alignment / argument wrapping -------------------
+" <Leader>ag : vim-easy-align. In Normal mode follow with a motion; in
+"              Visual mode selection is already made by the time you hit it.
+nmap <silent> <Leader>ag <Plug>(EasyAlign)
+xmap <silent> <Leader>ag <Plug>(EasyAlign)
+" <Leader>aw : vim-argwrap. Toggle wrapping function arguments between one
+"              line and one-line-per-argument.
+nnoremap <silent> <Leader>aw :ArgWrap<CR>
+
+" --- git (fugitive / gv.vim) -------------------------
+" g* commands use <Leader>g prefix.  (Do not confuse with fzf's <Leader>fg,
+" which is GitFiles — that one is under the fzf <Leader>f family.)
+" <Leader>gs = git status window
+nnoremap <silent> <Leader>gs  :Gstatus<CR>
+" <Leader>gd = diff current file
+nnoremap <silent> <Leader>gd  :Gdiffsplit<CR>
+" <Leader>gb = blame current file
+nnoremap <silent> <Leader>gb  :Gblame<CR>
+" <Leader>gl = repository commit graph
+nnoremap <silent> <Leader>gl  :GV<CR>
+" <Leader>gw = stage / write file to git
+nnoremap <silent> <Leader>gw  :Gwrite<CR>
+
 " --- fzf.vim shortcuts -------------------------------
 " Multi-key chords are written with NO space after the prefix, e.g. the
 " <Leader> f i chord is <Leader>fi; Vim waits for the complete chord.
@@ -290,6 +313,8 @@ nnoremap <silent> <Leader>lf  :Lines<CR>
 nnoremap <silent> <Leader>ll  :Locate<CR>
 nnoremap <silent> <Leader>hh  :Helptags<CR>
 nnoremap <silent> <Leader>th  :Colors<CR>
+nnoremap <silent> <Leader>mm  :Maps<CR>
+
 
 " easymotion
 nmap <Leader><Leader>f <Plug>(easymotion-overwin-f)
