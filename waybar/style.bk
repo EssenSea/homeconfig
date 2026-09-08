@@ -1,0 +1,276 @@
+@import "everforest.css";
+
+
+*{
+	font-family: CodeNewRoman Nerd Font, FiraCode Nerd Font, Roboto Nerd Font;
+	font-size: 14pt;
+}
+
+
+window#waybar {
+	background-color: transparent;
+}
+
+window#waybar.hidden{
+	opacity: 0.2;
+	background-color: transparent;
+}
+
+#tooltip {
+	background: @bg;
+	color: @fg;
+}
+
+#workspaces,
+#window,
+#taskbar,
+#clock,
+#disk,
+#cpu,
+#memory,
+#battery,
+#battery.charging,
+#wireplumber,
+#hardware,
+#network,
+#mpd,
+#tray{
+	background-color: @bg;
+	/* background: @fg, border-box; */
+	/* background-clip: padding-box, border-box; */
+	color: @fg;
+	border-radius: 99px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-top: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	/* box-shadow: rgba(0, 0, 0, 0.288) 2 2 5 2px; */
+	border: 3px solid @fg;
+}
+
+#window,
+#taskbar,
+#clock{
+	border: 0px transparent;
+}
+
+#disk,
+#cpu,
+#memory,
+#temperature,
+#battery {
+	margin-left:0px;
+	margin-right:0px;
+	padding-left:10px;
+	padding-right:10px;
+	border: 0px solid transparent;
+}
+#battery.charging {
+	color: #a7c080;
+}
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 30%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes gradient_f {
+	0% {
+		background-position: 0% 200%;
+	}
+    50% {
+        background-position: 200% 0%;
+    }
+	100% {
+		background-position: 400% 200%;
+	}
+}
+
+@keyframes gradient_f_nh {
+	0% {
+		background-position: 0% 200%;
+	}
+	100% {
+		background-position: 200% 200%;
+	}
+}
+
+#workspaces {
+	/* background-color:transparent; */
+	padding-left: 10px;
+	padding-right: 10px;
+}
+#workspaces button {
+	padding: 6px;
+	border-radius: 20px;
+	background-color: @bg;
+	color: @fg;
+	font-weight: bold;
+}
+
+#workspaces button:hover {
+	color: @alter;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+#workspaces button.active {
+	/* background: rgb(167,192,128); */
+	/* background-image: linear-gradient(120deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%); */
+	/* background-size: 200% 300%; */
+	/* animation: gradient_f_nh 5s linear infinite; */
+	color: @active;
+    font-weight: bolder;
+	padding-left:5px;
+	padding-right:5px;
+}
+#workspaces button.urgent{
+	background-color: @bg;
+	background: @alter;
+	color: #fff;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+#window {
+	background: rgb(167,192,128);
+	background: linear-gradient(120deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%);
+	background-size: 200% 300%;
+	animation: gradient_f_nh 5s linear infinite;
+	color: #fff;
+	border-radius: 99px;
+}
+
+#taskbar {
+	background-color: @bg;
+	padding-left:0px;
+	padding-right:0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	}
+
+#taskbar button {
+	border-radius: 99px;
+	/* background-clip: padding-box; */
+	color: @fg;
+	border: none;
+}
+
+#taskbar button.active {
+	background: rgb(167,192,128);
+	background-image: linear-gradient(120deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%);
+	background-size: 200% 300%;
+	animation: gradient_f_nh 4s linear infinite;
+	color: #fff;
+}
+
+#clock label{
+	color: #11111b;
+	font-weight:  bolder;
+}
+
+#clock {
+	background: rgb(167,192,128);
+	background: linear-gradient(118deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%); 
+	
+	background-size: 200% 300%;
+	background-clip: padding-box;
+	
+	animation: gradient_f_nh 4s linear infinite;
+	/* margin-right: 25px; */
+	color: #fff ;
+	text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
+	
+	/* font-size: 15px; */
+	/* padding-top: 5px; */
+	padding-right: 15px;
+	font-weight: bolder;
+	padding-left: 15px;
+}
+
+#tray {
+	/* background: rgb(167,192,128); */
+	/* background: linear-gradient(120deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%); */
+	/* background-size: 200% 300%; */
+	/* animation: gradient_f_nh 5s linear infinite; */
+	background-color: @bg;
+    font-weight: bolder;
+	color: @active; 
+	padding-left: 15px; 
+	padding-right: 15px;
+}
+#tray > .active {
+	color: @active;
+}
+#tray > .passive {
+	color: @fg;
+}
+#tray > .needs-attention {
+	color: @alter;
+}
+#wireplumber {
+	padding-left:15px;
+	padding-right:15px;
+}
+#network {
+	padding-left:10px;
+	padding-right:10px;
+}
+#network.disabled{
+    background-color: @bg;
+}
+
+#network.disconnected{
+    background: rgb(243,139,168);
+    background: linear-gradient(45deg, rgba(243,139,168,1) 0%, rgba(250,179,135,1) 100%); 
+	  animation: gradient_f_nh 5s linear infinite;
+    color: #fff;
+    font-weight: bolder;
+}
+
+#network.linked, #network.wifi{
+    background-color: #a6e3a1 ;
+}
+
+#network.ethernet{
+    background-color:#f9e2af ;
+}
+#network.wifi{
+	/* background: rgb(167,192,128); */
+	/* background: linear-gradient(120deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%); */
+	/* background-size: 200% 300%; */
+	/* animation: gradient_f_nh 5s linear infinite; */
+	background-color: @bg;
+	color: @active;
+    font-weight: bolder;
+}
+#mpd {
+	padding-left: 15px;
+	padding-right: 20px;
+}
+#mpd.playing {
+	background: rgb(167,192,128);
+	background: linear-gradient(120deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%);
+	background-size: 200% 300%;
+	animation: gradient_f_nh 5s linear infinite;
+	/* background-color: @active; */
+	color: #fff;
+    font-weight: bolder;
+}
+#mpd.paused {
+	background: rgb(167,192,128);
+	background: linear-gradient(120deg, rgba(167,192,128,1) 5%, rgba(127,187,179,1) 5%, rgba(127,187,179,1) 20%, rgba(167,192,128,1) 20%, rgba(167,192,128,1) 40%, rgba(127,187,179,1) 40%, rgba(127,187,179,1) 60%, rgba(167,192,128,1) 60%, rgba(167,192,128,1) 80%, rgba(127,187,179,1) 80%, rgba(127,187,179,1) 95%, rgba(167,192,128,1) 95%);
+	background-size: 200% 300%;
+	animation: gradient_f_nh 5s linear infinite;
+	/* background-color: @active; */
+	color: #fff;
+    font-weight: bolder;
+}

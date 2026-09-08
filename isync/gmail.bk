@@ -1,0 +1,30 @@
+IMAPAccount gmail
+Host imap.gmail.com
+User yueqrgg@gmail.com
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.password-store/mail/gmail.gpg"
+TLSType IMAPS
+TLSVersions +1.2
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail
+Path ~/Mail/gmail/
+Inbox ~/Mail/gmail/INBOX
+SubFolders Verbatim
+
+# Channel gmail-inbox
+# Far :gmail-remote:
+# Near :gmail-local:
+# Patterns "INBOX"
+# Create Both
+# Expunge Both
+# SyncState *
+
+Channel gmail
+Far :gmail-remote:
+Near :gmail:
+Patterns "*" # "*" All folders
+Create Both
+Expunge Both
+SyncState *
