@@ -82,9 +82,11 @@ let g:AutoPairsShortcutToggle = ""
 let g:AutoPairsShortcutFastWrap = ""
 let g:AutoPairsShortcutBackInsert = ""
 let g:AutoPairsShortcutJump = ""
-" Let mucomplete own <CR>; otherwise auto-pairs' buffer-local <CR> may fight
-" with mucomplete's accept-on-CR behavior.
+" We orchestrate <CR> and <Space> manually so mucomplete / UltiSnips /
+" auto-pairs do not fight over those keys.  Their auto-pairs behaviors
+" are still explicitly invoked via <Plug>AutoPairsReturn / AutoPairsSpace().
 let g:AutoPairsMapCR = 0
+let g:AutoPairsMapSpace = 0
 
 " UltiSnips: keep snippet keys away from Tab (set before UltiSnips maps keys)
 let g:UltiSnipsExpandTrigger = "<C-j>"
@@ -338,17 +340,25 @@ xnoremap <silent> <localleader> :WhichKeyVisual ',' <CR>
 imap <silent> <Tab>   <Plug>(MUcompleteFwd)
 imap <silent> <S-Tab> <Plug>(MUcompleteBwd)
 
-" <CR>: if the mucomplete popup is visible, accept the selection;
-" otherwise act as a normal Enter.
-" (auto-pairs' own <CR> mapping was disabled above via g:AutoPairsMapCR=0,
-"  so this expression mapping is the single owner of <CR>.)
-function! CompleteCR()
-    if pumvisible()
-        return "\<Plug>(MUcompleteCR)"
-    endif
-    return "\<CR>"
-endfunction
-inoremap <silent> <expr> <CR> CompleteCR()
+" <CR> cooperation (mucomplete + UltiSnips + auto-pairs):
+"   - if a completion popup is visible:
+"       <C-y> accepts the item; if it is a '[snip]' candidate from the
+"       mucomplete 'ulti' chain, UltiSnips#ExpandSnippet() is invoked too.
+"   - otherwise:
+"       <CR> behaves normally, then auto-pairs's AutoPairsReturn() runs so
+"       that Enter inside a bracket pair still gets the desired indent.
+" (Official mucomplete docs: UltiSnips + Auto Pairs section.)
+inoremap <silent> <expr> <Plug>UltiExpand
+      \ mucomplete#ultisnips#expand_snippet("\<CR>")
+imap <Plug>MyCR <Plug>UltiExpand<Plug>AutoPairsReturn
+imap <CR> <Plug>MyCR
+
+" <Space> cooperation: because g:AutoPairsMapSpace=0 above, re-invoke
+" AutoPairsSpace() when there is no completion popup, otherwise leave the
+" <Space> to normal input/completion.
+imap <silent> <expr> <Space> pumvisible()
+      \ ? "\<Space>"
+      \ : "\<C-r>=AutoPairsSpace()\<CR>"
 
 " ============================================================================
 " 10. ALE
