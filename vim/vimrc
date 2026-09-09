@@ -73,10 +73,16 @@ let g:UltiSnipsEditSplit = "vertical"
 let g:mucomplete#no_mappings = 1
 let g:mucomplete#enable_auto_at_startup = 1
 let g:mucomplete#chains = {
-    \ 'vim':     ['path', 'omni', 'keyn', 'ulti'],
-    \ 'default': ['path', 'omni', 'keyn', 'dict', 'uspl', 'ulti'],
-    \ 'tex':     ['ulti', 'omni', 'path'],
+    \ 'vim':     ['ulti', 'omni', 'path', 'keyn'],
+    \ 'default': ['omni', 'ulti', 'path', 'keyn', 'dict', 'uspl'],
+    \ 'tex':     ['omni', 'ulti', 'path'],
     \}
+let g:mucomplete#can_complete = {}
+" 'default' key must exist; otherwise unlisted filetypes hit E716.
+" 必须包含 'default' 键，否则未显式列出的文件类型会触发 E716。
+let g:mucomplete#can_complete.default = {}
+let g:mucomplete#can_complete.tex =
+   \ { 'omni': { t -> t =~# g:vimtex#re#neocomplete . '$' } }
 
 filetype off
 call plug#begin()
