@@ -571,6 +571,27 @@ augroup vimrc_tex
     autocmd FileType tex setlocal spell
 augroup END
 
+" Disable backtick auto-pair in TeX files (single and triple backticks).
+" 在 TeX 文件中禁用反引号自动成对（单个和三个反引号）。
+" auto-pairs creates b:AutoPairs on BufEnter; our hook runs after it, and a
+" zero timer guarantees b:AutoPairs is populated first.
+" auto-pairs 在 BufEnter 创建 b:AutoPairs；我们随后执行，零延时 timer
+" 保证 b:AutoPairs 已初始化。
+function! s:RemoveTexBacktickPairs(timer) abort
+    if exists('b:AutoPairs')
+        if has_key(b:AutoPairs, '`')
+            call remove(b:AutoPairs, '`')
+        endif
+        if has_key(b:AutoPairs, '```')
+            call remove(b:AutoPairs, '```')
+        endif
+    endif
+endfunction
+augroup vimrc_autopairs_tex
+    autocmd!
+    autocmd BufEnter *.tex call timer_start(0, function('s:RemoveTexBacktickPairs'))
+augroup END
+
 " ============================================================================
 " 12. Filetype specific augroups (grouped; no naked autocmd)
 "     按文件类型分组的自动命令（全部收纳于 augroup，无游离 autocmd）
