@@ -314,7 +314,7 @@ set foldmethod=indent
 " ============================================================================
 let g:mapleader = " "
 let g:maplocalleader = ","
-set timeoutlen=250
+set timeoutlen=2000
 
 " Window/tab/buffer basics / 窗口、标签页、缓冲区基础操作
 nnoremap <Leader>tn :tabnew<CR>
@@ -555,6 +555,8 @@ set conceallevel=1
 set ambiwidth=double
 highlight Conceal ctermbg=none
 syntax enable
+let g:vimtex_imap_enable = 1
+let g:vimtex_imaps_leader = '`'
 " Use Sioyek as PDF viewer / 使用 Sioyek 作为 PDF 阅读器
 let g:vimtex_view_method = "sioyek"
 " Use latexmk to compile / 使用 latexmk 编译
