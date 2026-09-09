@@ -586,6 +586,12 @@ function! s:RemoveTexBacktickPairs(timer) abort
             call remove(b:AutoPairs, '```')
         endif
     endif
+    " Removing the dict keys is not enough: auto-pairs already created a
+    " buffer-local insert mapping for backtick.  Unmap it too so typing ` is
+    " never intercepted by auto-pairs in TeX buffers.
+    " 仅删除字典键不够：auto-pairs 已为反引号创建 buffer 级 insert 映射。
+    " 必须同时 unmap，使 TeX 中输入 ` 不再被 auto-pairs 拦截。
+    silent! execute 'iunmap <buffer> `'
 endfunction
 augroup vimrc_autopairs_tex
     autocmd!
