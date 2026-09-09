@@ -571,29 +571,6 @@ augroup vimrc_tex
     autocmd FileType tex setlocal spell
 augroup END
 
-" Disable backtick auto-pair in Vim files only.
-" 仅在 Vim 文件类型中禁用反引号自动成对。
-" auto-pairs creates b:AutoPairs on BufEnter; our BufEnter hook runs after
-" it, and a zero timer guarantees b:AutoPairs is already populated.
-" auto-pairs 在 BufEnter 时创建 b:AutoPairs；我们的 BufEnter 钩子在其后执行，
-" 且用零延时 timer 确保 b:AutoPairs 已初始化完成。
-function! s:RemoveSingleBacktickPair(timer) abort
-    if exists('b:AutoPairs') && has_key(b:AutoPairs, '`')
-        call remove(b:AutoPairs, '`')
-    endif
-    if exists('b:AutoPairs') && has_key(b:AutoPairs, '```')
-        call remove(b:AutoPairs, '```')
-    endif
-endfunction
-augroup vimrc_autopairs_vim
-    autocmd!
-    " BufEnter runs after auto-pairs' own BufEnter initializer, making
-    " b:AutoPairs available by the time our timer fires.
-    " BufEnter 在 auto-pairs 自身的 BufEnter 初始器之后执行，可确保此时
-    " b:AutoPairs 已可用。
-    autocmd BufEnter *.vim call timer_start(0, function('s:RemoveSingleBacktickPair'))
-augroup END
-
 " ============================================================================
 " 12. Filetype specific augroups (grouped; no naked autocmd)
 "     按文件类型分组的自动命令（全部收纳于 augroup，无游离 autocmd）
