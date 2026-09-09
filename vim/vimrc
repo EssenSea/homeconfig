@@ -678,8 +678,8 @@ augroup END
 
 " Open help and man pages in a vertical split on the LEFT side
 " 帮助与 man 页面在左侧纵向分割中打开
-augroup vimrc_help_man_left
-    autocmd!
-    autocmd FileType help wincmd H
-    autocmd FileType man wincmd H
-augroup END
+" augroup vimrc_help_man_left
+"     autocmd!
+"     autocmd FileType help wincmd H
+"     autocmd FileType man wincmd H
+" augroup END
