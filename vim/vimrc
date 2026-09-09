@@ -259,7 +259,7 @@ set splitright
 set splitbelow
 set signcolumn=yes
 set hidden
-set completeopt=menu,menuone,noselect,popup
+set completeopt=fuzzy,menu,menuone,noselect,popup
 
 " ============================================================================
 " 4. Search settings / 搜索设置
