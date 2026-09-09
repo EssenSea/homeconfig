@@ -589,7 +589,10 @@ function! s:RemoveTexBacktickPairs(timer) abort
 endfunction
 augroup vimrc_autopairs_tex
     autocmd!
-    autocmd BufEnter *.tex call timer_start(0, function('s:RemoveTexBacktickPairs'))
+    autocmd BufEnter *
+        \ if &filetype ==# 'tex' |
+        \   call timer_start(0, function('s:RemoveTexBacktickPairs')) |
+        \ endif
 augroup END
 
 " ============================================================================
