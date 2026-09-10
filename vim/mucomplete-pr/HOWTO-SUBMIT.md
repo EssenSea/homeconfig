@@ -4,58 +4,46 @@ Upstream moved to Codeberg:
 
     https://codeberg.org/lifepillar/vim-mucomplete
 
-GitHub (https://github.com/lifepillar/vim-mucomplete) is kept as a mirror;
-its master may differ from the Codeberg default branch.
+GitHub (https://github.com/lifepillar/vim-mucomplete) is kept as a mirror.
 
 ## Structure
 
-One combined issue describes all three items, each written as
-"what the help already says" / "what is different" / "Fix":
+One issue, framed as a possible misunderstanding rather than a bug:
 
-* `ISSUE.md`
+* `ISSUE.md` — the two "snippet + Auto Pairs" examples use different shapes;
+  ask whether the UltiSnips one should match the SnipMate one.
 
-Three independent PRs (the issue says patches can be sent separately):
+One optional PR (send only if the maintainer agrees):
 
-* `pr-1-mucompletecr-literal/`  — plug list: spell out that the old pop-up
-  plugs become literal text on current Vim (docs only, 1 commit)
-* `pr-2-ultisnips-autopairs/`   — make the UltiSnips example match the
-  SnipMate example's `pumvisible()` shape (docs + test, 2 commits)
-* `pr-3-loadtime-option/`       — document the remaining load-time options
-  (docs, 1 commit)
+* `pr-ultisnips-autopairs/`
+  * `PR-description.md`
+  * `codeberg/` based on Codeberg HEAD 5000155
+  * `github/`   based on GitHub master bfc434a
 
-Each PR folder has `PR-description.md` plus two patch sets:
-
-* `codeberg/`  based on Codeberg HEAD 5000155
-* `github/`    based on GitHub master bfc434a
-
-`pr-2` is the strongest item (the help is internally inconsistent); consider
-sending it first if you want a quick confirmation of the direction.
+Patch sets (2 commits: docs + test) apply cleanly to both baselines.
 
 ## Suggested flow
 
-1. Open the combined issue using `ISSUE.md`.
-2. Send the patches as separate PRs (or wait for the maintainer's reply
-   first; he usually prefers a short discussion, see #204, #205, #215).
-
-## Fork, branch, apply patches
+1. Open the issue using `ISSUE.md`. Keep it short; the maintainer usually
+   replies before accepting changes (see #204, #205, #215).
+2. If the direction is agreed, apply the patches and open the PR with
+   `PR-description.md`.
 
     git clone git@codeberg.org:<you>/vim-mucomplete.git
     cd vim-mucomplete
     git remote add upstream https://codeberg.org/lifepillar/vim-mucomplete.git
     git fetch upstream
 
-    # PR 1
-    git checkout -b doc/mucomplete-old-plugs upstream/master
-    git am /path/to/mucomplete-pr/pr-1-mucompletecr-literal/codeberg/*.patch
-
-    # PR 2
     git checkout -b docs/ultisnips-autopairs upstream/master
-    git am /path/to/mucomplete-pr/pr-2-ultisnips-autopairs/codeberg/*.patch
+    git am /path/to/mucomplete-pr/pr-ultisnips-autopairs/codeberg/*.patch
+    git push -u origin docs/ultisnips-autopairs
 
-    # PR 3
-    git checkout -b doc/load-time-options upstream/master
-    git am /path/to/mucomplete-pr/pr-3-loadtime-option/codeberg/*.patch
+Use the `github/` patches if you submit against the mirror instead.
 
-Push each branch and open a PR with the matching `PR-description.md`.
+## Note
 
-If you cannot use Codeberg, use the `github/` patches against the mirror.
+This materials set was deliberately reduced to the single item with the
+clearest inconsistency. The `<Plug>(MUcompleteCR)` literal-text case and the
+load-time option case were dropped: the help already mentions the relevant
+version notes, and the remaining points read as implementation details or
+personal preference rather than doc issues.
