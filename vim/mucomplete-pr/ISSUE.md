@@ -1,14 +1,13 @@
-# UltiSnips + Auto Pairs example and snippet jump trigger
+# UltiSnips + Auto Pairs example and `<Plug>(MUcompleteCR)`
 
 Hi, and thanks for MUcomplete!
 
-I use Vim 9.2 with UltiSnips, auto-pairs and the `UltiSnips + Auto Pairs`
-mapping from `:help mucomplete-compatibility`. I have run into two things
-and would be happy to send small docs patches for either.
+I use Vim 9.2 with UltiSnips and auto-pairs. Two things I ran into, with
+what I think the docs should say instead.
 
-## 1. Plain `<cr>` with `<Plug>(MUcompleteCR)`
+## 1. `<Plug>(MUcompleteCR)` is only defined on old Vim
 
-Following the older pop-up-mapping examples, I had this in my vimrc:
+Following the pop-up-mapping examples, I had this in my vimrc:
 
 ```vim
 function! CompleteCR()
@@ -20,18 +19,27 @@ endfunction
 inoremap <silent> <expr> <CR> CompleteCR()
 ```
 
-On my Vim, `<Plug>(MUcompleteCR)` is not defined (it only exists in Vim
-8.0.0282 and earlier, per `:help mucomplete-plugs`), so the expression
-mapping inserts the text literally: after confirming a completion, the
-literal characters `<Plug>(MUcompleteCR)` are appended at the end of the
-inserted text. It took me a while to notice it was not a completion
-artifact but the plug name as text.
+On my Vim, `<Plug>(MUcompleteCR)` is not defined: it only exists in Vim
+8.0.0282 and earlier, per `:help mucomplete-plugs`. An expression mapping
+that returns an undefined `<Plug>` inserts it as literal text, so after
+confirming a completion the characters `<Plug>(MUcompleteCR)` were appended
+to the inserted text.
 
-I understand such examples are marked for older Vim, but since the plug is
-listed in `:help mucomplete-plugs` alongside the pop-up ones, it may be
-easy to copy without noticing the version note.
+### Fix
 
-## 2. Snippet expansion and the jump trigger
+On Vim 8.0.0283 and later the pop-up mappings are not defined, and the
+supported form is simply:
+
+```vim
+inoremap <expr> <cr> pumvisible() ? "<c-y><cr>" : "<cr>"
+```
+
+The docs already give this in `mucomplete-tips` (the "does not always insert
+a new line" question). The fix is to make the older-Vim examples that use
+`<Plug>(MUcompleteCR)` refer to that form, or to mark them more explicitly,
+so a current-Vim user does not copy a plug that no longer exists.
+
+## 2. `UltiSnips + Auto Pairs`: snippet leaves Insert mode
 
 With the `UltiSnips + Auto Pairs` example:
 
@@ -48,13 +56,16 @@ imap <plug>MyCR <plug>UltiExpand<plug>AutoPairsReturn
 imap <cr> <plug>MyCR
 ```
 
-picking a `[snip]` entry from the pop-up and pressing `<cr>` expands the
-snippet, but Vim ends up in Normal mode, so the UltiSnips jump trigger no
-longer moves between placeholders.
+choosing a `[snip]` entry from the pop-up and pressing `<cr>` expands the
+snippet, but Vim ends up in Normal mode and the jump trigger no longer moves
+between placeholders. `<plug>AutoPairsReturn` is chained after
+`<plug>UltiExpand`, so it also runs right after the expansion; its
+`<esc>`-based return handling is what leaves Insert mode.
 
-The `SnipMate + Auto Pairs` example above uses a `pumvisible()` branch and
-works fine for me. Would it be OK to use the same shape for the UltiSnips
-example, for example:
+### Fix
+
+Put `<plug>AutoPairsReturn` only in the non-pop-up branch, the same shape the
+`SnipMate + Auto Pairs` example already uses:
 
 ```vim
 inoremap <silent> <expr> <plug>UltiExpand
@@ -65,5 +76,7 @@ imap <silent> <expr> <plug>MyCR (pumvisible()
 imap <cr> <plug>MyCR
 ```
 
-I can prepare small docs patches for either or both, if that sounds
-reasonable. Thanks!
+A plain `<cr>` still gets auto-pairs' bracket-return behaviour, while
+accepting a snippet stays in Insert mode.
+
+I can send a docs patch for either or both.
