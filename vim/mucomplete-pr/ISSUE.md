@@ -2,19 +2,38 @@
 
 Hi, and thanks for MUcomplete!
 
-I tried the `UltiSnips + Auto Pairs` snippet from
-`:help mucomplete-compatibility` with Vim 9.2, UltiSnips and auto-pairs.
-When I pick a `[snip]` entry from the pop-up and press `<cr>`, the snippet
-is expanded, but Vim ends up in Normal mode, so the UltiSnips jump trigger
-no longer moves between placeholders.
+I use Vim 9.2 with UltiSnips, auto-pairs and the `UltiSnips + Auto Pairs`
+mapping from `:help mucomplete-compatibility`. I have run into two things
+and would be happy to send small docs patches for either.
 
-This is with:
+## 1. Plain `<cr>` with `<Plug>(MUcompleteCR)`
 
-* Vim 9.2
-* `g:mucomplete#enable_auto_at_startup = 1`
-* the default chain (which includes `'ulti'`)
+Following the older pop-up-mapping examples, I had this in my vimrc:
 
-and the documented mapping:
+```vim
+function! CompleteCR()
+  if pumvisible()
+    return "\<Plug>(MUcompleteCR)"
+  endif
+  return "\<CR>"
+endfunction
+inoremap <silent> <expr> <CR> CompleteCR()
+```
+
+On my Vim, `<Plug>(MUcompleteCR)` is not defined (it only exists in Vim
+8.0.0282 and earlier, per `:help mucomplete-plugs`), so the expression
+mapping inserts the text literally: after confirming a completion, the
+literal characters `<Plug>(MUcompleteCR)` are appended at the end of the
+inserted text. It took me a while to notice it was not a completion
+artifact but the plug name as text.
+
+I understand such examples are marked for older Vim, but since the plug is
+listed in `:help mucomplete-plugs` alongside the pop-up ones, it may be
+easy to copy without noticing the version note.
+
+## 2. Snippet expansion and the jump trigger
+
+With the `UltiSnips + Auto Pairs` example:
 
 ```vim
 let g:AutoPairsMapCR = 0
@@ -29,9 +48,13 @@ imap <plug>MyCR <plug>UltiExpand<plug>AutoPairsReturn
 imap <cr> <plug>MyCR
 ```
 
-I noticed the `SnipMate + Auto Pairs` example above uses a
-`pumvisible()` branch and works fine for me. Would it be OK to use the
-same shape for the UltiSnips example, for example:
+picking a `[snip]` entry from the pop-up and pressing `<cr>` expands the
+snippet, but Vim ends up in Normal mode, so the UltiSnips jump trigger no
+longer moves between placeholders.
+
+The `SnipMate + Auto Pairs` example above uses a `pumvisible()` branch and
+works fine for me. Would it be OK to use the same shape for the UltiSnips
+example, for example:
 
 ```vim
 inoremap <silent> <expr> <plug>UltiExpand
@@ -42,6 +65,5 @@ imap <silent> <expr> <plug>MyCR (pumvisible()
 imap <cr> <plug>MyCR
 ```
 
-I can prepare a small docs patch if that direction sounds reasonable.
-
-Thanks!
+I can prepare small docs patches for either or both, if that sounds
+reasonable. Thanks!
