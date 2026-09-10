@@ -4,86 +4,56 @@ Upstream moved to Codeberg:
 
     https://codeberg.org/lifepillar/vim-mucomplete
 
-GitHub (https://github.com/lifepillar/vim-mucomplete) is kept as a mirror.
-If you have to choose one place, use **Codeberg**.
+GitHub (https://github.com/lifepillar/vim-mucomplete) is kept as a mirror;
+its master may differ from the Codeberg default branch.  For each item below
+there are two patch sets:
 
-Two patch sets are provided and apply cleanly:
+* `codeberg/`  based on Codeberg HEAD 5000155
+* `github/`    based on GitHub master bfc434a
 
-* `./codeberg/`      based on Codeberg HEAD 5000155  → for a Codeberg PR
-* `./github/`        based on GitHub master bfc434a  → for a GitHub PR
+## Items
 
-Each contains the same two commits:
+### issue-1-loadtime-option
 
-    0001-Fix-UltiSnips-Auto-Pairs-example-keep-snippets-in-In.patch
-    0002-test-expand_snippet-returns-fallback-keys-without-a-.patch
+`doc: mark options that are read once at load time` — one docs-only commit.
 
-## Recommended flow: issue first, then PR
+### issue-2-ultisnips-autopairs
 
-The maintainer is responsive but prefers to discuss before accepting changes
-(see issues #204, #205, #215).  Opening a short issue first greatly improves
-the odds of the PR being merged.
+`docs: keep UltiSnips snippets in Insert mode with Auto Pairs` — two commits
+(docs + test).
 
-### Step 1 — open the issue
+The two items are independent and can be sent as separate issues/PRs.
 
-Use `ISSUE.md` as the body.  Title suggestion:
+## Suggested flow: issue first, then PR
 
-    UltiSnips + Auto Pairs example leaves the just-expanded snippet
+The maintainer prefers a short discussion first (see issues #204, #205, #215).
+Use each `ISSUE.md` as the issue body, then the matching `PR-description.md`
+when opening the PR.
 
-Post it at:
-
-    https://codeberg.org/lifepillar/vim-mucomplete/issues/new
-
-(Tip: if Codeberg is flaky, retry the page a couple of times.)
-
-### Step 2 — wait for feedback
-
-If the maintainer asks for a different style, adjust the patch (the
-alternative explicit form is noted at the end of `PR-description.md`).
-
-### Step 3 — fork, branch, apply patches
+## Fork, branch, apply patches
 
     git clone git@codeberg.org:<you>/vim-mucomplete.git
     cd vim-mucomplete
     git remote add upstream https://codeberg.org/lifepillar/vim-mucomplete.git
     git fetch upstream
-    git checkout -b fix/ultisnips-autopairs-docs upstream/master   # or 5000155
-    git am /path/to/mucomplete-pr-v2/codeberg/0001-*.patch
-    git am /path/to/mucomplete-pr-v2/codeberg/0002-*.patch
 
-### Step 4 — push and open the PR
+    # issue 1
+    git checkout -b doc/load-time-options upstream/master
+    git am /path/to/mucomplete-pr/issue-1-loadtime-option/codeberg/*.patch
 
-    git push -u origin fix/ultisnips-autopairs-docs
+    # issue 2 (separate branch/PR)
+    git checkout -b fix/ultisnips-autopairs upstream/master
+    git am /path/to/mucomplete-pr/issue-2-ultisnips-autopairs/codeberg/*.patch
 
-Open the PR against `lifepillar/vim-mucomplete`, using `PR-description.md`
-as the body.
+Then push each branch and open the PR with the matching `PR-description.md`.
 
-## If you cannot use Codeberg
+If you cannot use Codeberg, use the `github/` patches against the mirror.
 
-Use the `./github/` patches against the GitHub mirror and open the PR there.
-The same PR description applies, but mention that you are not sure whether
-the GitHub mirror is still the active one.
+## Verification
 
-## Quick manual verification
-
-Load this mapping in Vim 9.2 with UltiSnips + auto-pairs:
-
-    let g:AutoPairsMapCR = 0
-    let g:AutoPairsMapSpace = 0
-    imap <silent> <expr> <space> pumvisible()
-      \ ? "<space>"
-      \ : "<c-r>=AutoPairsSpace()<cr>"
-    inoremap <silent> <expr> <plug>UltiExpand
-          \ mucomplete#ultisnips#expand_snippet("\<cr>")
-    imap <silent> <expr> <plug>MyCR (pumvisible()
-        \ ? "\<plug>UltiExpand"
-        \ : "\<cr>\<plug>AutoPairsReturn")
-    imap <cr> <plug>MyCR
-
-Expected:
-
-* no pop-up: `<cr>` does a normal newline and keeps auto-pairs' bracket
-  return behaviour;
-* `[snip]` chosen: the snippet expands and stays in Insert mode, so the
-  UltiSnips jump trigger keeps working.
-
-Before the fix, the second case leaves Normal mode.
+* `issue-1`: open `doc/mucomplete.txt` in Vim and check `:help load-time-option`
+  resolves; run `:helptags doc` and confirm `doc/tags` still has no duplicate
+  entries.
+* `issue-2`: with Vim 9.2 + UltiSnips + auto-pairs, choosing a `[snip]` entry
+  should expand the snippet and stay in Insert mode; a plain `<cr>` should
+  still get auto-pairs' bracket-return behaviour.

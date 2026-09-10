@@ -1,0 +1,127 @@
+From c6f7f4080dedfb344f6c44e4cfe2ebf2fe77cc2f Mon Sep 17 00:00:00 2001
+From: EssenMoon <yueqrgg@gmail.com>
+Date: Thu, 10 Sep 2026 20:04:54 +0800
+Subject: [PATCH] doc: mark options that are read once at load time
+
+A few options are evaluated once, when the plugin is loaded, and have no
+effect if they are set later.  The help documents all options together
+and does not say which of them are read once, so this is easy to miss.
+
+Add a short paragraph at the top of mucomplete-customization listing
+those options, define a load-time-option tag, and add a note to each
+affected option:
+
+    g:mucomplete#chains
+    g:mucomplete#enable_auto_at_startup
+    g:mucomplete#no_mappings
+    g:mucomplete#spel#regex
+    g:mucomplete#use_only_windows_paths
+    g:mucomplete#user_mappings
+
+The remaining options are read on demand and can be changed at any time;
+the new paragraph says so explicitly.  Regenerate doc/tags.
+---
+ doc/mucomplete.txt | 32 +++++++++++++++++++++++++++++---
+ doc/tags           |  1 +
+ 2 files changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/doc/mucomplete.txt b/doc/mucomplete.txt
+index a1a465d..e81a145 100644
+--- a/doc/mucomplete.txt
++++ b/doc/mucomplete.txt
+@@ -433,6 +433,23 @@ The following plugs are defined only in Vim 8.0.0282 or older.
+ ==============================================================================
+ 12. Customization			*mucomplete-customization*
+ 
++Most options below are read on demand (whenever they are needed), so
++you may change them at any time.  The following options, however, are
++read once, when the plugin is loaded, so they must be set before
++MUcomplete is loaded (typically in your |vimrc|, before
++|plug#end()| if you use a plugin manager):
++>
++	g:mucomplete#chains
++	g:mucomplete#enable_auto_at_startup
++	g:mucomplete#no_mappings
++	g:mucomplete#spel#regex
++	g:mucomplete#use_only_windows_paths
++	g:mucomplete#user_mappings
++<
++Each of these is marked with a *load-time-option* note in its entry:
++such an option is read only once, when MUcomplete is loaded, and does
++not take effect if it is set later.
++
+ 					*'mucomplete#add_user_mapping()'*
+ Use this function to add a new user-defined completion method. For example:
+ >
+@@ -535,6 +552,7 @@ chain. See |mucomplete-chains| for more details.
+ 	    \ 'vim'     : ['path', 'cmd', 'keyn']
+ 	    \ }
+ <
++Note: this is a |load-time-option|: set it before MUcomplete is loaded.
+ In your |vimrc|, you may override the default or add filetype-specific
+ completion chains. For example:
+ >
+@@ -619,6 +637,8 @@ Set to 1 to enable automatic completion at startup.
+ >
+ 	let g:mucomplete#enable_auto_at_startup = 0
+ <
++Note: this is a |load-time-option|: set it before MUcomplete is loaded.
++
+ 					*'g:mucomplete#force_manual'*
+ When set to 1, force each completion method in your completion chain to be
+ tried only when completion is triggered manually (e.g., by pressing <tab>)
+@@ -677,6 +697,8 @@ When set to 1, MUcomplete does not define any mapping.
+ >
+ 	let g:mucomplete#no_mappings = 0
+ <
++Note: this is a |load-time-option|: set it before MUcomplete is loaded.
++
+ Note: MUcomplete also honours |no_plugin_maps|.
+ 
+ 					*'g:mucomplete#no_popup_mappings'*
+@@ -793,6 +815,8 @@ symbols with diacriticals.
+ 	let g:mucomplete#spel#regex =
+ 	    \ '[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]'
+ <
++Note: this is a |load-time-option|: set it before MUcomplete is loaded.
++
+ 					*'g:mucomplete#tab_when_no_results'*
+ Set to 1 if you want a literal Tab character to be inserted when manually
+ triggered completion does not produce any completion.
+@@ -817,6 +841,8 @@ matter what the value of this option is.
+ 
+ Note: this option is relevant only for Windows users.
+ 
++Note: this is a |load-time-option|: set it before MUcomplete is loaded.
++
+ 					*'g:mucomplete#user_mappings'*
+ A Dictionary of user-defined completion methods. For example:
+ >
+@@ -836,9 +862,9 @@ example:
+ 	let g:mucomplete#chains.default = ['keyp', 'xyz']
+ 	let g:mucomplete#chains.sql = ['sqla', 'keyp', 'tags']
+ <
+-Note: this variable is read only once when MUcomplete is loaded. If you want
+-to define completion methods later (for example, in some ftplugin file), use
+-|mucomplete#add_user_mapping()| instead.
++Note: this is a |load-time-option|: set it before MUcomplete is loaded. If
++you want to define completion methods later (for example, in some ftplugin
++file), use |mucomplete#add_user_mapping()| instead.
+ 
+ 					*'g:mucomplete_with_key'*
+ Read-only flag that tells whether completion was initiated manually by the
+diff --git a/doc/tags b/doc/tags
+index 117067a..5c37b90 100644
+--- a/doc/tags
++++ b/doc/tags
+@@ -37,6 +37,7 @@
+ :MUcompleteAutoToggle	mucomplete.txt	/*:MUcompleteAutoToggle*
+ :MUcompleteNotify	mucomplete.txt	/*:MUcompleteNotify*
+ MUcompletePmenu	mucomplete.txt	/*MUcompletePmenu*
++load-time-option	mucomplete.txt	/*load-time-option*
+ mucomplete-chains	mucomplete.txt	/*mucomplete-chains*
+ mucomplete-commands	mucomplete.txt	/*mucomplete-commands*
+ mucomplete-compatibility	mucomplete.txt	/*mucomplete-compatibility*
+-- 
+2.55.0
+
