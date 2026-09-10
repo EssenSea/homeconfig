@@ -1,8 +1,8 @@
-# UltiSnips + Auto Pairs example and `<Plug>(MUcompleteCR)`
+# UltiSnips + Auto Pairs example, `<Plug>(MUcompleteCR)`, and option timing
 
 Hi, and thanks for MUcomplete!
 
-I use Vim 9.2 with UltiSnips and auto-pairs. Two things I ran into, with
+I use Vim 9.2 with UltiSnips and auto-pairs. Three things I ran into, with
 what I think the docs should say instead.
 
 ## 1. `<Plug>(MUcompleteCR)` is only defined on old Vim
@@ -79,4 +79,36 @@ imap <cr> <plug>MyCR
 A plain `<cr>` still gets auto-pairs' bracket-return behaviour, while
 accepting a snippet stays in Insert mode.
 
-I can send a docs patch for either or both.
+## 3. Some options are read when the plugin loads, but the docs do not say so
+
+A few options are evaluated once, at load time, not on every completion:
+
+* `g:mucomplete#no_mappings` — read in a top-level `if` in
+  `plugin/mucomplete.vim` (and again in `autoload/mucomplete.vim`) to decide
+  whether Tab/S-Tab and `<c-j>`/`<c-h>` are mapped;
+* `g:mucomplete#enable_auto_at_startup` — read in `plugin/mucomplete.vim` to
+  decide whether to call `mucomplete#auto#enable()`;
+* `g:mucomplete#chains`, `g:mucomplete#user_mappings`,
+  `g:mucomplete#use_only_windows_paths`, `g:mucomplete#spel#regex` — read at
+  the top level of `autoload/mucomplete.vim` and merged into defaults with
+  `extend()`.
+
+If any of these is set after the plugin (or after the autoload script has
+been sourced), the setting has no effect, or only the defaults are used.
+This is not obvious from the help, because it documents all options
+together and does not say which of them are read once.
+
+The rest of the documented options (`g:mucomplete#completion_delay`,
+`g:mucomplete#minimum_prefix_length`, `g:mucomplete#popup_direction`, ...)
+are read with `get(g:, ...)` inside functions, so they can be changed at any
+time. Because the docs describe all of them side by side, the load-time ones
+are easy to miss.
+
+### Fix
+
+Add a short paragraph at the top of `:help mucomplete-customization` listing
+the options that are read once at load time and must be set before the
+plugin is loaded, and note that the remaining options are read at runtime.
+A one-line `Note` under each affected option would work too.
+
+I can send docs patches for the three items above.
