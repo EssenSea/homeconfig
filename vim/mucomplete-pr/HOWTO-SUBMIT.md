@@ -5,30 +5,34 @@ Upstream moved to Codeberg:
     https://codeberg.org/lifepillar/vim-mucomplete
 
 GitHub (https://github.com/lifepillar/vim-mucomplete) is kept as a mirror;
-its master may differ from the Codeberg default branch.  For each item below
-there are two patch sets:
+its master may differ from the Codeberg default branch.
+
+## Structure
+
+One combined issue describes all three problems:
+
+* `ISSUE.md`  — post this once (lists items 1, 2 and 3)
+
+Three independent PRs, one per item:
+
+* `pr-1-mucompletecr-literal/`  — warn that the old pop-up plugs do not
+  exist on current Vim (docs only, 1 commit)
+* `pr-2-ultisnips-autopairs/`   — keep UltiSnips snippets in Insert mode
+  (docs + test, 2 commits)
+* `pr-3-loadtime-option/`       — mark options read once at load time
+  (docs, 1 commit)
+
+Each PR folder has `PR-description.md` plus two patch sets:
 
 * `codeberg/`  based on Codeberg HEAD 5000155
 * `github/`    based on GitHub master bfc434a
 
-## Items
+## Suggested flow
 
-### issue-1-loadtime-option
-
-`doc: mark options that are read once at load time` — one docs-only commit.
-
-### issue-2-ultisnips-autopairs
-
-`docs: keep UltiSnips snippets in Insert mode with Auto Pairs` — two commits
-(docs + test).
-
-The two items are independent and can be sent as separate issues/PRs.
-
-## Suggested flow: issue first, then PR
-
-The maintainer prefers a short discussion first (see issues #204, #205, #215).
-Use each `ISSUE.md` as the issue body, then the matching `PR-description.md`
-when opening the PR.
+1. Open the combined issue using `ISSUE.md`.
+2. For each item, create a branch, apply its patches and open a PR (or wait
+   for the maintainer's reply first; he usually prefers a short discussion,
+   see issues #204, #205, #215).
 
 ## Fork, branch, apply patches
 
@@ -37,23 +41,28 @@ when opening the PR.
     git remote add upstream https://codeberg.org/lifepillar/vim-mucomplete.git
     git fetch upstream
 
-    # issue 1
+    # PR 1
+    git checkout -b doc/mucomplete-old-plugs upstream/master
+    git am /path/to/mucomplete-pr/pr-1-mucompletecr-literal/codeberg/*.patch
+
+    # PR 2
+    git checkout -b docs/ultisnips-autopairs upstream/master
+    git am /path/to/mucomplete-pr/pr-2-ultisnips-autopairs/codeberg/*.patch
+
+    # PR 3
     git checkout -b doc/load-time-options upstream/master
-    git am /path/to/mucomplete-pr/issue-1-loadtime-option/codeberg/*.patch
+    git am /path/to/mucomplete-pr/pr-3-loadtime-option/codeberg/*.patch
 
-    # issue 2 (separate branch/PR)
-    git checkout -b fix/ultisnips-autopairs upstream/master
-    git am /path/to/mucomplete-pr/issue-2-ultisnips-autopairs/codeberg/*.patch
-
-Then push each branch and open the PR with the matching `PR-description.md`.
+Push each branch and open a PR with the matching `PR-description.md`.
 
 If you cannot use Codeberg, use the `github/` patches against the mirror.
 
 ## Verification
 
-* `issue-1`: open `doc/mucomplete.txt` in Vim and check `:help load-time-option`
-  resolves; run `:helptags doc` and confirm `doc/tags` still has no duplicate
-  entries.
-* `issue-2`: with Vim 9.2 + UltiSnips + auto-pairs, choosing a `[snip]` entry
+* PR 1: open `doc/mucomplete.txt` and check the plug-list paragraph reads
+  well with `:help mucomplete-plugs`.
+* PR 2: with Vim 9.2 + UltiSnips + auto-pairs, choosing a `[snip]` entry
   should expand the snippet and stay in Insert mode; a plain `<cr>` should
   still get auto-pairs' bracket-return behaviour.
+* PR 3: after `:helptags doc`, check `:help load-time-option` resolves and
+  `doc/tags` has no duplicate entries.
