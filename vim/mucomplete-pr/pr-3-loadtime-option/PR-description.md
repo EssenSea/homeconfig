@@ -1,27 +1,31 @@
-# doc: mark options that are read once at load time
+# doc: document the remaining options read once at load time
 
-## What happens
+## What the help already says
 
-A few options are evaluated only once, when the plugin is loaded:
+`g:mucomplete#user_mappings` already notes that it "is read only once when
+MUcomplete is loaded" and suggests `mucomplete#add_user_mapping()` for later
+definitions.
+
+## What is different
+
+The same is true for
 
 * `g:mucomplete#no_mappings`
 * `g:mucomplete#enable_auto_at_startup`
 * `g:mucomplete#chains`
 * `g:mucomplete#spel#regex`
 * `g:mucomplete#use_only_windows_paths`
-* `g:mucomplete#user_mappings`
 
-If they are set after the plugin (or after the autoload script has been
-sourced), they have no effect.  The help documents all options together, so
-it is not obvious which ones are read once and which are read on demand.
+but none of them say so, even though they sit next to options that are read
+on demand and can be changed at any time.
 
 ## Fix
 
 Add a short paragraph at the top of `*mucomplete-customization*` listing the
-load-time options and stating that they must be set before MUcomplete is
-loaded; introduce a `*load-time-option*` tag and add a one-line note to each
-affected option.  Mention that the remaining options are read on demand and
-can be changed at any time.
+options that are read once at load time and must be set before MUcomplete is
+loaded, state that the remaining options are read at runtime, introduce a
+`*load-time-option*` tag, and add a one-line note to each of the five options
+above (mirroring the existing `user_mappings` note).
 
 ## Changes
 
@@ -31,6 +35,3 @@ can be changed at any time.
 ## Notes
 
 * Documentation only; no plugin code is changed.
-* `g:mucomplete#user_mappings` already had a similar note; it is reworded to
-  use the new tag, keeping the existing advice about
-  `mucomplete#add_user_mapping()`.

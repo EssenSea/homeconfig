@@ -1,56 +1,40 @@
-# Three documentation issues around MUcomplete and UltiSnips / auto-pairs
+# Three small documentation inconsistencies around MUcomplete
 
 Hi, and thanks for MUcomplete!
 
-I use Vim 9.2 with UltiSnips and auto-pairs, and ran into three
-documentation issues. Each one is small and independent; I can send a
-separate patch for each if that is easier to review.
+I use Vim 9.2 with UltiSnips and auto-pairs. I read the relevant help
+sections and found three places where the docs already say something, but
+either contradict themselves or only cover part of the picture. I have
+listed what the help already says, and what I think is different. Three
+small, independent patches follow; happy to send them separately.
 
-## 1. `<Plug>(MUcompleteCR)` is inserted as literal text on current Vim
+## 1. `UltiSnips + Auto Pairs` uses a different shape than `SnipMate + Auto Pairs`
 
-Following the old pop-up-mapping examples, I had this in my vimrc:
+What the help already says:
 
-```vim
-function! CompleteCR()
-  if pumvisible()
-    return "\<Plug>(MUcompleteCR)"
-  endif
-  return "\<CR>"
-endfunction
-inoremap <silent> <expr> <CR> CompleteCR()
-```
+* the `SnipMate + Auto Pairs` example (in `mucomplete-compatibility`) puts
+  `<plug>AutoPairsReturn` in the non-pop-up branch:
+  ```vim
+  imap <silent> <expr> <plug>MyCR (pumvisible()
+      \ ? "\<c-y>\<plug>snipMateTrigger"
+      \ : "\<plug>MyEnter<plug>AutoPairsReturn")
+  ```
+* the `UltiSnips + Auto Pairs` example just above it chains
+  `<plug>AutoPairsReturn` after `<plug>UltiExpand`:
+  ```vim
+  imap <plug>MyCR <plug>UltiExpand<plug>AutoPairsReturn
+  imap <cr> <plug>MyCR
+  ```
 
-`<Plug>(MUcompleteCR)` is only defined for Vim 8.0.0282 and older. On my
-Vim it is not defined, so the expression mapping inserts the plug name as
-literal text: after confirming a completion, the characters
-`<Plug>(MUcompleteCR)` are appended to the inserted text.
-
-### Fix
-
-On Vim 8.0.0283 and later the supported form is:
-
-```vim
-inoremap <expr> <cr> pumvisible() ? "<c-y><cr>" : "<cr>"
-```
-
-The help already gives this in `mucomplete-tips`, but the plug list in
-`mucomplete-plugs` does not mention that an undefined plug ends up as
-literal text. Adding a short warning there is enough.
-
-## 2. `UltiSnips + Auto Pairs`: the snippet leaves Insert mode
-
-With the `UltiSnips + Auto Pairs` example, choosing a `[snip]` entry from the
-pop-up and pressing `<cr>` expands the snippet, but Vim ends up in Normal
-mode and the jump trigger no longer moves between placeholders.
-
-`<plug>AutoPairsReturn` is chained after `<plug>UltiExpand`, so it also runs
-right after the expansion; its `<esc>`-based return handling is what leaves
-Insert mode.
+What is different: the two examples use two different shapes for the same
+job, and the UltiSnips one runs `<plug>AutoPairsReturn` after a `[snip]`
+entry has been expanded as well. In my case that leaves Insert mode and the
+UltiSnips jump trigger stops working.
 
 ### Fix
 
-Use `<plug>AutoPairsReturn` only in the non-pop-up branch, the same shape the
-`SnipMate + Auto Pairs` example already uses:
+Use the same shape as the SnipMate example, so `<plug>AutoPairsReturn` only
+runs outside completion:
 
 ```vim
 inoremap <silent> <expr> <plug>UltiExpand
@@ -61,26 +45,50 @@ imap <silent> <expr> <plug>MyCR (pumvisible()
 imap <cr> <plug>MyCR
 ```
 
-## 3. Options read once at load time are not marked
+## 2. `<Plug>(MUcompleteCR)` literal: the version note exists, the effect does not
 
-These options are read once, when the plugin is loaded, so setting them later
-has no effect:
+What the help already says:
+
+* `mucomplete-plugs` lists the pop-up plugs as "defined only in Vim 8.0.0282
+  or older";
+* `g:mucomplete#no_popup_mappings` says the same, and there is a
+  Vim-8.0.0283+ `<cr>` mapping in `mucomplete-tips`.
+
+What is different: none of these say what actually happens on a current Vim
+when an expression mapping returns one of those plugs, i.e. that the plug
+name is inserted as literal text. I only understood this after seeing the
+literal `<Plug>(MUcompleteCR)` appended to my completed text.
+
+### Fix
+
+Add one sentence to the plug list, e.g. that an expression mapping returning
+one of these plugs on Vim 8.0.0283 or later inserts the plug name as literal
+text, and point to the supported `<cr>` mapping in `mucomplete-tips`.
+
+## 3. Load-time options: one is documented, the rest are not
+
+What the help already says:
+
+* `g:mucomplete#user_mappings` already notes it "is read only once when
+  MUcomplete is loaded" and suggests `mucomplete#add_user_mapping()` for
+  later definitions.
+
+What is different: the same is true for
 
 * `g:mucomplete#no_mappings`
 * `g:mucomplete#enable_auto_at_startup`
 * `g:mucomplete#chains`
 * `g:mucomplete#spel#regex`
 * `g:mucomplete#use_only_windows_paths`
-* `g:mucomplete#user_mappings`
 
-The help documents all options together in `:help mucomplete-customization`
-and does not say which of them are read once. The rest
-(`g:mucomplete#completion_delay`, `g:mucomplete#minimum_prefix_length`, ...)
-are read on demand and can be changed at any time.
+but none of them say so, even though they are documented next to options that
+are read on demand and can be changed at any time. It is easy to assume they
+all behave the same way.
 
 ### Fix
 
 Add a short paragraph at the top of `:help mucomplete-customization` listing
 the options that are read once at load time and must be set before MUcomplete
-is loaded, and note that the remaining options are read at runtime. A short
-note under each affected option would help too.
+is loaded, note that the remaining options are read at runtime, and add a
+short note under each of the five options above (mirroring the existing
+`user_mappings` note).

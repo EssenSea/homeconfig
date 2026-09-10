@@ -1,20 +1,35 @@
-# docs: keep UltiSnips snippets in Insert mode with Auto Pairs
+# docs: use the same shape as SnipMate + Auto Pairs for UltiSnips
 
-## What happens
+## What the help already says
 
-With the `UltiSnips + Auto Pairs` mapping from
-`:help mucomplete-compatibility`, choosing a `[snip]` entry from the pop-up
-and pressing `<cr>` expands the snippet, but Vim ends up in Normal mode and
-the UltiSnips jump trigger no longer moves between placeholders.
+The `SnipMate + Auto Pairs` example in `mucomplete-compatibility` already
+puts `<plug>AutoPairsReturn` in the non-pop-up branch:
 
-`<plug>AutoPairsReturn` is chained after `<plug>UltiExpand`, so it also runs
-right after the expansion; its `<esc>`-based return handling is what leaves
-Insert mode.
+```vim
+imap <silent> <expr> <plug>MyCR (pumvisible()
+    \ ? "\<c-y>\<plug>snipMateTrigger"
+    \ : "\<plug>MyEnter<plug>AutoPairsReturn")
+```
+
+The `UltiSnips + Auto Pairs` example just above it chains
+`<plug>AutoPairsReturn` after `<plug>UltiExpand` instead:
+
+```vim
+imap <plug>MyCR <plug>UltiExpand<plug>AutoPairsReturn
+imap <cr> <plug>MyCR
+```
+
+## What is different
+
+The two examples use two different shapes for the same job.  The UltiSnips
+one also runs `<plug>AutoPairsReturn` right after a `[snip]` entry has been
+expanded; its `<esc>`-based return handling can then leave Insert mode and
+the UltiSnips jump trigger stops working.
 
 ## Fix
 
-Use `<plug>AutoPairsReturn` only in the non-pop-up branch, the same shape the
-`SnipMate + Auto Pairs` example already uses:
+Use the same shape as the SnipMate example, so `<plug>AutoPairsReturn` only
+runs outside completion:
 
 ```vim
 inoremap <silent> <expr> <plug>UltiExpand
@@ -35,4 +50,4 @@ imap <cr> <plug>MyCR
 ## Notes
 
 * No plugin code is changed.
-* This makes the UltiSnips example consistent with `SnipMate + Auto Pairs`.
+* This makes the two snippet + Auto Pairs examples consistent.
