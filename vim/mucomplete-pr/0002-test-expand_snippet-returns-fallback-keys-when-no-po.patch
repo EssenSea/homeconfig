@@ -1,0 +1,39 @@
+From 8eabdd306dea0be8072fdc97e1277e1b9b34baf2 Mon Sep 17 00:00:00 2001
+From: EssenMoon <yueqrgg@gmail.com>
+Date: Thu, 10 Sep 2026 18:20:16 +0800
+Subject: [PATCH 2/2] test: expand_snippet() returns fallback keys when no
+ pop-up is visible
+
+Covers the behaviour relied on by the corrected UltiSnips + Auto Pairs
+example: the fallback argument (e.g. a plain <cr> plus
+<plug>AutoPairsReturn) must be returned unchanged when pumvisible() is
+false, so it is only executed outside completion.
+---
+ test/test_mucomplete.vim | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/test/test_mucomplete.vim b/test/test_mucomplete.vim
+index 22ecaaf..cae891d 100644
+--- a/test/test_mucomplete.vim
++++ b/test/test_mucomplete.vim
+@@ -940,5 +940,17 @@ fun! Test_MU_tab_when_no_result()
+   bwipe!
+ endf
+ 
++" When no pop-up menu is visible, expand_snippet() must return its fallback
++" keys unchanged, so a caller can put e.g. auto-pairs' <plug>AutoPairsReturn
++" directly in that argument.  These fallback keys are then never executed when
++" a completion/snippet pop-up is visible (the other branch is taken).
++fun! Test_MU_ultisnips_expand_snippet_fallback_keys()
++  new
++  call assert_equal("\<cr>\<plug>AutoPairsReturn",
++        \ mucomplete#ultisnips#expand_snippet(
++        \   "\<cr>\<plug>AutoPairsReturn"))
++  bwipe!
++endf
++
+ call RunBabyRun('MU')
+ 
+-- 
+2.55.0
+

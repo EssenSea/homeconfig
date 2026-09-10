@@ -1,0 +1,79 @@
+From 67e3c1b90ffe968202d31c3a5008fb19dbbee626 Mon Sep 17 00:00:00 2001
+From: EssenMoon <yueqrgg@gmail.com>
+Date: Thu, 10 Sep 2026 18:17:52 +0800
+Subject: [PATCH 1/2] Fix UltiSnips + Auto Pairs example to keep snippets in
+ Insert mode
+
+The UltiSnips + Auto Pairs example chained <plug>AutoPairsReturn after
+<plug>UltiExpand:
+
+    imap <plug>MyCR <plug>UltiExpand<plug>AutoPairsReturn
+    imap <cr> <plug>MyCR
+
+That makes <plug>AutoPairsReturn run unconditionally, including right
+after a snippet has been expanded.  Its <esc>-based return handling can
+then leave Insert mode, breaking the just-expanded snippet: the jump
+trigger no longer moves between the snippet's placeholders.
+
+Put the fallback keys inside the argument to
+mucomplete#ultisnips#expand_snippet() instead, so they are used only
+when no pop-up menu is visible:
+
+    inoremap <silent> <expr> <plug>UltiExpand
+          \ mucomplete#ultisnips#expand_snippet(
+          \     "<cr><plug>AutoPairsReturn")
+    imap <cr> <plug>UltiExpand
+
+Also document why chaining the fallback in a recursive imap leads to
+E223: Recursive mapping.
+---
+ doc/mucomplete.txt | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/doc/mucomplete.txt b/doc/mucomplete.txt
+index d6b195c..30ed3c3 100644
+--- a/doc/mucomplete.txt
++++ b/doc/mucomplete.txt
+@@ -1232,7 +1232,10 @@ You still need to redefine UltiSnips's mappings as explained above.
+ UltiSnips + Auto Pairs ~
+ If you want snippets to be expanded as explained above and you are using Auto
+ Pairs, you need to disable Auto Pairs's mappings and invoke them in custom
+-mappings, as follows:
++mappings.  Put the fallback keys (here, a plain <cr> followed by
++<plug>AutoPairsReturn) *inside* the argument to
++mucomplete#ultisnips#expand_snippet() rather than chaining them after
++<plug>UltiExpand:
+ >
+ 	let g:AutoPairsMapCR = 0
+ 	let g:AutoPairsMapSpace = 0
+@@ -1241,10 +1244,26 @@ mappings, as follows:
+ 	  \ : "<c-r>=AutoPairsSpace()<cr>"
+ 
+ 	inoremap <silent> <expr> <plug>UltiExpand
+-	      \ mucomplete#ultisnips#expand_snippet("\<cr>")
++	      \ mucomplete#ultisnips#expand_snippet(
++	      \     "\<cr>\<plug>AutoPairsReturn")
++	imap <cr> <plug>UltiExpand
++<
++This way Auto Pairs' <plug>AutoPairsReturn runs only when no pop-up menu is
++visible.  If it is chained *after* <plug>UltiExpand, as in:
++>
+ 	imap <plug>MyCR <plug>UltiExpand<plug>AutoPairsReturn
+ 	imap <cr> <plug>MyCR
+ <
++then <plug>AutoPairsReturn also runs right after a snippet has been expanded.
++Its <esc>-based handling may then leave Insert mode, which breaks the
++just-expanded snippet (you can no longer jump between its placeholders with
++the jump trigger).
++<
++Note also that a plain <cr> inside the fallback argument is returned directly
++by the expression mapping, so it does not go through the <cr> mapping again;
++putting the fallback in a recursive `imap` chain that expands to another
++<cr> would cause an `E223: Recursive mapping` error.
++<
+ UltiSnips + PHP ~
+ In some versions of Vim, there is a (now solved) compatibility issue between
+ PHP's 'omnifunc' function and UltiSnips. This bug is hit by MUcomplete when:
+-- 
+2.55.0
+

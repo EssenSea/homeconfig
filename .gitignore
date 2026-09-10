@@ -6,3 +6,7 @@ fanyi/.fanyirc
 sioyek/translate.py
 go-musicfox/cookie
 go/telemetry/
+
+# Temporary upstream checkouts used for preparing the mucomplete PR
+vim/vim-mucomplete/
+vim/vim-mucomplete-codeberg/
