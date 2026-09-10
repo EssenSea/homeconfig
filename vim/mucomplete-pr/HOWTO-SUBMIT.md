@@ -1,65 +1,89 @@
-# How to submit this fix (manual steps)
+# How to submit (manual steps only)
 
-The upstream project moved to Codeberg:
+Upstream moved to Codeberg:
 
     https://codeberg.org/lifepillar/vim-mucomplete
 
-The GitHub repository (https://github.com/lifepillar/vim-mucomplete) is a
-mirror; its current master may be newer than the Codeberg default branch.
-Two patch sets are provided:
+GitHub (https://github.com/lifepillar/vim-mucomplete) is kept as a mirror.
+If you have to choose one place, use **Codeberg**.
 
-  * ./0001-*.patch, ./0002-*.patch
-        Based on the Codeberg HEAD (5000155) — use this for a Codeberg PR.
-  * ./github-version/0001-*.patch, ./github-version/0002-*.patch
-        Based on the GitHub master (bfc434a) — use this if you open a PR
-        against the GitHub mirror instead.
+Two patch sets are provided and apply cleanly:
 
-Both patch sets contain the same logical change and apply cleanly.
+* `./codeberg/`      based on Codeberg HEAD 5000155  → for a Codeberg PR
+* `./github/`        based on GitHub master bfc434a  → for a GitHub PR
 
-## Option A: fork on Codeberg and open a PR
+Each contains the same two commits:
 
-1. Create a Codeberg account (if needed) and fork:
-      https://codeberg.org/lifepillar/vim-mucomplete/fork
+    0001-Fix-UltiSnips-Auto-Pairs-example-keep-snippets-in-In.patch
+    0002-test-expand_snippet-returns-fallback-keys-without-a-.patch
 
-2. Clone your fork and add the upstream remote:
+## Recommended flow: issue first, then PR
 
-      git clone git@codeberg.org:<you>/vim-mucomplete.git
-      cd vim-mucomplete
-      git remote add upstream https://codeberg.org/lifepillar/vim-mucomplete.git
+The maintainer is responsive but prefers to discuss before accepting changes
+(see issues #204, #205, #215).  Opening a short issue first greatly improves
+the odds of the PR being merged.
 
-3. Create a branch and apply the patches:
+### Step 1 — open the issue
 
-      git checkout -b fix/ultisnips-autopairs-docs
-      git am /path/to/mucomplete-pr/0001-*.patch
-      git am /path/to/mucomplete-pr/0002-*.patch
+Use `ISSUE.md` as the body.  Title suggestion:
 
-4. Push to your fork:
+    UltiSnips + Auto Pairs example leaves the just-expanded snippet
 
-      git push -u origin fix/ultisnips-autopairs-docs
+Post it at:
 
-5. Open the PR against lifepillar/vim-mucomplete with the description in
-   `PR-description.md`.
+    https://codeberg.org/lifepillar/vim-mucomplete/issues/new
 
-   If network access to Codeberg is flaky, you can also push the same branch
-   to the GitHub mirror and open the PR there.
+(Tip: if Codeberg is flaky, retry the page a couple of times.)
 
-## Option B: no account / send patches by e-mail or issue
+### Step 2 — wait for feedback
 
-The patches are `git format-patch` output, so they can be attached directly
-to an issue or sent as-is.
+If the maintainer asks for a different style, adjust the patch (the
+alternative explicit form is noted at the end of `PR-description.md`).
 
-## Before/after quick check
+### Step 3 — fork, branch, apply patches
 
-The corrected example is:
+    git clone git@codeberg.org:<you>/vim-mucomplete.git
+    cd vim-mucomplete
+    git remote add upstream https://codeberg.org/lifepillar/vim-mucomplete.git
+    git fetch upstream
+    git checkout -b fix/ultisnips-autopairs-docs upstream/master   # or 5000155
+    git am /path/to/mucomplete-pr-v2/codeberg/0001-*.patch
+    git am /path/to/mucomplete-pr-v2/codeberg/0002-*.patch
 
+### Step 4 — push and open the PR
+
+    git push -u origin fix/ultisnips-autopairs-docs
+
+Open the PR against `lifepillar/vim-mucomplete`, using `PR-description.md`
+as the body.
+
+## If you cannot use Codeberg
+
+Use the `./github/` patches against the GitHub mirror and open the PR there.
+The same PR description applies, but mention that you are not sure whether
+the GitHub mirror is still the active one.
+
+## Quick manual verification
+
+Load this mapping in Vim 9.2 with UltiSnips + auto-pairs:
+
+    let g:AutoPairsMapCR = 0
+    let g:AutoPairsMapSpace = 0
+    imap <silent> <expr> <space> pumvisible()
+      \ ? "<space>"
+      \ : "<c-r>=AutoPairsSpace()<cr>"
     inoremap <silent> <expr> <plug>UltiExpand
-          \ mucomplete#ultisnips#expand_snippet(
-          \     "\<cr>\<plug>AutoPairsReturn")
-    imap <cr> <plug>UltiExpand
+          \ mucomplete#ultisnips#expand_snippet("\<cr>")
+    imap <silent> <expr> <plug>MyCR (pumvisible()
+        \ ? "\<plug>UltiExpand"
+        \ : "\<cr>\<plug>AutoPairsReturn")
+    imap <cr> <plug>MyCR
 
-To verify manually, with Vim 9.2 + UltiSnips + auto-pairs:
+Expected:
 
-  * no pop-up: <cr> does a normal newline and keeps auto-pairs' bracket
-    return behaviour;
-  * [snip] chosen: the snippet expands and stays in Insert mode, so the
-    UltiSnips jump trigger keeps working.
+* no pop-up: `<cr>` does a normal newline and keeps auto-pairs' bracket
+  return behaviour;
+* `[snip]` chosen: the snippet expands and stays in Insert mode, so the
+  UltiSnips jump trigger keeps working.
+
+Before the fix, the second case leaves Normal mode.

@@ -1,0 +1,38 @@
+From 0f995682add992ab4da6abe7191ee2e385b03908 Mon Sep 17 00:00:00 2001
+From: EssenMoon <yueqrgg@gmail.com>
+Date: Thu, 10 Sep 2026 19:33:43 +0800
+Subject: [PATCH 2/2] test: expand_snippet() returns fallback keys without a
+ pop-up
+
+Regression coverage for the corrected UltiSnips + Auto Pairs example:
+when no pop-up is visible, expand_snippet() must return its fallback
+argument unchanged so that e.g. a plain <cr> plus <plug>AutoPairsReturn
+can be placed there safely.
+---
+ test/test_mucomplete.vim | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/test/test_mucomplete.vim b/test/test_mucomplete.vim
+index 22ecaaf..e75344a 100644
+--- a/test/test_mucomplete.vim
++++ b/test/test_mucomplete.vim
+@@ -940,5 +940,16 @@ fun! Test_MU_tab_when_no_result()
+   bwipe!
+ endf
+ 
++" When no pop-up menu is visible, expand_snippet() must return its fallback
++" keys unchanged.  This is what the UltiSnips + Auto Pairs example relies on:
++" <plug>AutoPairsReturn is only reached in the non-pop-up branch.
++fun! Test_MU_ultisnips_expand_snippet_fallback_keys()
++  new
++  call assert_equal("\<cr>\<plug>AutoPairsReturn",
++        \ mucomplete#ultisnips#expand_snippet(
++        \   "\<cr>\<plug>AutoPairsReturn"))
++  bwipe!
++endf
++
+ call RunBabyRun('MU')
+ 
+-- 
+2.55.0
+
