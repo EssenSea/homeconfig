@@ -314,7 +314,7 @@ set foldmethod=indent
 " ============================================================================
 let g:mapleader = " "
 let g:maplocalleader = ","
-set timeoutlen=2000
+set timeoutlen=1000
 
 " Window/tab/buffer basics / 窗口、标签页、缓冲区基础操作
 nnoremap <Leader>tn :tabnew<CR>
