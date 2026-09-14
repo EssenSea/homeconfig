@@ -626,19 +626,25 @@ augroup vimrc_text
     autocmd FileType text,markdown,tex nnoremap <buffer> k gk
 augroup END
 
+" Force lightline to re-read its configuration and palette.
+" lightline caches its state (s:_) after the first init, so a plain
+" ColorScheme/update would keep the previous palette. Re-sourcing the custom
+" palette plus lightline#init()/colorscheme() gives a full refresh.
+" 强制 lightline 重新读取配置与调色板。lightline 首次初始化后会缓存状态
+" (s:_)，仅靠 ColorScheme/update 会停留在旧调色板。重新 source 自定义调色板
+" 并调用 lightline#init()/colorscheme() 才能完整刷新。
+function! RefreshLightline() abort
+    silent! runtime autoload/lightline/colorscheme/muted.vim
+    silent! call lightline#init()
+    silent! call lightline#colorscheme()
+    silent! call lightline#update()
+endfunction
+
 augroup vimrc_overwrite
     autocmd!
-    " Reload config while editing itself / 编辑本 vimrc 时保存即自动加载
-    " After sourcing, refresh lightline and color highlighting explicitly:
-    " `colorscheme` in the file fires ColorScheme before g:lightline is
-    " redefined, which would otherwise leave the statusline washed out.
-    " source 后强制刷新 lightline 与配色高亮：文件中的 colorscheme 会在
-    " g:lightline 重新定义前先触发 ColorScheme，否则状态栏会失色。
-    autocmd BufWritePost .vimrc,vimrc
-        \ source <afile> |
-        \ silent! doautocmd ColorScheme |
-        \ silent! call lightline#update() |
-        \ silent! call lightline#highlight()
+    " Reload config while editing itself, then refresh lightline.
+    " 编辑本 vimrc 时保存即自动加载，然后刷新 lightline。
+    autocmd BufWritePost .vimrc,vimrc source <afile> | call RefreshLightline()
 augroup END
 
 " ============================================================================
