@@ -8,11 +8,20 @@
 "     Override with g:lightline#colorscheme#muted#fg.
 "   - Background: defaults to the current colorscheme's Normal background.
 "     Override with g:lightline#colorscheme#muted#bg.
+"   - Theme source: g:lightline#colorscheme#muted#theme can name ANY available
+"     colorscheme; its Normal foreground/background are then used. Default is
+"     empty, meaning the currently active colorscheme.
+"   - Invert: g:lightline#colorscheme#muted#invert (boolean, default 0) swaps
+"     the chosen theme's foreground and background for lightline.
 "   - Transparent themes (Normal bg == NONE) stay transparent.
 "   前景色：默认取当前配色主题 Normal 的前景色；
 "           可通过 g:lightline#colorscheme#muted#fg 覆盖。
 "   背景色：默认取当前配色主题 Normal 的背景色；
 "           可通过 g:lightline#colorscheme#muted#bg 覆盖。
+"   来源主题：g:lightline#colorscheme#muted#theme 可指定任意可用主题名，
+"           取该主题的前景/背景色；默认空 = 当前主题。
+"   反转：g:lightline#colorscheme#muted#invert（布尔，默认 0）会把所选主题的
+"           前景与背景互换后作为 lightline 的前景/背景。
 "   透明主题（Normal 背景为 NONE）保持透明。
 "
 " Accepted override formats (both fg and bg) / 可用覆盖格式（前景与背景通用）:
@@ -20,6 +29,8 @@
 "   let g:lightline#colorscheme#muted#fg = 'red'       " color name / 颜色名
 "   let g:lightline#colorscheme#muted#fg = 187         " 256-color index / 256 色号
 "   let g:lightline#colorscheme#muted#bg = 'NONE'      " transparent / 透明
+"   let g:lightline#colorscheme#muted#theme = 'catppuccin'  " any theme / 任意主题
+"   let g:lightline#colorscheme#muted#invert = 1       " swap fg/bg / 交换前后景
 " =============================================================================
 
 " --- 256-color conversion helpers (same algorithm as lightline) ------------
@@ -136,8 +147,69 @@ function! s:resolve_pair(var, attr, fallback) abort
   return [l:gui, empty(l:cterm) ? s:gui_to_cterm(l:gui) : l:cterm]
 endfunction
 
-let s:fg = s:resolve_pair('lightline#colorscheme#muted#fg', 'fg', '#D3C6AA')
-let s:bg = s:resolve_pair('lightline#colorscheme#muted#bg', 'bg', '#14161b')
+" Read a named theme's Normal foreground/background by temporarily applying
+" it (without triggering ColorScheme autocmds) and restoring the original.
+" 通过临时应用（不触发 ColorScheme 自动命令）并恢复原主题，读取指定主题
+" Normal 的前景/背景色。
+function! s:read_theme_colors(theme) abort
+  let l:orig = get(g:, 'colors_name', '')
+  let l:switched = 0
+  if !empty(a:theme) && a:theme !=# l:orig
+    " Abort silently if the named colorscheme does not exist.
+    " 若指定主题不存在则静默放弃切换。
+    try
+      noautocmd execute 'colorscheme ' . a:theme
+      let l:switched = 1
+    catch
+      let l:switched = 0
+    endtry
+  endif
+  let l:fg_gui = synIDattr(hlID('Normal'), 'fg#')
+  let l:bg_gui = synIDattr(hlID('Normal'), 'bg#')
+  let l:fg_cterm = synIDattr(hlID('Normal'), 'fg', 'cterm')
+  let l:bg_cterm = synIDattr(hlID('Normal'), 'bg', 'cterm')
+  if l:switched && !empty(l:orig)
+    silent! noautocmd execute 'colorscheme ' . l:orig
+  endif
+  return [l:fg_gui, l:bg_gui, l:fg_cterm, l:bg_cterm]
+endfunction
+
+" Build a [gui, cterm] pair from raw gui/cterm values, keeping NONE.
+" 用原始 gui/cterm 值构造 [gui, cterm] 对，并保留 NONE。
+function! s:pair_from(gui, cterm) abort
+  if empty(a:gui) || a:gui ==# 'NONE'
+    return ['NONE', empty(a:cterm) ? 'NONE' : a:cterm]
+  endif
+  return [a:gui, empty(a:cterm) ? s:gui_to_cterm(a:gui) : a:cterm]
+endfunction
+
+" Resolve the source theme's colors into [gui, cterm] pairs.
+" 解析来源主题的颜色为 [gui, cterm] 对。
+function! s:theme_pair(attr) abort
+  let l:theme = get(g:, 'lightline#colorscheme#muted#theme', '')
+  let l:c = s:read_theme_colors(l:theme)
+  if a:attr ==# 'fg'
+    return s:pair_from(l:c[0], l:c[2])
+  else
+    return s:pair_from(l:c[1], l:c[3])
+  endif
+endfunction
+
+" fg: explicit override wins; otherwise the (possibly inverted) theme color.
+" bg: same, with inversion applied.
+" fg：显式覆盖优先；否则用（可能反转后的）主题颜色。bg 同理。
+let s:invert = get(g:, 'lightline#colorscheme#muted#invert', 0)
+
+if get(g:, 'lightline#colorscheme#muted#fg', '') != ''
+  let s:fg = s:resolve_pair('lightline#colorscheme#muted#fg', 'fg', '#D3C6AA')
+else
+  let s:fg = s:invert ? s:theme_pair('bg') : s:theme_pair('fg')
+endif
+if get(g:, 'lightline#colorscheme#muted#bg', '') != ''
+  let s:bg = s:resolve_pair('lightline#colorscheme#muted#bg', 'bg', '#14161b')
+else
+  let s:bg = s:invert ? s:theme_pair('fg') : s:theme_pair('bg')
+endif
 
 " Every entry is [ [fg_gui, fg_cterm], [bg_gui, bg_cterm] ]; flatten() turns
 " it into the form lightline expects, and keeps 'NONE' for transparency.

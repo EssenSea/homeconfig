@@ -654,6 +654,12 @@ augroup END
 let g:ft_man_open_mode = "vert"
 
 " Lightline + ALE status / 状态栏与 ALE 诊断状态
+" muted palette options (see vim/autoload/lightline/colorscheme/muted.vim):
+" muted 调色板选项（见 vim/autoload/lightline/colorscheme/muted.vim）：
+"   g:lightline#colorscheme#muted#theme  = ''           " source theme; '' = current
+"   g:lightline#colorscheme#muted#invert = 0            " swap fg/bg when 1
+"   g:lightline#colorscheme#muted#fg     = '#D3C6AA'    " explicit foreground
+"   g:lightline#colorscheme#muted#bg     = 'NONE'       " explicit background
 let g:lightline = {
     \ 'colorscheme': 'muted',
     \ 'component_expand': {
