@@ -16,11 +16,13 @@
 "   - Invert: g:lightline#colorscheme#muted#invert (boolean, default 0) swaps
 "     the chosen theme's foreground and background for lightline.
 "   - A NONE foreground/background is kept: lightline then inherits the
-"     terminal's default foreground/background (no fixed fallback color).
-"   - Emphasis by inversion: the first left chunk (mode) for the
-"     normal/insert/replace/visual modes and the diagnostic chunks
-"     (error/warning) have their foreground and background swapped. This is
-"     skipped when the chunk background is NONE (inherited look is kept).
+"     terminal's default foreground/background.
+"   - Emphasis by inversion (mode first-left chunk and diagnostics) always
+"     stays opposite to the ordinary chunks. With a NONE theme, 'background'
+"     defines concrete colors (dark fg=#ffffff bg=#000000; light the reverse):
+"     when invert=1 ordinary chunks use those colors reversed while emphasis
+"     inherits; when invert=0 emphasis uses them reversed while ordinary
+"     inherits. For a real theme, emphasis is simply fg/bg swapped.
 "   前景色：默认取当前配色主题 Normal 的前景色；
 "           可通过 g:lightline#colorscheme#muted#fg 覆盖。
 "   背景色：默认取当前配色主题 Normal 的背景色；
@@ -31,8 +33,11 @@
 "           取到真实背景色）。
 "   反转：g:lightline#colorscheme#muted#invert（布尔，默认 0）会把所选主题的
 "           前景与背景互换后作为 lightline 的前景/背景。
-"   前景/背景若为 NONE 则保持 NONE：此时 lightline 继承终端默认的前景/背景
-"   （不再强制填入固定颜色）。
+"   前景/背景若为 NONE 则保持 NONE：此时 lightline 继承终端默认的前景/背景。
+"   强调反转（normal/insert/replace/visual 的左侧首块与诊断信息）始终与普通块
+"   方向相反。NONE 主题下由 'background' 定义具体色（dark: fg=#ffffff,
+"   bg=#000000；light 反之）：invert=1 时普通块用定义色反转、强调块继承；
+"   invert=0 时强调块用定义色反转、普通块继承。实色主题下强调块即 fg/bg 互换。
 "   强调（反转）：normal/insert/replace/visual 的左侧第一个区块（mode）以及
 "   诊断信息区块（error/warning）会交换前景与背景。若区块背景为 NONE
 "   （继承外观），则跳过反转。
@@ -177,6 +182,10 @@ let s:transparent_opts = [
 function! s:read_theme_colors(theme) abort
   let l:orig = get(g:, 'colors_name', '')
   let l:switched = 0
+  " Save 'background' too: loading some colorschemes changes it, and the
+  " inversion emphasis relies on the original value.
+  " 一并保存 'background'：部分配色会在加载时改动它，而反转强调依赖原值。
+  let l:orig_bg_opt = &background
   " Temporarily disable transparency for the theme we are about to read.
   " 临时关闭即将读取主题的透明设置。
   let l:saved = {}
@@ -205,6 +214,8 @@ function! s:read_theme_colors(theme) abort
   if l:switched && !empty(l:orig)
     silent! noautocmd execute 'colorscheme ' . l:orig
   endif
+  " Restore 'background'. / 恢复 'background'。
+  let &background = l:orig_bg_opt
   " Restore transparency switches. / 恢复透明开关。
   for [l:var, l:val] in items(l:saved)
     execute 'let g:' . l:var . ' = ' . l:val
@@ -254,63 +265,73 @@ else
   let s:bg = s:invert ? s:theme_pair('fg') : s:theme_pair('bg')
 endif
 
-" Every entry is [ [fg_gui, fg_cterm], [bg_gui, bg_cterm] ]; flatten() turns
-" it into the form lightline expects, and keeps 'NONE' for transparency.
-" 每一项是 [ [前景gui, 前景cterm], [背景gui, 背景cterm] ]；flatten() 会
-" 转成 lightline 需要的格式，并保留 'NONE' 以实现透明。
-let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
+" A NONE theme (e.g. default with cleared Normal) has no real colors. Derive
+" concrete colors from 'background' so inversion still works:
+"   dark  : fg=#ffffff, bg=#000000
+"   light : fg=#000000, bg=#ffffff
+" NONE 主题（如 default，Normal 被清除）没有实际颜色。按 'background' 推导
+" 具体颜色，使反转仍可工作：
+"   dark  : fg=#ffffff, bg=#000000
+"   light : fg=#000000, bg=#ffffff
+let s:dark = &background !=# 'light'
+let s:def_fg = s:dark ? [ '#ffffff', 15 ] : [ '#000000', 0 ]
+let s:def_bg = s:dark ? [ '#000000', 0  ] : [ '#ffffff', 15 ]
+let s:def_rev = [ s:def_bg, s:def_fg ]
+let s:inherit = [ [ 'NONE', 'NONE' ], [ 'NONE', 'NONE' ] ]
+let s:is_none = s:fg[0] ==# 'NONE' || s:bg[0] ==# 'NONE'
 
-let s:p.normal.left     = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-let s:p.normal.middle   = [ [ s:fg, s:bg ] ]
-let s:p.normal.right    = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-let s:p.normal.error    = [ [ s:fg, s:bg ] ]
-let s:p.normal.warning  = [ [ s:fg, s:bg ] ]
+" ordinary: chunk used by all non-emphasis parts.
+" emphasis: chunk used by mode (first left) and diagnostics.
+" For a NONE theme, invert chooses which of them is filled with the derived
+" colors; the other inherits. For a real theme they are fg/bg and swapped.
+" ordinary：非强调部分使用的区块；emphasis：强调部分（mode 首块与诊断）。
+" NONE 主题下由 invert 决定谁用推导色、谁继承；实色主题下为 fg/bg 与其交换。
+if s:is_none
+  let s:ordinary = s:invert ? s:def_rev : s:inherit
+  let s:emphasis = s:invert ? s:inherit : s:def_rev
+else
+  let s:ordinary = [ s:fg, s:bg ]
+  let s:emphasis = [ s:bg, s:fg ]
+endif
 
-let s:p.insert.left     = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-let s:p.insert.middle   = [ [ s:fg, s:bg ] ]
-let s:p.insert.right    = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-
-let s:p.replace.left    = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-let s:p.replace.middle  = [ [ s:fg, s:bg ] ]
-let s:p.replace.right   = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-
-let s:p.visual.left     = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-let s:p.visual.middle   = [ [ s:fg, s:bg ] ]
-let s:p.visual.right    = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-
-let s:p.inactive.left   = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-let s:p.inactive.middle = [ [ s:fg, s:bg ] ]
-let s:p.inactive.right  = [ [ s:fg, s:bg ], [ s:fg, s:bg ] ]
-
-let s:p.tabline.left    = [ [ s:fg, s:bg ] ]
-let s:p.tabline.middle  = [ [ s:fg, s:bg ] ]
-let s:p.tabline.right   = [ [ s:fg, s:bg ] ]
-let s:p.tabline.tabsel  = [ [ s:fg, s:bg ] ]
-
-" --- Emphasis by inversion ------------------------------------------------
-" --- 通过反转实现强调 ----------------------------------------------------
-" Reverse a chunk ([fg_pair, bg_pair] -> [bg_pair, fg_pair]) unless its
-" background is NONE (in which case the inherited look is kept).
-" 反转一个区块 ([前景对, 背景对] -> [背景对, 前景对])，但若其背景为 NONE
-" 则保持不变（保留继承外观）。
-function! s:reverse_chunk(chunk) abort
-  if a:chunk[1][0] ==# 'NONE'
-    return [ copy(a:chunk[0]), copy(a:chunk[1]) ]
-  endif
-  return [ copy(a:chunk[1]), copy(a:chunk[0]) ]
+" Build a chunk [ [fg_gui, fg_cterm], [bg_gui, bg_cterm] ] with independent
+" copies so chunks never share list references.
+" 构造区块 [ [前景gui, 前景cterm], [背景gui, 背景cterm] ]，使用独立副本，
+" 避免区块之间共享列表引用。
+function! s:chunk(template) abort
+  return [ copy(a:template[0]), copy(a:template[1]) ]
 endfunction
 
-" Reverse the first left chunk (mode) for normal/insert/replace/visual.
-" 反转 normal/insert/replace/visual 的左侧第一个区块（mode）。
-for s:m in ['normal', 'insert', 'replace', 'visual']
-  if has_key(s:p, s:m) && !empty(s:p[s:m].left)
-    let s:p[s:m].left[0] = s:reverse_chunk(s:p[s:m].left[0])
-  endif
-endfor
+let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
 
-" Reverse the diagnostics (error/warning) chunks.
-" 反转诊断信息（error/warning）区块。
-let s:p.normal.error   = [ s:reverse_chunk(s:p.normal.error[0]) ]
-let s:p.normal.warning = [ s:reverse_chunk(s:p.normal.warning[0]) ]
+" Emphasis first left chunk (mode) + diagnostics; the rest is ordinary.
+" 强调部分：normal/insert/replace/visual 的左侧第一区块（mode）与诊断信息；
+" 其余为普通块。
+let s:p.normal.left     = [ s:chunk(s:emphasis), s:chunk(s:ordinary) ]
+let s:p.normal.middle   = [ s:chunk(s:ordinary) ]
+let s:p.normal.right    = [ s:chunk(s:ordinary), s:chunk(s:ordinary) ]
+let s:p.normal.error    = [ s:chunk(s:emphasis) ]
+let s:p.normal.warning  = [ s:chunk(s:emphasis) ]
+
+let s:p.insert.left     = [ s:chunk(s:emphasis), s:chunk(s:ordinary) ]
+let s:p.insert.middle   = [ s:chunk(s:ordinary) ]
+let s:p.insert.right    = [ s:chunk(s:ordinary), s:chunk(s:ordinary) ]
+
+let s:p.replace.left    = [ s:chunk(s:emphasis), s:chunk(s:ordinary) ]
+let s:p.replace.middle  = [ s:chunk(s:ordinary) ]
+let s:p.replace.right   = [ s:chunk(s:ordinary), s:chunk(s:ordinary) ]
+
+let s:p.visual.left     = [ s:chunk(s:emphasis), s:chunk(s:ordinary) ]
+let s:p.visual.middle   = [ s:chunk(s:ordinary) ]
+let s:p.visual.right    = [ s:chunk(s:ordinary), s:chunk(s:ordinary) ]
+
+let s:p.inactive.left   = [ s:chunk(s:ordinary), s:chunk(s:ordinary) ]
+let s:p.inactive.middle = [ s:chunk(s:ordinary) ]
+let s:p.inactive.right  = [ s:chunk(s:ordinary), s:chunk(s:ordinary) ]
+
+let s:p.tabline.left    = [ s:chunk(s:ordinary) ]
+let s:p.tabline.middle  = [ s:chunk(s:ordinary) ]
+let s:p.tabline.right   = [ s:chunk(s:ordinary) ]
+let s:p.tabline.tabsel  = [ s:chunk(s:ordinary) ]
 
 let g:lightline#colorscheme#muted#palette = lightline#colorscheme#flatten(s:p)
