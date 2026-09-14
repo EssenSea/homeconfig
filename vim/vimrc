@@ -630,7 +630,7 @@ let g:ft_man_open_mode = "vert"
 
 " Lightline + ALE status / 状态栏与 ALE 诊断状态
 let g:lightline = {
-    \ 'colorscheme': 'everforest',
+    \ 'colorscheme': 'muted',
     \ 'component_expand': {
     \     'linter_warnings': 'lightline#ale#warnings',
     \     'linter_errors': 'lightline#ale#errors',
