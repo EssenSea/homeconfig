@@ -6,15 +6,18 @@
 " Behavior / 行为:
 "   - Foreground: defaults to the current colorscheme's Normal foreground.
 "     Override with g:lightline#colorscheme#muted#fg.
-"   - Background: always read from the current colorscheme's Normal background.
+"   - Background: defaults to the current colorscheme's Normal background.
+"     Override with g:lightline#colorscheme#muted#bg.
 "   前景色：默认取当前配色主题 Normal 的前景色；
 "           可通过 g:lightline#colorscheme#muted#fg 覆盖。
-"   背景色：始终取当前配色主题 Normal 的背景色。
+"   背景色：默认取当前配色主题 Normal 的背景色；
+"           可通过 g:lightline#colorscheme#muted#bg 覆盖。
 "
-" Accepted override formats / 可用覆盖格式:
+" Accepted override formats (both fg and bg) / 可用覆盖格式（前景与背景通用）:
 "   let g:lightline#colorscheme#muted#fg = '#D3C6AA'   " GUI hex / GUI 十六进制
 "   let g:lightline#colorscheme#muted#fg = 'red'       " color name / 颜色名
 "   let g:lightline#colorscheme#muted#fg = 187         " 256-color index / 256 色号
+"   let g:lightline#colorscheme#muted#bg = '#14161b'
 " =============================================================================
 
 " Convert a 256-color index to an approximate '#RRGGBB'.
@@ -47,10 +50,12 @@ function! s:nr_to_hex(n) abort
   endif
 endfunction
 
-" Resolve the user override into a color string lightline can consume.
+" Resolve a user override into a color string lightline can consume.
+" var: g: variable name; attr: 'fg'/'bg' for the Normal group fallback.
 " 将用户覆盖值解析为 lightline 可用的颜色字符串。
-function! s:resolve_fg() abort
-  let l:val = get(g:, 'lightline#colorscheme#muted#fg', '')
+" var：g: 变量名；attr：Normal 组回退时使用的 'fg'/'bg'。
+function! s:resolve_color(var, attr, fallback) abort
+  let l:val = get(g:, a:var, '')
   if type(l:val) == type(0)
     return s:nr_to_hex(l:val)
   elseif type(l:val) == type('') && !empty(l:val)
@@ -59,24 +64,17 @@ function! s:resolve_fg() abort
     endif
     return l:val
   endif
-  " Default: current Normal foreground.
-  " 默认：当前 Normal 前景色。
-  let l:gui = synIDattr(hlID('Normal'), 'fg#')
-  return empty(l:gui) ? '#D3C6AA' : l:gui
-endfunction
-
-" Background: current Normal background.
-" 背景色：当前 Normal 背景色。
-function! s:bg() abort
-  let l:gui = synIDattr(hlID('Normal'), 'bg#')
+  " Default: current Normal foreground/background.
+  " 默认：当前 Normal 的前景/背景色。
+  let l:gui = synIDattr(hlID('Normal'), a:attr . '#')
   if empty(l:gui) || l:gui ==# 'NONE'
-    return '#14161b'
+    return a:fallback
   endif
   return l:gui
 endfunction
 
-let s:fg = s:resolve_fg()
-let s:bg = s:bg()
+let s:fg = s:resolve_color('lightline#colorscheme#muted#fg', 'fg', '#D3C6AA')
+let s:bg = s:resolve_color('lightline#colorscheme#muted#bg', 'bg', '#14161b')
 
 " Every entry is [ foreground, background ]; fill() expands the cterm values.
 " 每一项是 [ 前景, 背景 ]，fill() 会自动补全 cterm 值。
