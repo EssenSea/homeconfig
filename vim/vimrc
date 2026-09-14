@@ -179,7 +179,7 @@ call plug#begin()
     Plug 'cocopon/iceberg.vim'
     Plug 'sainnhe/everforest'
     Plug 'catppuccin/vim', { 'as': 'catppuccin' }
-    Plug 'ghifarit53/tokyonight-vim'
+    " Plug 'ghifarit53/tokyonight-vim'
 call plug#end()
 
 filetype plugin on
@@ -206,6 +206,7 @@ set termguicolors
 set t_Co=256
 set background=dark
 " Use Everforest as the active colorscheme. / 启用 Everforest 配色。
+let g:everforest_transparent_background = 2
 colorscheme everforest
 
 let g:rainbow_active = 1
@@ -225,7 +226,7 @@ endif
 " ============================================================================
 set encoding=utf-8
 set fileencodings=utf-8,gbk,gb2312,latin1
-set textwidth=0
+set textwidth=78
 set linebreak
 set wrap
 set autoindent
@@ -236,6 +237,7 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab
 set backspace=indent,eol,start
+set spelllang=en,cjk
 
 set mouse=a
 set clipboard=unnamedplus
@@ -247,12 +249,12 @@ set number
 set relativenumber
 set cursorline
 set cursorlineopt=both
-set colorcolumn=+2
+set colorcolumn=+1,+2
 set list
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<
 set shortmess+=I
 set showmatch
-set scrolloff=8
+set scrolloff=5
 set updatetime=200
 set ttyfast
 set splitright
@@ -260,6 +262,10 @@ set splitbelow
 set signcolumn=yes
 set hidden
 set completeopt=fuzzy,menu,menuone,noselect,popup
+set confirm
+set virtualedit=block,onemore
+set showbreak='>|'
+set nosplitright
 
 " ============================================================================
 " 4. Search settings / 搜索设置
@@ -340,7 +346,9 @@ nnoremap <Leader>bd :bd<CR>
 nnoremap <Leader>hc :helpclose<CR>
 " close help
 " 关闭帮助窗口
-
+nnoremap <Leader>ht <Cmd>HelpToc<CR>
+" HelpToc
+" help 文档目录开关
 nnoremap <Leader>bl :ls<CR>
 " list buffers
 " 列出缓冲区
@@ -470,7 +478,7 @@ nnoremap <silent> <Leader>mm  :Maps<CR>
 " HardMode 开关：<Leader>ht
 " Turns off arrow/hjkl navigation; call :EasyMode to exit.
 " 关闭方向键/hjkl 移动；用 :EasyMode 退出。
-nnoremap <silent> <Leader>ht :call ToggleHardMode()<CR>
+nnoremap <silent> <Leader>ha :call ToggleHardMode()<CR>
 
 " easymotion / 快速跳转
 " <Leader><Leader> + f/s/l/w 开头的跳转
@@ -555,6 +563,8 @@ set conceallevel=1
 set ambiwidth=double
 highlight Conceal ctermbg=none
 syntax enable
+let g:vimtex_indent_enabled = 1
+let g:vimtex_format_enabled = 1
 let g:vimtex_imap_enable = 1
 let g:vimtex_imaps_leader = '`'
 " Use Sioyek as PDF viewer / 使用 Sioyek 作为 PDF 阅读器
