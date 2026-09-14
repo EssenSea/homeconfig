@@ -118,7 +118,7 @@ endfunction
 " --- Resolve one color into a [gui, cterm] pair ----------------------------
 " --- 将单个颜色解析为 [gui, cterm] 对 -------------------------------------
 
-function! s:resolve_pair(var, attr, fallback) abort
+function! s:resolve_pair(var, attr) abort
   let l:val = get(g:, a:var, '')
   " Explicit override / 显式覆盖
   if type(l:val) == type(0)
@@ -226,21 +226,8 @@ function! s:theme_pair(attr) abort
   endif
 endfunction
 
-" True when a [gui, cterm] pair is fully transparent (both NONE).
-" 当 [gui, cterm] 对完全透明（两者都是 NONE）时返回真。
-function! s:is_none(pair) abort
-  return a:pair[0] ==# 'NONE'
-endfunction
-
-" fg: explicit override wins; otherwise the (possibly inverted) theme color.
-" If the resulting foreground would be transparent, fall back to the source
-" theme's non-transparent color: its foreground when not inverted, its
-" background when inverted (never leave lightline without a foreground).
-" fg：显式覆盖优先；否则用（可能反转后的）主题颜色。
-" 若最终前景会变成透明，则回退到来源主题的非透明颜色：未反转时取前景，
-" 反转时取背景（绝不把前景留成空）。
-" bg: explicit override wins; otherwise the (possibly inverted) theme color.
-" bg：显式覆盖优先；否则用（可能反转后的）主题颜色。
+" Invert option: swap the chosen theme's foreground and background.
+" 反转选项：交换所选主题的前景与背景。
 let s:invert = get(g:, 'lightline#colorscheme#muted#invert', 0)
 
 " Foreground: explicit override wins; otherwise the theme color (swapped by
@@ -249,13 +236,13 @@ let s:invert = get(g:, 'lightline#colorscheme#muted#invert', 0)
 " 前景：显式覆盖优先；否则用主题颜色（invert 时交换）。NONE 保持原样，
 " 让 lightline 继承终端默认前景，而不是被强制成固定颜色。
 if get(g:, 'lightline#colorscheme#muted#fg', '') != ''
-  let s:fg = s:resolve_pair('lightline#colorscheme#muted#fg', 'fg', '')
+  let s:fg = s:resolve_pair('lightline#colorscheme#muted#fg', 'fg')
 else
   let s:fg = s:invert ? s:theme_pair('bg') : s:theme_pair('fg')
 endif
 
 if get(g:, 'lightline#colorscheme#muted#bg', '') != ''
-  let s:bg = s:resolve_pair('lightline#colorscheme#muted#bg', 'bg', '#14161b')
+  let s:bg = s:resolve_pair('lightline#colorscheme#muted#bg', 'bg')
 else
   let s:bg = s:invert ? s:theme_pair('fg') : s:theme_pair('bg')
 endif
