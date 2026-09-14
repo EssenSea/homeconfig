@@ -13,7 +13,11 @@
 "     empty, meaning the currently active colorscheme.
 "   - Invert: g:lightline#colorscheme#muted#invert (boolean, default 0) swaps
 "     the chosen theme's foreground and background for lightline.
-"   - Transparent themes (Normal bg == NONE) stay transparent.
+"   - Transparent background (Normal bg == NONE) stays transparent.
+"   - Foreground never stays transparent: if it resolves to NONE it falls
+"     back to the chosen theme's non-transparent color (foreground when not
+"     inverted, background when inverted, then the other side, then
+"     #D3C6AA).
 "   前景色：默认取当前配色主题 Normal 的前景色；
 "           可通过 g:lightline#colorscheme#muted#fg 覆盖。
 "   背景色：默认取当前配色主题 Normal 的背景色；
@@ -22,7 +26,9 @@
 "           取该主题的前景/背景色；默认空 = 当前主题。
 "   反转：g:lightline#colorscheme#muted#invert（布尔，默认 0）会把所选主题的
 "           前景与背景互换后作为 lightline 的前景/背景。
-"   透明主题（Normal 背景为 NONE）保持透明。
+"   透明背景（Normal 背景为 NONE）保持透明；但前景不会保持透明：若解析为
+"   NONE，则回退到所选主题的非透明颜色（未反转取前景，反转取背景，再退到
+"   另一侧，最后用 #D3C6AA）。
 "
 " Accepted override formats (both fg and bg) / 可用覆盖格式（前景与背景通用）:
 "   let g:lightline#colorscheme#muted#fg = '#D3C6AA'   " GUI hex / GUI 十六进制
@@ -195,9 +201,21 @@ function! s:theme_pair(attr) abort
   endif
 endfunction
 
+" True when a [gui, cterm] pair is fully transparent (both NONE).
+" 当 [gui, cterm] 对完全透明（两者都是 NONE）时返回真。
+function! s:is_none(pair) abort
+  return a:pair[0] ==# 'NONE'
+endfunction
+
 " fg: explicit override wins; otherwise the (possibly inverted) theme color.
-" bg: same, with inversion applied.
-" fg：显式覆盖优先；否则用（可能反转后的）主题颜色。bg 同理。
+" If the resulting foreground would be transparent, fall back to the source
+" theme's non-transparent color: its foreground when not inverted, its
+" background when inverted (never leave lightline without a foreground).
+" fg：显式覆盖优先；否则用（可能反转后的）主题颜色。
+" 若最终前景会变成透明，则回退到来源主题的非透明颜色：未反转时取前景，
+" 反转时取背景（绝不把前景留成空）。
+" bg: explicit override wins; otherwise the (possibly inverted) theme color.
+" bg：显式覆盖优先；否则用（可能反转后的）主题颜色。
 let s:invert = get(g:, 'lightline#colorscheme#muted#invert', 0)
 
 if get(g:, 'lightline#colorscheme#muted#fg', '') != ''
@@ -205,6 +223,19 @@ if get(g:, 'lightline#colorscheme#muted#fg', '') != ''
 else
   let s:fg = s:invert ? s:theme_pair('bg') : s:theme_pair('fg')
 endif
+" Foreground transparency fallback. / 前景透明回退。
+" Order: preferred side (by invert), then the other side, then a default.
+" 顺序：按 invert 首选的一侧，然后另一侧，最后默认色。
+if s:is_none(s:fg)
+  let s:fg = s:invert ? s:theme_pair('bg') : s:theme_pair('fg')
+  if s:is_none(s:fg)
+    let s:fg = s:invert ? s:theme_pair('fg') : s:theme_pair('bg')
+  endif
+  if s:is_none(s:fg)
+    let s:fg = ['#D3C6AA', 187]
+  endif
+endif
+
 if get(g:, 'lightline#colorscheme#muted#bg', '') != ''
   let s:bg = s:resolve_pair('lightline#colorscheme#muted#bg', 'bg', '#14161b')
 else
