@@ -17,6 +17,10 @@
 "     the chosen theme's foreground and background for lightline.
 "   - A NONE foreground/background is kept: lightline then inherits the
 "     terminal's default foreground/background (no fixed fallback color).
+"   - Emphasis by inversion: the first left chunk (mode) for the
+"     normal/insert/replace/visual modes and the diagnostic chunks
+"     (error/warning) have their foreground and background swapped. This is
+"     skipped when the chunk background is NONE (inherited look is kept).
 "   前景色：默认取当前配色主题 Normal 的前景色；
 "           可通过 g:lightline#colorscheme#muted#fg 覆盖。
 "   背景色：默认取当前配色主题 Normal 的背景色；
@@ -29,6 +33,9 @@
 "           前景与背景互换后作为 lightline 的前景/背景。
 "   前景/背景若为 NONE 则保持 NONE：此时 lightline 继承终端默认的前景/背景
 "   （不再强制填入固定颜色）。
+"   强调（反转）：normal/insert/replace/visual 的左侧第一个区块（mode）以及
+"   诊断信息区块（error/warning）会交换前景与背景。若区块背景为 NONE
+"   （继承外观），则跳过反转。
 "
 " Accepted override formats (both fg and bg) / 可用覆盖格式（前景与背景通用）:
 "   let g:lightline#colorscheme#muted#fg = '#D3C6AA'   " GUI hex / GUI 十六进制
@@ -279,5 +286,31 @@ let s:p.tabline.left    = [ [ s:fg, s:bg ] ]
 let s:p.tabline.middle  = [ [ s:fg, s:bg ] ]
 let s:p.tabline.right   = [ [ s:fg, s:bg ] ]
 let s:p.tabline.tabsel  = [ [ s:fg, s:bg ] ]
+
+" --- Emphasis by inversion ------------------------------------------------
+" --- 通过反转实现强调 ----------------------------------------------------
+" Reverse a chunk ([fg_pair, bg_pair] -> [bg_pair, fg_pair]) unless its
+" background is NONE (in which case the inherited look is kept).
+" 反转一个区块 ([前景对, 背景对] -> [背景对, 前景对])，但若其背景为 NONE
+" 则保持不变（保留继承外观）。
+function! s:reverse_chunk(chunk) abort
+  if a:chunk[1][0] ==# 'NONE'
+    return [ copy(a:chunk[0]), copy(a:chunk[1]) ]
+  endif
+  return [ copy(a:chunk[1]), copy(a:chunk[0]) ]
+endfunction
+
+" Reverse the first left chunk (mode) for normal/insert/replace/visual.
+" 反转 normal/insert/replace/visual 的左侧第一个区块（mode）。
+for s:m in ['normal', 'insert', 'replace', 'visual']
+  if has_key(s:p, s:m) && !empty(s:p[s:m].left)
+    let s:p[s:m].left[0] = s:reverse_chunk(s:p[s:m].left[0])
+  endif
+endfor
+
+" Reverse the diagnostics (error/warning) chunks.
+" 反转诊断信息（error/warning）区块。
+let s:p.normal.error   = [ s:reverse_chunk(s:p.normal.error[0]) ]
+let s:p.normal.warning = [ s:reverse_chunk(s:p.normal.warning[0]) ]
 
 let g:lightline#colorscheme#muted#palette = lightline#colorscheme#flatten(s:p)
