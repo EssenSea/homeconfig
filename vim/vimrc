@@ -205,9 +205,9 @@ endif
 set termguicolors
 set t_Co=256
 set background=dark
-" Use catppuccin as the active colorscheme. / 启用 catppuccin 配色。
+" Use retrobox as the active colorscheme. / 启用 retrobox 配色。
 let g:everforest_transparent_background = 2
-colorscheme catppuccin
+colorscheme retrobox
 
 let g:rainbow_active = 1
 " Rainbow parentheses on. / 开启彩虹括号。
