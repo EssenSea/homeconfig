@@ -10,25 +10,25 @@
 "     Override with g:lightline#colorscheme#muted#bg.
 "   - Theme source: g:lightline#colorscheme#muted#theme can name ANY available
 "     colorscheme; its Normal foreground/background are then used. Default is
-"     empty, meaning the currently active colorscheme.
+"     empty, meaning the currently active colorscheme.  When reading a theme,
+"     known transparency switches are forced off so its OPAQUE colors are
+"     obtained (a transparent theme still yields a real background color).
 "   - Invert: g:lightline#colorscheme#muted#invert (boolean, default 0) swaps
 "     the chosen theme's foreground and background for lightline.
-"   - Transparent background (Normal bg == NONE) stays transparent.
-"   - Foreground never stays transparent: if it resolves to NONE it falls
-"     back to the chosen theme's non-transparent color (foreground when not
-"     inverted, background when inverted, then the other side, then
-"     #D3C6AA).
+"   - Foreground never stays transparent: if it somehow resolves to NONE it
+"     falls back to the chosen theme's colors, then #D3C6AA.
 "   前景色：默认取当前配色主题 Normal 的前景色；
 "           可通过 g:lightline#colorscheme#muted#fg 覆盖。
 "   背景色：默认取当前配色主题 Normal 的背景色；
 "           可通过 g:lightline#colorscheme#muted#bg 覆盖。
 "   来源主题：g:lightline#colorscheme#muted#theme 可指定任意可用主题名，
-"           取该主题的前景/背景色；默认空 = 当前主题。
+"           取该主题的前景/背景色；默认空 = 当前主题。读取主题时会强制关闭
+"           已知的透明开关，从而得到其“非透明”的前景/背景色（透明主题也能
+"           取到真实背景色）。
 "   反转：g:lightline#colorscheme#muted#invert（布尔，默认 0）会把所选主题的
 "           前景与背景互换后作为 lightline 的前景/背景。
-"   透明背景（Normal 背景为 NONE）保持透明；但前景不会保持透明：若解析为
-"   NONE，则回退到所选主题的非透明颜色（未反转取前景，反转取背景，再退到
-"   另一侧，最后用 #D3C6AA）。
+"   前景不会保持透明：若仍解析为 NONE，则回退到所选主题的颜色，最后用
+"   #D3C6AA。
 "
 " Accepted override formats (both fg and bg) / 可用覆盖格式（前景与背景通用）:
 "   let g:lightline#colorscheme#muted#fg = '#D3C6AA'   " GUI hex / GUI 十六进制
@@ -157,12 +157,32 @@ endfunction
 " it (without triggering ColorScheme autocmds) and restoring the original.
 " 通过临时应用（不触发 ColorScheme 自动命令）并恢复原主题，读取指定主题
 " Normal 的前景/背景色。
+" Known per-theme transparent-background switches, forced off while reading
+" so we always obtain the theme's opaque foreground/background.
+" 已知的各主题透明背景开关；读取时强制关闭，以取到主题的非透明前景/背景。
+let s:transparent_opts = [
+      \ 'everforest_transparent_background',
+      \ 'catppuccin_transparent_background',
+      \ 'iceberg_transparent_background',
+      \ 'tokyonight_transparent_background',
+      \ ]
+
 function! s:read_theme_colors(theme) abort
   let l:orig = get(g:, 'colors_name', '')
   let l:switched = 0
-  if !empty(a:theme) && a:theme !=# l:orig
-    " Abort silently if the named colorscheme does not exist.
-    " 若指定主题不存在则静默放弃切换。
+  " Temporarily disable transparency for the theme we are about to read.
+  " 临时关闭即将读取主题的透明设置。
+  let l:saved = {}
+  for l:var in s:transparent_opts
+    if exists('g:' . l:var)
+      let l:saved[l:var] = get(g:, l:var, 0)
+      execute 'let g:' . l:var . ' = 0'
+    endif
+  endfor
+  if !empty(a:theme)
+    " Re-apply even when the requested theme equals the current one, so that
+    " the transparency switches forced above actually take effect.
+    " 即使请求主题与当前主题相同也重新加载，使上面强制关闭的透明开关生效。
     try
       noautocmd execute 'colorscheme ' . a:theme
       let l:switched = 1
@@ -174,9 +194,14 @@ function! s:read_theme_colors(theme) abort
   let l:bg_gui = synIDattr(hlID('Normal'), 'bg#')
   let l:fg_cterm = synIDattr(hlID('Normal'), 'fg', 'cterm')
   let l:bg_cterm = synIDattr(hlID('Normal'), 'bg', 'cterm')
+  " Restore original colorscheme. / 恢复原主题。
   if l:switched && !empty(l:orig)
     silent! noautocmd execute 'colorscheme ' . l:orig
   endif
+  " Restore transparency switches. / 恢复透明开关。
+  for [l:var, l:val] in items(l:saved)
+    execute 'let g:' . l:var . ' = ' . l:val
+  endfor
   return [l:fg_gui, l:bg_gui, l:fg_cterm, l:bg_cterm]
 endfunction
 
