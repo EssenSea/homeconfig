@@ -15,8 +15,8 @@
 "     obtained (a transparent theme still yields a real background color).
 "   - Invert: g:lightline#colorscheme#muted#invert (boolean, default 0) swaps
 "     the chosen theme's foreground and background for lightline.
-"   - Foreground never stays transparent: if it somehow resolves to NONE it
-"     falls back to the chosen theme's colors, then #D3C6AA.
+"   - A NONE foreground/background is kept: lightline then inherits the
+"     terminal's default foreground/background (no fixed fallback color).
 "   前景色：默认取当前配色主题 Normal 的前景色；
 "           可通过 g:lightline#colorscheme#muted#fg 覆盖。
 "   背景色：默认取当前配色主题 Normal 的背景色；
@@ -27,8 +27,8 @@
 "           取到真实背景色）。
 "   反转：g:lightline#colorscheme#muted#invert（布尔，默认 0）会把所选主题的
 "           前景与背景互换后作为 lightline 的前景/背景。
-"   前景不会保持透明：若仍解析为 NONE，则回退到所选主题的颜色，最后用
-"   #D3C6AA。
+"   前景/背景若为 NONE 则保持 NONE：此时 lightline 继承终端默认的前景/背景
+"   （不再强制填入固定颜色）。
 "
 " Accepted override formats (both fg and bg) / 可用覆盖格式（前景与背景通用）:
 "   let g:lightline#colorscheme#muted#fg = '#D3C6AA'   " GUI hex / GUI 十六进制
@@ -243,22 +243,15 @@ endfunction
 " bg：显式覆盖优先；否则用（可能反转后的）主题颜色。
 let s:invert = get(g:, 'lightline#colorscheme#muted#invert', 0)
 
+" Foreground: explicit override wins; otherwise the theme color (swapped by
+" invert).  A NONE value is kept as-is so lightline inherits the terminal
+" default foreground instead of being forced to a fixed color.
+" 前景：显式覆盖优先；否则用主题颜色（invert 时交换）。NONE 保持原样，
+" 让 lightline 继承终端默认前景，而不是被强制成固定颜色。
 if get(g:, 'lightline#colorscheme#muted#fg', '') != ''
-  let s:fg = s:resolve_pair('lightline#colorscheme#muted#fg', 'fg', '#D3C6AA')
+  let s:fg = s:resolve_pair('lightline#colorscheme#muted#fg', 'fg', '')
 else
   let s:fg = s:invert ? s:theme_pair('bg') : s:theme_pair('fg')
-endif
-" Foreground transparency fallback. / 前景透明回退。
-" Order: preferred side (by invert), then the other side, then a default.
-" 顺序：按 invert 首选的一侧，然后另一侧，最后默认色。
-if s:is_none(s:fg)
-  let s:fg = s:invert ? s:theme_pair('bg') : s:theme_pair('fg')
-  if s:is_none(s:fg)
-    let s:fg = s:invert ? s:theme_pair('fg') : s:theme_pair('bg')
-  endif
-  if s:is_none(s:fg)
-    let s:fg = ['#D3C6AA', 187]
-  endif
 endif
 
 if get(g:, 'lightline#colorscheme#muted#bg', '') != ''
