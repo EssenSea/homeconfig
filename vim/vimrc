@@ -27,6 +27,12 @@
 "   wellle/context.vim            - nice but heavy; 功能好但偏重
 "   vim-startify                  - fzf entry points cover recent files; 启动页由 fzf 相关入口承担
 "
+" BUILT-IN REPLACEMENTS / 由 Vim 内置功能替代的插件
+"   tpope/vim-commentary          -> packadd! comment   (gc/gcc, ic/ac text objects)
+"   romainl/vim-cool              -> packadd! nohlsearch (auto clear hlsearch)
+"   machakann/vim-highlightedyank -> packadd! hlyank     (highlight yanked region)
+"   kaarmu/typst.vim              -> autoload/typst.vim (built-in syntax/indent; no build/preview)
+"
 " ============================================================================
 set nocompatible
 " Disable compatibility with Vi. / 关闭与 Vi 的兼容模式。
@@ -38,6 +44,13 @@ endif
 packadd! justify
 packadd! helptoc
 " Optimize justify and helptoc behaviour. / 优化 justify / helptoc 插件行为。
+" Built-in replacements for former plugins / 以下内置包替代了原先的插件：
+"   packadd! comment    replaces tpope/vim-commentary
+"   packadd! nohlsearch replaces romainl/vim-cool
+"   packadd! hlyank     replaces machakann/vim-highlightedyank
+packadd! comment
+packadd! nohlsearch
+packadd! hlyank
 runtime ftplugin/man.vim
 " Load the built-in man page ftplugin. / 加载内置 man 帮助文件类型插件。
 
@@ -90,9 +103,8 @@ call plug#begin()
     " --- 搜索 / 打开 --------------------------------
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    " vim-cool: automatically disable hlsearch after search.
-    " vim-cool：搜索结束后自动清除搜索高亮。
-    Plug 'romainl/vim-cool'
+    " (removed) romainl/vim-cool -> built-in packadd! nohlsearch
+    " （已移除）romainl/vim-cool -> 内置 packadd! nohlsearch
 
     " --- movement ------------------------------------
     " --- 移动 --------------------------------------
@@ -109,9 +121,8 @@ call plug#begin()
     Plug 'tpope/vim-repeat'
     " let . repeat plugin actions
     " 让 . 可重复部分插件操作
-    Plug 'tpope/vim-commentary'
-    " comment code with gc
-    " 用 gc 快速注释/取消注释代码
+    " (removed) tpope/vim-commentary -> built-in packadd! comment
+    " （已移除）tpope/vim-commentary -> 内置 packadd! comment
     Plug 'junegunn/vim-easy-align'
     " alignment tool
     " 对齐工具
@@ -138,7 +149,8 @@ call plug#begin()
     Plug 'frazrepo/vim-rainbow'
     Plug 'liuchengxu/vim-which-key'
     Plug 'itchyny/lightline.vim'
-    Plug 'machakann/vim-highlightedyank'
+    " (removed) machakann/vim-highlightedyank -> built-in packadd! hlyank
+    " （已移除）machakann/vim-highlightedyank -> 内置 packadd! hlyank
     Plug 'andymass/vim-matchup'
     Plug 'kshenoy/vim-signature'
 
@@ -159,7 +171,8 @@ call plug#begin()
     Plug 'w0rp/ale'
     Plug 'maximbaz/lightline-ale'
     Plug 'lervag/vimtex'
-    Plug 'kaarmu/typst.vim'
+    " (removed) kaarmu/typst.vim -> built-in autoload/typst.vim
+    " （已移除）kaarmu/typst.vim -> 内置 autoload/typst.vim
     Plug 'imsnif/kdl.vim'
     Plug 'plasticboy/vim-markdown'
     Plug 'chrisbra/colorizer'
