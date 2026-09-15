@@ -105,6 +105,13 @@ let g:mundo_right = 1
 let g:mundo_width = 40
 let g:mundo_preview_height = 15
 
+" Block lightline from loading even though it is still installed in the
+" plugged directory: vim-plug adds every installed plugin to 'runtimepath',
+" so commenting out the Plug line alone is not enough.
+" 即使 lightline 仍安装在 plugged 目录中也阻止其加载：vim-plug 会把所有已安装
+" 插件加入 'runtimepath'，仅注释掉 Plug 行并不够。
+let g:loaded_lightline = 1
+
 filetype off
 call plug#begin()
     " --- search / open ------------------------------
@@ -159,7 +166,7 @@ call plug#begin()
     Plug 'majutsushi/tagbar'
     Plug 'frazrepo/vim-rainbow'
     Plug 'liuchengxu/vim-which-key'
-    Plug 'itchyny/lightline.vim'
+    " Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatusline
     " (removed) machakann/vim-highlightedyank -> built-in packadd! hlyank
     " （已移除）machakann/vim-highlightedyank -> 内置 packadd! hlyank
     Plug 'andymass/vim-matchup'
@@ -180,7 +187,7 @@ call plug#begin()
     " --- language / syntax / lint ----------------------
     " --- 语言 / 语法 / 检查 ----------------------------
     Plug 'w0rp/ale'
-    Plug 'maximbaz/lightline-ale'
+    " Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatusline
     Plug 'lervag/vimtex'
     " (removed) kaarmu/typst.vim -> built-in autoload/typst.vim
     " （已移除）kaarmu/typst.vim -> 内置 autoload/typst.vim
@@ -680,35 +687,20 @@ augroup END
 " Open :Man in a vertical window / 让 :Man 在纵向窗口打开
 let g:ft_man_open_mode = "vert"
 
-" Lightline + ALE status / 状态栏与 ALE 诊断状态
-" muted palette options (see vim/autoload/lightline/colorscheme/muted.vim):
-" muted 调色板选项（见 vim/autoload/lightline/colorscheme/muted.vim）：
-"   g:lightline#colorscheme#muted#theme  = ''           " source theme; '' = current
-"   g:lightline#colorscheme#muted#invert = 0            " swap fg/bg when 1
-"   g:lightline#colorscheme#muted#fg     = '#D3C6AA'    " explicit foreground
-"   g:lightline#colorscheme#muted#bg     = 'NONE'       " explicit background
-let g:lightline = {
-    \ 'colorscheme': 'muted',
-    \ 'component_expand': {
-    \     'linter_warnings': 'lightline#ale#warnings',
-    \     'linter_errors': 'lightline#ale#errors',
-    \ },
-    \ 'component_type': {
-    \     'linter_warnings': 'warning',
-    \     'linter_errors': 'error',
-    \ },
-    \ 'active': {
-    \     'left': [
-    \         ['mode', 'paste'],
-    \         ['readonly', 'filename', 'modified'],
-    \         ['linter_warnings', 'linter_errors'],
-    \     ],
-    \ },
-    \}
-augroup vimrc_status
-    autocmd!
-    autocmd User ALELint,LightlineUpdate call lightline#update()
-augroup END
+" Native statusline (replaces lightline) / 原生状态栏（替代 lightline）
+" Colors come from the mutedstatus backend; content/refresh are handled by
+" mutedstatusline. Options live in the mutedstatus# namespace (they also fall
+" back to the old g:lightline#colorscheme#muted#* names).
+" 颜色来自 mutedstatus 取色后端；内容/刷新由 mutedstatusline 处理。选项位于
+" mutedstatus# 命名空间（也会回退到旧的 g:lightline#colorscheme#muted#* 变量）。
+"   let g:mutedstatus#theme  = ''          " source theme; '' = current
+"   let g:mutedstatus#invert = 1           " swap fg/bg when 1
+"   let g:mutedstatus#fg     = '#D3C6AA'   " explicit foreground
+"   let g:mutedstatus#bg     = 'NONE'      " explicit background
+let g:mutedstatus#invert = 1
+" Install the statusline and its refresh autocmds.
+" 安装状态栏及其刷新自动命令。
+call mutedstatusline#setup()
 
 " Limelight is integrated with Goyo / Limelight 与 Goyo 联动
 let g:limelight_conceal_ctermfg = "gray"
