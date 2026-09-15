@@ -23,7 +23,6 @@
 "   tpope/vim-unimpaired          - nice but not needed; 有部分帮助但当前不需要
 "   tpope/vim-endwise             - language-specific magic; 语言相关自动补全，过于侵入
 "   godlygeek/tabular             - vim-easy-align covers alignment; 对齐由 vim-easy-align 提供
-"   simnalamburt/vim-mundo        - undo tree; 撤销树，需要时可再加
 "   wellle/context.vim            - nice but heavy; 功能好但偏重
 "   vim-startify                  - fzf entry points cover recent files; 启动页由 fzf 相关入口承担
 "
@@ -97,6 +96,15 @@ let g:mucomplete#can_complete.default = {}
 let g:mucomplete#can_complete.tex =
    \ { 'omni': { t -> t =~# g:vimtex#re#neocomplete . '$' } }
 
+" vim-mundo: visual undo tree. Prefer python3 (it needs a Python interface).
+" vim-mundo：可视化撤销树。优先使用 python3（依赖 Python 接口）。
+let g:mundo_prefer_python3 = 1
+" Open the undo tree on the right side. / 撤销树在右侧打开。
+let g:mundo_right = 1
+" Keep the tree/preview narrow and tidy. / 让树与预览窗口更紧凑。
+let g:mundo_width = 40
+let g:mundo_preview_height = 15
+
 filetype off
 call plug#begin()
     " --- search / open ------------------------------
@@ -121,6 +129,9 @@ call plug#begin()
     Plug 'tpope/vim-repeat'
     " let . repeat plugin actions
     " 让 . 可重复部分插件操作
+    Plug 'simnalamburt/vim-mundo'
+    " visual undo tree (undo history graph)
+    " 可视化撤销树（撤销历史图）
     " (removed) tpope/vim-commentary -> built-in packadd! comment
     " （已移除）tpope/vim-commentary -> 内置 packadd! comment
     Plug 'junegunn/vim-easy-align'
@@ -374,6 +385,9 @@ nnoremap <Leader>s  :source $MYVIMRC<CR>
 " reload vimrc
 " 重新加载 vimrc
 
+nnoremap <Leader>u  :MundoToggle<CR>
+" toggle the visual undo tree (vim-mundo)
+" 开关可视化撤销树（vim-mundo）
 
 " NERDTree toggle / NERDTree 开关
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
