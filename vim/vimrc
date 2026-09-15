@@ -105,13 +105,6 @@ let g:mundo_right = 1
 let g:mundo_width = 40
 let g:mundo_preview_height = 15
 
-" Block lightline from loading even though it is still installed in the
-" plugged directory: vim-plug adds every installed plugin to 'runtimepath',
-" so commenting out the Plug line alone is not enough.
-" 即使 lightline 仍安装在 plugged 目录中也阻止其加载：vim-plug 会把所有已安装
-" 插件加入 'runtimepath'，仅注释掉 Plug 行并不够。
-let g:loaded_lightline = 1
-
 filetype off
 call plug#begin()
     " --- search / open ------------------------------
@@ -166,7 +159,7 @@ call plug#begin()
     Plug 'majutsushi/tagbar'
     Plug 'frazrepo/vim-rainbow'
     Plug 'liuchengxu/vim-which-key'
-    " Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatusline
+    " Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatus
     " (removed) machakann/vim-highlightedyank -> built-in packadd! hlyank
     " （已移除）machakann/vim-highlightedyank -> 内置 packadd! hlyank
     Plug 'andymass/vim-matchup'
@@ -187,7 +180,7 @@ call plug#begin()
     " --- language / syntax / lint ----------------------
     " --- 语言 / 语法 / 检查 ----------------------------
     Plug 'w0rp/ale'
-    " Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatusline
+    " Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatus
     Plug 'lervag/vimtex'
     " (removed) kaarmu/typst.vim -> built-in autoload/typst.vim
     " （已移除）kaarmu/typst.vim -> 内置 autoload/typst.vim
@@ -237,8 +230,8 @@ set termguicolors
 set t_Co=256
 set background=dark
 " Use retrobox as the active colorscheme. / 启用 retrobox 配色。
-let g:everforest_transparent_background = 2
-colorscheme retrobox
+let g:everforest_transparent_background = 0
+colorscheme novum
 
 let g:rainbow_active = 1
 " Rainbow parentheses on. / 开启彩虹括号。
@@ -293,6 +286,7 @@ set splitbelow
 set signcolumn=yes
 set hidden
 set completeopt=fuzzy,menu,menuone,noselect,popup
+set completepopup=align:menu,opacity:20,shadow:on,width:78
 set confirm
 set virtualedit=block,onemore
 set showbreak='>|'
@@ -660,25 +654,23 @@ augroup vimrc_text
     autocmd FileType text,markdown,tex nnoremap <buffer> k gk
 augroup END
 
-" Force lightline to re-read its configuration and palette.
-" lightline caches its state (s:_) after the first init, so a plain
-" ColorScheme/update would keep the previous palette. Re-sourcing the custom
-" palette plus lightline#init()/colorscheme() gives a full refresh.
-" 强制 lightline 重新读取配置与调色板。lightline 首次初始化后会缓存状态
-" (s:_)，仅靠 ColorScheme/update 会停留在旧调色板。重新 source 自定义调色板
-" 并调用 lightline#init()/colorscheme() 才能完整刷新。
-function! RefreshLightline() abort
-    silent! runtime autoload/lightline/colorscheme/muted.vim
-    silent! call lightline#init()
-    silent! call lightline#colorscheme()
-    silent! call lightline#update()
+" Refresh the native mutedstatus colours.
+" Highlight groups only depend on the theme and 'background' (active/inactive
+" is resolved per-window at render time), so a refresh just recomputes the
+" groups. mutedstatus#Setup() installs both the statusline and the
+" refresh autocmds.
+" 刷新原生 mutedstatus 的颜色。高亮组只依赖主题与 'background'（活动/
+" 非活动在渲染时逐窗口解析），因此刷新只需重算高亮组。mutedstatus#Setup()
+" 会同时安装状态栏与刷新自动命令。
+function! RefreshStatusline() abort
+    silent! call mutedstatus#Refresh()
 endfunction
 
 augroup vimrc_overwrite
     autocmd!
-    " Reload config while editing itself, then refresh lightline.
-    " 编辑本 vimrc 时保存即自动加载，然后刷新 lightline。
-    autocmd BufWritePost .vimrc,vimrc source <afile> | call RefreshLightline()
+    " Reload config while editing itself, then refresh the statusline.
+    " 编辑本 vimrc 时保存即自动加载，然后刷新状态栏。
+    autocmd BufWritePost .vimrc,vimrc source <afile> | call RefreshStatusline()
 augroup END
 
 " ============================================================================
@@ -689,10 +681,10 @@ let g:ft_man_open_mode = "vert"
 
 " Native statusline (replaces lightline) / 原生状态栏（替代 lightline）
 " Colors come from the mutedstatus backend; content/refresh are handled by
-" mutedstatusline. Options live in the mutedstatus# namespace (they also fall
-" back to the old g:lightline#colorscheme#muted#* names).
-" 颜色来自 mutedstatus 取色后端；内容/刷新由 mutedstatusline 处理。选项位于
-" mutedstatus# 命名空间（也会回退到旧的 g:lightline#colorscheme#muted#* 变量）。
+" mutedstatus itself. Options live in the g:mutedstatus#* namespace; there is no
+" lightline dependency anymore.
+" 颜色来自 mutedstatus 取色后端；内容/刷新由 mutedstatus 处理。选项位于
+" g:mutedstatus#* 命名空间；已无 lightline 依赖。
 "   let g:mutedstatus#theme  = ''          " source theme; '' = current
 "   let g:mutedstatus#invert = 1           " swap fg/bg when 1
 "   let g:mutedstatus#fg     = '#D3C6AA'   " explicit foreground
@@ -700,7 +692,36 @@ let g:ft_man_open_mode = "vert"
 let g:mutedstatus#invert = 1
 " Install the statusline and its refresh autocmds.
 " 安装状态栏及其刷新自动命令。
-call mutedstatusline#setup()
+call mutedstatus#Setup()
+
+" ============================================================================
+" 12b. (legacy) lightline configuration, kept for reference
+" 12b.（旧）lightline 配置，保留作参考
+" ============================================================================
+" " Lightline + ALE status
+" let g:lightline#colorscheme#muted#invert = 1
+" let g:lightline = {
+"     \ 'colorscheme': 'muted',
+"     \ 'component_expand': {
+"     \     'linter_warnings': 'lightline#ale#warnings',
+"     \     'linter_errors': 'lightline#ale#errors',
+"     \ },
+"     \ 'component_type': {
+"     \     'linter_warnings': 'warning',
+"     \     'linter_errors': 'error',
+"     \ },
+"     \ 'active': {
+"     \     'left': [
+"     \         ['mode', 'paste'],
+"     \         ['readonly', 'filename', 'modified'],
+"     \         ['linter_warnings', 'linter_errors'],
+"     \     ],
+"     \ },
+"     \}
+" augroup vimrc_status
+"     autocmd!
+"     autocmd User ALELint,LightlineUpdate call lightline#update()
+" augroup END
 
 " Limelight is integrated with Goyo / Limelight 与 Goyo 联动
 let g:limelight_conceal_ctermfg = "gray"
