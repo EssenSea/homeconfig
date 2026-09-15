@@ -16,22 +16,84 @@ set cpo&vim
 
 " --- component content (pure text, no colors) ------------------------------
 " --- 组件内容（纯文本，不含颜色）------------------------------------------
-let s:mode_map = {
-      \ 'n'      : 'NORMAL',
-      \ 'i'      : 'INSERT',
-      \ 'R'      : 'REPLACE',
-      \ 'v'      : 'VISUAL',
-      \ 'V'      : 'V-LINE',
-      \ "\<C-v>" : 'V-BLOCK',
-      \ 'c'      : 'COMMAND',
-      \ 's'      : 'SELECT',
-      \ 'S'      : 'S-LINE',
-      \ "\<C-s>" : 'S-BLOCK',
-      \ 't'      : 'TERMINAL',
+" Full-mode names: keys are the value of mode(1) (the complete mode string).
+" 完整模式名：键为 mode(1) 的值（完整模式串）。
+let s:mode_full = {
+      \ 'n'        : 'NORMAL',
+      \ 'no'       : 'NORMAL',
+      \ 'nov'      : 'NORMAL',
+      \ 'noV'      : 'NORMAL',
+      \ "no\<C-v>" : 'NORMAL',
+      \ 'niI'      : 'NORMAL',
+      \ 'niR'      : 'NORMAL',
+      \ 'niV'      : 'NORMAL',
+      \ 'nt'       : 'TERM-N',
+      \ 'v'        : 'VISUAL',
+      \ 'vs'       : 'VISUAL',
+      \ 'V'        : 'V-LINE',
+      \ 'Vs'       : 'V-LINE',
+      \ "\<C-v>"   : 'V-BLOCK',
+      \ "\<C-v>s"  : 'V-BLOCK',
+      \ 's'        : 'SELECT',
+      \ 'S'        : 'S-LINE',
+      \ "\<C-s>"   : 'S-BLOCK',
+      \ 'i'        : 'INSERT',
+      \ 'ic'       : 'INSERT-C',
+      \ 'ix'       : 'INSERT-X',
+      \ 'R'        : 'REPLACE',
+      \ 'Rc'       : 'REPLACE-C',
+      \ 'Rx'       : 'REPLACE-X',
+      \ 'Rv'       : 'V-REPLACE',
+      \ 'Rvc'      : 'V-REPLACE-C',
+      \ 'Rvx'      : 'V-REPLACE-X',
+      \ 'c'        : 'COMMAND',
+      \ 'ct'       : 'CMD-TERM',
+      \ 'cr'       : 'CMD-REPLACE',
+      \ 'cv'       : 'EX',
+      \ 'cvr'      : 'EX-REPLACE',
+      \ 'ce'       : 'EX-NORMAL',
+      \ 'r'        : 'HIT-ENTER',
+      \ 'rm'       : 'MORE',
+      \ 'r?'       : 'CONFIRM',
+      \ '!'        : 'SHELL',
+      \ 't'        : 'TERMINAL',
       \ }
 
-function! mutedstatusline#mode() abort
-  return get(s:mode_map, mode(), mode())
+" Single-letter fallback for any future/unknown mode strings.
+" 单字母回退，用于未来/未知模式串。
+let s:mode_single = {
+      \ 'n' : 'NORMAL',
+      \ 'v' : 'VISUAL',
+      \ 'V' : 'V-LINE',
+      \ 's' : 'SELECT',
+      \ 'S' : 'S-LINE',
+      \ 'i' : 'INSERT',
+      \ 'R' : 'REPLACE',
+      \ 'c' : 'COMMAND',
+      \ 'r' : 'PROMPT',
+      \ '!' : 'SHELL',
+      \ 't' : 'TERMINAL',
+      \ }
+
+" Return a human readable mode string, recognising composite modes.
+" An optional argument overrides the mode string (mainly for testing).
+" 返回可读的模式字样，支持组合状态识别。
+" 可选参数用于覆盖模式串（主要用于测试）。
+function! mutedstatusline#mode(...) abort
+  let l:full = a:0 ? a:1 : mode(1)
+  if has_key(s:mode_full, l:full)
+    return s:mode_full[l:full]
+  endif
+  " Fall back to the leading character (mode() semantics).
+  " 回退到首字符（mode() 语义）。
+  let l:first = l:full[0]
+  if has_key(s:mode_full, l:first)
+    return s:mode_full[l:first]
+  endif
+  if has_key(s:mode_single, l:first)
+    return s:mode_single[l:first]
+  endif
+  return l:full ==# '' ? l:first : l:full
 endfunction
 
 function! mutedstatusline#paste() abort
