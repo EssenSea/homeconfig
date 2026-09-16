@@ -58,10 +58,6 @@
       "rev": "ac5dffcc52b8378fbb15efeb0497a83e57a0b01c",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
-    "mini.surround": {
-      "rev": "8d5d0c5aa92449368ac251e85451d79d8f69d296",
-      "src": "https://github.com/nvim-mini/mini.surround"
-    },
     "noice.nvim": {
       "rev": "7bfd942445fb63089b59f97ca487d605e715f155",
       "src": "https://github.com/folke/noice.nvim"
