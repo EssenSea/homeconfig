@@ -509,7 +509,7 @@ export def String(): string
   s ..= $' %#{file_g}# %( %<%t %)'
   s ..= '%m%r'
   # right side / 右侧
-  s ..= $'%#{right_g}#%= %y | Buf:%n | %P of %LL | [%l:%c] '
+  s ..= $'%#{right_g}#%= %y | Buf:%n | [%l:%c] %P of %LL '
   return s
 enddef
 

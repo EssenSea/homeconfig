@@ -48,7 +48,7 @@ packadd! helptoc
 "   packadd! nohlsearch replaces romainl/vim-cool
 "   packadd! hlyank     replaces machakann/vim-highlightedyank
 packadd! comment
-packadd! nohlsearch
+" packadd! nohlsearch
 packadd! hlyank
 packadd! helpcurwin
 packadd! cfilter
@@ -125,7 +125,8 @@ call plug#begin()
     " --- 搜索 / 打开 --------------------------------
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    " (removed) romainl/vim-cool -> built-in packadd! nohlsearch
+    Plug 'romainl/vim-cool'
+    " -> built-in packadd! nohlsearch
     " （已移除）romainl/vim-cool -> 内置 packadd! nohlsearch
 
     " --- movement ------------------------------------
@@ -293,14 +294,15 @@ set listchars=tab:>\ ,trail:-,extends:>,precedes:<
 set shortmess+=I
 set showmatch
 set scrolloff=5
-set updatetime=200
+set updatetime=2000
 set ttyfast
 set splitright
 set splitbelow
 set signcolumn=yes
 set hidden
 set completeopt=fuzzy,menu,menuone,noselect,popup
-set completepopup=align:menu,opacity:20,shadow:on,width:78
+set pumopt=opacity:100,width:30,height:15,border:round,margin
+set completepopup=align:item,opacity:20,shadow:on,width:78,border:round
 set confirm
 set virtualedit=block,onemore
 set showbreak='>|'
@@ -324,13 +326,6 @@ nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 nnoremap <C-o> <C-o>zz
 nnoremap <C-i> <C-i>zz
-
-" <C-h> manual clear-search-highlight is intentionally left disabled;
-" vim-cool clears hlsearch automatically after a search settles.
-" <C-h> 手动清除搜索高亮当前保持禁用；
-" vim-cool 会在搜索结束并稳定后自动清除高亮。
-" Re-enable / 如需启用改为：
-" nnoremap <silent> <C-h> :nohlsearch<CR>
 
 " ============================================================================
 " 5. Persistence: undo / backup / 持久化：撤销与备份
@@ -397,22 +392,18 @@ nnoremap <Leader>e  :edit $MYVIMRC<CR>
 " edit vimrc
 " 编辑 vimrc
 
-nnoremap <Leader>s  :source $MYVIMRC<CR>
-" reload vimrc
-" 重新加载 vimrc
-
 nnoremap <Leader>u  :MundoToggle<CR>
 " toggle the visual undo tree (vim-mundo)
 " 开关可视化撤销树（vim-mundo）
 
 " NERDTree toggle / NERDTree 开关
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
+
 " Tagbar toggle / Tagbar 开关（函数/类列表）
 nnoremap <silent> <C-u> :TagbarToggle<CR>
-" Goyo: distraction-free writing (moved from <C-g>)
-" Goyo：无干扰写作模式（原来绑定在 <C-g>，现在移到 <Leader>go）
-" <Leader>go = toggle Goyo
-" <Leader>go = 开关 Goyo
+
+" Goyo: distraction-free writing
+" Goyo：无干扰写作模式
 nnoremap <silent> <Leader>go :Goyo<CR>
 
 " Translation / 翻译（vim-translator）
@@ -516,11 +507,11 @@ nnoremap <silent> <Leader>th  :Colors<CR>
 nnoremap <silent> <Leader>mm  :Maps<CR>
 " Maps
 " 按键映射列表
+noremap <silent> <leader>f: :History:<CR>
+noremap <silent> <leader>f/ :History/<CR>
 
 " HardMode toggle: <Leader>ht
 " HardMode 开关：<Leader>ht
-" Turns off arrow/hjkl navigation; call :EasyMode to exit.
-" 关闭方向键/hjkl 移动；用 :EasyMode 退出。
 nnoremap <silent> <Leader>ha :call ToggleHardMode()<CR>
 
 " easymotion / 快速跳转
@@ -704,7 +695,7 @@ let g:ft_man_open_mode = "vert"
 "   let g:mutedstatus#invert = 1           " swap fg/bg when 1
 "   let g:mutedstatus#fg     = '#D3C6AA'   " explicit foreground
 "   let g:mutedstatus#bg     = 'NONE'      " explicit background
-let g:mutedstatus#invert = 1
+let g:mutedstatus#invert = 0
 " Install the statusline and its refresh autocmds.
 " 安装状态栏及其刷新自动命令。
 call mutedstatus#Setup()
