@@ -465,41 +465,28 @@ export def Paste(): string
   return &paste ? 'PASTE' : ''
 enddef
 
-export def Readonly(): string
-  return &readonly ? 'RO' : ''
-enddef
-
-export def Modified(): string
-  return &modified ? '+' : (&modifiable ? '' : '-')
-enddef
-
-export def Filename(): string
-  var name = expand('%:t')
-  return empty(name) ? '[No Name]' : name
-enddef
-
 # ALE diagnostics (empty when ALE is unavailable). / ALE 诊断（不可用时为空）。
-def AleCount(kind: string): number
-  if !exists('*ale#statusline#Count')
-    return 0
-  endif
-  var c = ale#statusline#Count(bufnr(''))
-  if kind ==# 'error'
-    return c.error + c.style_error
-  else
-    return c.warning + c.style_warning
-  endif
-enddef
+# def AleCount(kind: string): number
+#   if !exists('*ale#statusline#Count')
+#     return 0
+#   endif
+#   var c = ale#statusline#Count(bufnr(''))
+#   if kind ==# 'error'
+#     return c.error + c.style_error
+#   else
+#     return c.warning + c.style_warning
+#   endif
+# enddef
 
-export def AleErrors(): string
-  var n = AleCount('error')
-  return n ? printf('E:%d', n) : ''
-enddef
+# export def AleErrors(): string
+#   var n = AleCount('error')
+#   return n ? printf('E:%d', n) : ''
+# enddef
 
-export def AleWarnings(): string
-  var n = AleCount('warning')
-  return n ? printf('W:%d', n) : ''
-enddef
+# export def AleWarnings(): string
+#   var n = AleCount('warning')
+#   return n ? printf('W:%d', n) : ''
+# enddef
 
 # Whether the window currently being rendered is the active window.
 # The '%!' expression and 'statusline' are evaluated per window with
@@ -531,23 +518,28 @@ export def String(): string
   var mode_g  = Group('MutedStatusMode',    'MutedStatusInactive')
   var file_g  = Group('MutedStatusFile',    'MutedStatusInactive')
   var right_g = Group('MutedStatusRight',   'MutedStatusInactive')
-  var error_g = Group('MutedStatusError',   'MutedStatusInactive')
-  var warn_g  = Group('MutedStatusWarning', 'MutedStatusInactive')
+  # var error_g = Group('MutedStatusError',   'MutedStatusInactive')
+  # var warn_g  = Group('MutedStatusWarning', 'MutedStatusInactive')
 
   var s = ''
   # mode chunk (emphasis) / 模式区块（强调）
-  s ..= $'%#{mode_g}# %{{mutedstatus#Mode()}}%{{mutedstatus#Paste()}}'
+  s ..= $'%#{mode_g}# %{{mutedstatus#Mode()}}%{{mutedstatus#Paste()}} '
   # file chunk (ordinary) / 文件区块（普通）
   # '%<' marks the truncation point: long paths are shortened here first so
   # the right-aligned section is never pushed off screen.
   # '%<' 标记截断点：长路径优先在此缩短，右侧区块不会被挤出屏幕。
-  s ..= $'%#{file_g}# %( %<%{{mutedstatus#Filename()}} %)'
-  s ..= '%{mutedstatus#Modified()}%{mutedstatus#Readonly()}'
+  # '%t' = file name (tail); '%m' = modified [+] / nomodifiable [-];
+  # '%r' = readonly [RO].  All three are native statusline items, so no
+  # helper functions are needed.
+  # '%t' = 文件名（尾段）；'%m' = 已修改 [+] / 不可修改 [-]；'%r' = 只读 [RO]。
+  # 三者都是 statusline 内建项，无需辅助函数。
+  s ..= $' %#{file_g}# %( %<%t %)'
+  s ..= '%m%r'
   # diagnostics (emphasis) / 诊断（强调）
-  s ..= $'%#{error_g}#%{{mutedstatus#AleErrors()}}'
-  s ..= $'%#{warn_g}#%{{mutedstatus#AleWarnings()}}'
+  # s ..= $'%#{error_g}#%{{mutedstatus#AleErrors()}}'
+  # s ..= $'%#{warn_g}#%{{mutedstatus#AleWarnings()}}'
   # right side / 右侧
-  s ..= $'%#{right_g}#%= %l:%c  %P '
+  s ..= $'%#{right_g}#%= %y | Buf:%n | %P of %LL | [%l:%c] | UNIX '
   return s
 enddef
 
@@ -592,6 +584,6 @@ export def Setup(): void
     autocmd OptionSet background mutedstatus#Refresh() | mutedstatus#Redraw()
     # Diagnostics alter the statusline text while editing; redraw then.
     # 诊断内容在编辑时变化，需重绘状态栏。
-    autocmd User ALELint,ALEIndexInvalidate mutedstatus#Redraw()
+    # autocmd User ALELint,ALEIndexInvalidate mutedstatus#Redraw()
   augroup END
 enddef
