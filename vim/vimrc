@@ -36,9 +36,9 @@
 set nocompatible
 " Disable compatibility with Vi. / 关闭与 Vi 的兼容模式。
 
-if has("syntax") && has("eval")
-    packadd! matchit
-endif
+" if has("syntax") && has("eval")
+"     packadd! matchit
+" endif
 " Enable matchit when available. / 可用时启用 matchit（% 扩展匹配）。
 packadd! justify
 packadd! helptoc
@@ -50,6 +50,10 @@ packadd! helptoc
 packadd! comment
 packadd! nohlsearch
 packadd! hlyank
+packadd! helpcurwin
+packadd! cfilter
+packadd! shellmenu
+packadd! editexisting
 runtime ftplugin/man.vim
 " Load the built-in man page ftplugin. / 加载内置 man 帮助文件类型插件。
 
@@ -378,12 +382,13 @@ nnoremap <Leader>bd :bd<CR>
 " delete buffer
 " 删除缓冲区
 
-nnoremap <Leader>hc :helpclose<CR>
-" close help
-" 关闭帮助窗口
+nnoremap <Leader>hc <Plug>HelpCurwin;
 nnoremap <Leader>ht <Cmd>HelpToc<CR>
 " HelpToc
 " help 文档目录开关
+nnoremap <Leader>hx :helpclose<CR>
+" close help
+" 关闭帮助窗口
 nnoremap <Leader>bl :ls<CR>
 " list buffers
 " 列出缓冲区
@@ -759,8 +764,9 @@ augroup END
 
 " Open help and man pages in a vertical split on the LEFT side
 " 帮助与 man 页面在左侧纵向分割中打开
-" augroup vimrc_help_man_left
-"     autocmd!
-"     autocmd FileType help wincmd H
+augroup vimrc_help_man_left
+    autocmd!
+    autocmd FileType help wincmd H
 "     autocmd FileType man wincmd H
-" augroup END
+augroup END
+autocmd FileType help setlocal bufhidden=hide buflisted
