@@ -586,7 +586,7 @@ nmap <silent> ]a <Plug>(ale_next_wrap)
 let g:tex_flavor = "lualatex"
 let g:tex_conceal = "abdmg"
 set conceallevel=1
-set ambiwidth=double
+set ambiwidth=single
 highlight Conceal ctermbg=none
 syntax enable
 let g:vimtex_indent_enabled = 1
