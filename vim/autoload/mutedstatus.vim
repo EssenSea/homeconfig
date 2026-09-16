@@ -465,29 +465,6 @@ export def Paste(): string
   return &paste ? 'PASTE' : ''
 enddef
 
-# ALE diagnostics (empty when ALE is unavailable). / ALE 诊断（不可用时为空）。
-# def AleCount(kind: string): number
-#   if !exists('*ale#statusline#Count')
-#     return 0
-#   endif
-#   var c = ale#statusline#Count(bufnr(''))
-#   if kind ==# 'error'
-#     return c.error + c.style_error
-#   else
-#     return c.warning + c.style_warning
-#   endif
-# enddef
-
-# export def AleErrors(): string
-#   var n = AleCount('error')
-#   return n ? printf('E:%d', n) : ''
-# enddef
-
-# export def AleWarnings(): string
-#   var n = AleCount('warning')
-#   return n ? printf('W:%d', n) : ''
-# enddef
-
 # Whether the window currently being rendered is the active window.
 # The '%!' expression and 'statusline' are evaluated per window with
 # g:statusline_winid bound to that window, so this is safe to call from
@@ -509,7 +486,6 @@ enddef
 # 组装 statusline 字符串。
 # Uses the highlight groups defined by ApplyDefault():
 #   MutedStatusMode / MutedStatusFile / MutedStatusRight /
-#   MutedStatusError / MutedStatusWarning / MutedStatusInactive
 # Inactive windows map every chunk to MutedStatusInactive so the current
 # window stands out.
 # 使用 ApplyDefault() 定义的高亮组。非活动窗口的所有区块映射到
@@ -518,9 +494,6 @@ export def String(): string
   var mode_g  = Group('MutedStatusMode',    'MutedStatusInactive')
   var file_g  = Group('MutedStatusFile',    'MutedStatusInactive')
   var right_g = Group('MutedStatusRight',   'MutedStatusInactive')
-  # var error_g = Group('MutedStatusError',   'MutedStatusInactive')
-  # var warn_g  = Group('MutedStatusWarning', 'MutedStatusInactive')
-
   var s = ''
   # mode chunk (emphasis) / 模式区块（强调）
   s ..= $'%#{mode_g}# %{{mutedstatus#Mode()}}%{{mutedstatus#Paste()}} '
@@ -535,11 +508,8 @@ export def String(): string
   # 三者都是 statusline 内建项，无需辅助函数。
   s ..= $' %#{file_g}# %( %<%t %)'
   s ..= '%m%r'
-  # diagnostics (emphasis) / 诊断（强调）
-  # s ..= $'%#{error_g}#%{{mutedstatus#AleErrors()}}'
-  # s ..= $'%#{warn_g}#%{{mutedstatus#AleWarnings()}}'
   # right side / 右侧
-  s ..= $'%#{right_g}#%= %y | Buf:%n | %P of %LL | [%l:%c] | UNIX '
+  s ..= $'%#{right_g}#%= %y | Buf:%n | %P of %LL | [%l:%c] '
   return s
 enddef
 
@@ -582,8 +552,5 @@ export def Setup(): void
     # 仅在配色或 'background' 变化时刷新高亮。
     autocmd ColorScheme * mutedstatus#Refresh() | mutedstatus#Redraw()
     autocmd OptionSet background mutedstatus#Refresh() | mutedstatus#Redraw()
-    # Diagnostics alter the statusline text while editing; redraw then.
-    # 诊断内容在编辑时变化，需重绘状态栏。
-    # autocmd User ALELint,ALEIndexInvalidate mutedstatus#Redraw()
   augroup END
 enddef
