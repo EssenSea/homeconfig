@@ -429,23 +429,15 @@ nnoremap <silent> <Leader>aw :ArgWrap<CR>
 " --- git (fugitive / gv.vim) -------------------------
 " --- Git（fugitive / gv.vim）-------------------------
 " <Leader>gs = git status / git 状态窗口
-nnoremap <silent> <Leader>gs  :Gstatus<CR>
+nnoremap <silent> <Leader>gs  :G<CR>
 " <Leader>gd = diff current file / 比较当前文件改动
 nnoremap <silent> <Leader>gd  :Gdiffsplit<CR>
 " <Leader>gb = blame current file / 查看当前文件 blame
-nnoremap <silent> <Leader>gb  :Gblame<CR>
+nnoremap <silent> <Leader>gb  :Git blame<CR>
 " <Leader>gl = commit graph / 仓库提交历史图
 nnoremap <silent> <Leader>gl  :GV<CR>
 " <Leader>gw = stage/write file / 暂存并写入当前文件
 nnoremap <silent> <Leader>gw  :Gwrite<CR>
-
-" --- surround text-objects (vim-surround) ----
-" ys = add surround / 添加包围
-" cs = change surround / 修改包围
-" ds = delete surround / 删除包围
-" is = inner surround / 包围的内部（不含括号本身）
-" as = a surround / 整个包围结构（含括号）
-" 示例：cs(" 将 () 换成 “”；cis 修改内部内容。
 
 " --- fzf.vim shortcuts -------------------------------
 " --- fzf.vim 快捷键 --------------------------------
@@ -730,12 +722,13 @@ call mutedstatus#Setup()
 " augroup END
 
 " Limelight is integrated with Goyo / Limelight 与 Goyo 联动
-let g:limelight_conceal_ctermfg = "gray"
-augroup vimrc_goyo
-    autocmd!
-    autocmd User GoyoEnter Limelight
-    autocmd User GoyoLeave Limelight!
-augroup END
+" let g:limelight_conceal_ctermfg = "gray"
+" augroup vimrc_goyo
+"     autocmd!
+"     autocmd User GoyoEnter Limelight
+"     autocmd User GoyoLeave Limelight!
+" augroup END
+
 
 " Open NERDTree when Vim starts with a directory argument
 " 当以目录参数启动 Vim 时自动打开 NERDTree
