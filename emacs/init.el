@@ -104,12 +104,14 @@
 (global-auto-revert-mode t)  ; 自动刷新 Buffer
 (savehist-mode t)            ; 保存历史记录
 (electric-pair-mode t)       ; 自动补全括号
+(electric-indent-mode t)
 (auto-fill-mode t)           ; 启用自动折行
 (delete-selection-mode t)    ; 覆盖选中文本
 
-(setq display-time-load-average nil
-      display-time-load-average-threshold nil
-      display-time-day-and-date t)
+(setq
+ display-time-load-average nil
+ display-time-load-average-threshold nil
+ display-time-day-and-date t)
 (display-time-mode t)
 ;; 优化超长行处理性能
 (global-so-long-mode t)
@@ -121,11 +123,12 @@
 (use-package helpful
   :ensure t
   :bind
-  (("C-h f" . helpful-callable)
+  (
+   ;; (("C-h f" . helpful-callable)
    ("C-h v" . helpful-variable)
    ("C-h k" . helpful-key)
-   ;; Lookup the current symbol at point.  C-c C-d is a common keybinding
-   ;; for this in Lisp modes.
+   ;; Lookup the current symbol at point.  C-c C-d is a common keybinding for
+   ;; this in Lisp modes.
    ("C-c C-d" . helpful-at-point)
    ;; By default, C-h F is bound to `Info-goto-emacs-command-node'.  Helpful
    ;; already links to the manual, if a function is referenced there.
