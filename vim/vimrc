@@ -105,6 +105,16 @@ let g:mundo_right = 1
 let g:mundo_width = 40
 let g:mundo_preview_height = 15
 
+" vim-matchup: do NOT hijack the statusline when the match is off-screen.
+" matchparen replaces the window-local 'statusline' with its own
+" `%{matchup#matchparen#scroll_update(...)}` prompt whenever the matching
+" open/close of a def/if block is outside the visible area, which makes the
+" statusline look like unrelated/warning text.  Disable that behaviour.
+" vim-matchup：当匹配的开/闭边界在屏幕外时，不要覆盖状态栏。matchparen 会把
+" window-local 'statusline' 换成自己的 `%{matchup#matchparen#scroll_update(...)}`
+" 提示，使状态栏看起来像无关/警告文字。关闭该行为。
+let g:matchup_matchparen_status_offscreen = 0
+
 filetype off
 call plug#begin()
     " --- search / open ------------------------------
