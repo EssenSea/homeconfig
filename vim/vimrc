@@ -19,18 +19,26 @@
 "   - python3    : required by UltiSnips snippet engine
 "
 " REMOVED PLUGINS AND REASONS / 已移除插件及原因
-"   justinmk/vim-sneak            - easymotion covers two-char jump; easymotion 已覆盖双字符跳转
-"   tpope/vim-unimpaired          - nice but not needed; 有部分帮助但当前不需要
-"   tpope/vim-endwise             - language-specific magic; 语言相关自动补全，过于侵入
-"   godlygeek/tabular             - vim-easy-align covers alignment; 对齐由 vim-easy-align 提供
+"   justinmk/vim-sneak            - easymotion covers two-char jump;
+"   easymotion 已覆盖双字符跳转
+"   tpope/vim-unimpaired          - nice but not needed;
+"   有部分帮助但当前不需要
+"   tpope/vim-endwise             - language-specific magic;
+"   语言相关自动补全，过于侵入
+"   godlygeek/tabular             - vim-easy-align covers alignment; 对齐由
+"   vim-easy-align 提供
 "   wellle/context.vim            - nice but heavy; 功能好但偏重
-"   vim-startify                  - fzf entry points cover recent files; 启动页由 fzf 相关入口承担
+"   vim-startify                  - fzf entry points cover recent files;
+"   启动页由 fzf 相关入口承担
 "
 " BUILT-IN REPLACEMENTS / 由 Vim 内置功能替代的插件
-"   tpope/vim-commentary          -> packadd! comment   (gc/gcc, ic/ac text objects)
+"   tpope/vim-commentary          -> packadd! comment   (gc/gcc, ic/ac text
+"   objects)
 "   romainl/vim-cool              -> packadd! nohlsearch (auto clear hlsearch)
-"   machakann/vim-highlightedyank -> packadd! hlyank     (highlight yanked region)
-"   kaarmu/typst.vim              -> autoload/typst.vim (built-in syntax/indent; no build/preview)
+"   machakann/vim-highlightedyank -> packadd! hlyank     (highlight yanked
+"   region)
+"   kaarmu/typst.vim              -> autoload/typst.vim (built-in
+"   syntax/indent; no build/preview)
 "
 " ============================================================================
 set nocompatible
@@ -71,8 +79,10 @@ let g:AutoPairsShortcutJump = ""
 " We orchestrate <CR>/<Space> manually so mucomplete / UltiSnips / auto-pairs
 " do not fight over those keys.  auto-pairs' return/space logic is still
 " explicitly invoked via <Plug>AutoPairsReturn / AutoPairsSpace().
-" 我们手动编排 <CR>/<Space>，避免 mucomplete / UltiSnips / auto-pairs 争抢按键。
-" auto-pairs 的回车 / 空格逻辑仍通过 <Plug>AutoPairsReturn / AutoPairsSpace() 显式调用。
+" 我们手动编排 <CR>/<Space>，避免 mucomplete / UltiSnips / auto-pairs
+" 争抢按键。
+" auto-pairs 的回车 / 空格逻辑仍通过 <Plug>AutoPairsReturn / AutoPairsSpace()
+" 显式调用。
 let g:AutoPairsMapCR = 0
 let g:AutoPairsMapSpace = 0
 
@@ -114,9 +124,11 @@ let g:mundo_preview_height = 15
 " `%{matchup#matchparen#scroll_update(...)}` prompt whenever the matching
 " open/close of a def/if block is outside the visible area, which makes the
 " statusline look like unrelated/warning text.  Disable that behaviour.
-" vim-matchup：当匹配的开/闭边界在屏幕外时，不要覆盖状态栏。matchparen 会把
-" window-local 'statusline' 换成自己的 `%{matchup#matchparen#scroll_update(...)}`
-" 提示，使状态栏看起来像无关/警告文字。关闭该行为。
+"" vim-matchup：当匹配的开/闭边界在屏幕外时，不要覆盖状态栏。matchparen 会把
+" window-local 'statusline' 换成自己的
+" `%{matchup#matchparen#scroll_update(...)}` 提示， 使状态栏看起来像无关 /
+" 警告文字。 关闭该行为。
+
 let g:matchup_matchparen_status_offscreen = 0
 
 filetype off
@@ -305,7 +317,7 @@ set pumopt=opacity:100,width:30,height:15,border:round,margin
 set completepopup=align:item,opacity:20,shadow:on,width:78,border:round
 set confirm
 set virtualedit=block,onemore
-set showbreak='>|'
+set showbreak='>'
 set nosplitright
 
 " ============================================================================
