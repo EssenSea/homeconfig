@@ -312,6 +312,7 @@ set splitright
 set splitbelow
 set signcolumn=yes
 set hidden
+set wildoptions=pum
 set completeopt=fuzzy,menu,menuone,noselect,popup
 set pumopt=opacity:100,width:30,height:15,border:round,margin
 set completepopup=align:item,opacity:20,shadow:on,width:78,border:round
@@ -699,7 +700,7 @@ let g:ft_man_open_mode = "vert"
 "   let g:mutedstatus#invert = 1           " swap fg/bg when 1
 "   let g:mutedstatus#fg     = '#D3C6AA'   " explicit foreground
 "   let g:mutedstatus#bg     = 'NONE'      " explicit background
-let g:mutedstatus#invert = 0
+let g:mutedstatus#invert = 1
 " Install the statusline and its refresh autocmds.
 " 安装状态栏及其刷新自动命令。
 call mutedstatus#Setup()

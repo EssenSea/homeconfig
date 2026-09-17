@@ -173,6 +173,7 @@ do
   vim.o.confirm = true
 
   vim.o.pumblend = 0
+  vim.o.winborder = 'rounded'
   vim.o.winblend = 0
   vim.o.textwidth = 78
   vim.o.colorcolumn = '+1,+2'
@@ -309,7 +310,7 @@ do
       'kickstart-highlight-yank',
       { clear = true }
     ),
-    callback = function() vim.hl.on_yank() end,
+    callback = function() vim.hl.hl_op() end,
   })
 end
 
