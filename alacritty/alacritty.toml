@@ -16,11 +16,11 @@ position =  { x = 0, y = 0 }
 padding = { x = 0, y = 0 }
 dynamic_padding = true
 decorations = "Full"
-opacity = 0.6
+opacity = 0.8
 resize_increments = true
 
 [font]
-normal = { family = "Sarasa Term  SC Nerd", style = "semibold" }
+normal = { family = "Sarasa Term  SC Nerd", style = "regular" }
 size = 16
 builtin_box_drawing = true
 
