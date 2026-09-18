@@ -578,17 +578,16 @@ do
   --   },
   -- }
 
-  vim.pack.add { gh 'sainnhe/everforest' }
   vim.g.everforest_background = 'hard'
   vim.g.everforest_transparent_background = 2
   vim.g.everforest_better_performance = 1
   vim.g.everforest_show_eob = 1
   vim.g.everforest_dim_inactive_windows = 0
 
+  vim.pack.add { gh 'rezniqov/soviet.nvim' }
+  vim.pack.add { gh 'sainnhe/everforest' }
+
   -- Load the colorscheme here.
-  -- Like many other themes, this one has different styles, and you could load
-  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  -- vim.cmd.colorscheme 'tokyonight-night'
   vim.cmd.colorscheme 'default'
 
   -- Highlight todo, notes, etc in comments
