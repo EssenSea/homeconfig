@@ -150,7 +150,9 @@ call plug#begin()
 
     " --- text objects / editing -----------------------
     " --- 文本对象 / 编辑 ------------------------------
-    Plug 'tpope/vim-surround'
+    Plug 'machakann/vim-sandwich'
+    " Use 'sandwich' replaces 'surround'.
+    " Plug 'tpope/vim-surround'
     " surround text: ys/cs/ds, plus text objects as/is
     " 包围文本操作：ys 添加、cs 修改、ds 删除；文本对象 as/is
     Plug 'tpope/vim-repeat'
