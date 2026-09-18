@@ -305,21 +305,21 @@ set list
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<
 set shortmess+=I
 set showmatch
-set scrolloff=5
+set scrolloff=2
 set updatetime=2000
 set ttyfast
-set splitright
+" set splitright
+set nosplitright
 set splitbelow
 set signcolumn=yes
 set hidden
 set wildoptions=pum
 set completeopt=fuzzy,menu,menuone,noselect,popup
 set pumopt=opacity:100,width:30,height:15,border:round,margin
-set completepopup=align:item,opacity:20,shadow:on,width:78,border:round
+set completepopup=align:item,opacity:100,shadow:on,width:78,border:round
 set confirm
 set virtualedit=block,onemore
 set showbreak='>'
-set nosplitright
 
 " ============================================================================
 " 4. Search settings / 搜索设置
