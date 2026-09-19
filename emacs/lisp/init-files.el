@@ -44,6 +44,11 @@
               #'open-pdf-externally-with-esioyek)
   )
 
+(use-package dired-du
+  :ensure t
+  :defer t
+  :hook
+  (dired-mode . dired-du-mode))
 
 ;; =====================================================================
 
