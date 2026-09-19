@@ -38,10 +38,6 @@
       "rev": "84a4987ff36798c2fc1169cbaff67960aed9776f",
       "src": "https://github.com/NMAC427/guess-indent.nvim"
     },
-    "hlchunk.nvim": {
-      "rev": "4ddc056e4ca45f1c7dc6aa21935df710b263b1aa",
-      "src": "https://github.com/shellRaining/hlchunk.nvim"
-    },
     "lualine.nvim": {
       "rev": "221ce6b2d999187044529f49da6554a92f740a96",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
@@ -59,12 +55,8 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "ac5dffcc52b8378fbb15efeb0497a83e57a0b01c",
+      "rev": "4389a4f31f854ce066949ea89c72dc71564f5c20",
       "src": "https://github.com/nvim-mini/mini.nvim"
-    },
-    "noice.nvim": {
-      "rev": "7bfd942445fb63089b59f97ca487d605e715f155",
-      "src": "https://github.com/folke/noice.nvim"
     },
     "nvim-autopairs": {
       "rev": "430522f95fe4fb7c511ec64f8c1a90cc6a66c05c",
@@ -75,7 +67,7 @@
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "9a168f6357ed21c3a636e1727bc7d382abc451b8",
+      "rev": "f603a2f4da48728f80257fb5fbb90145fd1dc173",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -83,25 +75,9 @@
       "rev": "914decffe650296c87312c53b7933ecb86718499",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
-    "plenary.nvim": {
-      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
-      "src": "https://github.com/nvim-lua/plenary.nvim"
-    },
     "snacks.nvim": {
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "https://github.com/folke/snacks.nvim"
-    },
-    "telescope-fzf-native.nvim": {
-      "rev": "b25b749b9db64d375d782094e2b9dce53ad53a40",
-      "src": "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
-    },
-    "telescope-ui-select.nvim": {
-      "rev": "6e51d7da30bd139a6950adf2a47fda6df9fa06d2",
-      "src": "https://github.com/nvim-telescope/telescope-ui-select.nvim"
-    },
-    "telescope.nvim": {
-      "rev": "40aedd8a68c78a656a10a8d62d80c54af59420fb",
-      "src": "https://github.com/nvim-telescope/telescope.nvim"
     },
     "tmux.nvim": {
       "rev": "32ceaf2793582955ef9576809730878c4d2d9426",
@@ -116,7 +92,7 @@
       "src": "https://github.com/datsfilipe/vesper.nvim"
     },
     "vimtex": {
-      "rev": "819b98b465d58347f6dc8134cc61db03f18691ad",
+      "rev": "42dcf1699e45725bd3b366ecab2ae06f6e0f8118",
       "src": "https://github.com/lervag/vimtex"
     },
     "which-key.nvim": {
