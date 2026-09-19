@@ -30,12 +30,13 @@
 ;; init.el 顶部，package-activate-all 之前
 (require 'package)
 (setq package-quickstart t)
-(setq package-archives '(("gnu"
-                          . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                         ("nongnu"
-                          . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-                         ("melpa"
-                          . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+(setq package-archives
+      '(("gnu"
+         . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+        ("nongnu"
+         . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+        ("melpa"
+         . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 
 ;; (package-initialize)
 (package-activate-all)
@@ -60,6 +61,7 @@
 (load custom-file 'noerror)
 (require 'benchmarking)
 ;; (require 'benchmark-init)
+
 ;; =====================================================================
 ;; Global configurations
 ;; =====================================================================
@@ -150,6 +152,7 @@
 (require 'init-system)
 (require 'init_web)
 (require 'init_notes)
+
 (setq gc-cons-threshold (* 8 1024 1024))
 (provide 'init)
 

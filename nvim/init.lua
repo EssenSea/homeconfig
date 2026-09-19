@@ -578,17 +578,22 @@ do
   --   },
   -- }
 
-  vim.g.everforest_background = 'hard'
+  vim.g.everforest_background = 'medium'
   vim.g.everforest_transparent_background = 2
   vim.g.everforest_better_performance = 1
   vim.g.everforest_show_eob = 1
   vim.g.everforest_dim_inactive_windows = 0
 
-  vim.pack.add { gh 'rezniqov/soviet.nvim' }
   vim.pack.add { gh 'sainnhe/everforest' }
-
+  vim.pack.add { gh 'datsfilipe/vesper.nvim' }
+  vim.pack.add {
+    {
+      src = 'https://codeberg.org/evergarden/nvim.git',
+      name = 'evergarden',
+    },
+  }
   -- Load the colorscheme here.
-  vim.cmd.colorscheme 'default'
+  vim.cmd.colorscheme 'evergarden-winter'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }

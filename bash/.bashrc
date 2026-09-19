@@ -31,7 +31,8 @@ export MANWIDTH=80
 export MANPAGER="less -R --use-color -Dd+r -Du+b"
 # sh is used because MANPAGER cannot use pipes by itself.
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-# export MANPAGER="sh -c \"col -b | vim -c 'set ft=man ts=8 nomod norelativenumber nonu nolist' -c 'nnoremap i <nop>' -\""
+# export MANPAGER="sh -c \"col -b | \
+# vim -c 'set ft=man ts=8 nomod norelativenumber nonu nolist' -c 'nnoremap i <nop>' -\""
 
 export PATH="/usr/local/texlive/2026/bin/x86_64-linux:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
@@ -39,13 +40,12 @@ export PATH="$HOME/.cargo/bin/:$PATH"
 export PATH="$HOME/node_modules/.bin/:$PATH"
 export PATH="/usr/bin/mu-mh/:$PATH"
 export MANPATH="/usr/local/texlive/2026/texmf-dist/doc/man:$MANPATH"
-# export INFO_WIDTH=79
 export INFOPATH="/usr/local/texlive/2026/texmf-dist/doc/info:$INFOPATH:"
-
-export VIRTUAL_ENV_DISABLE_PROMPT=1
 export USER_BASH_COMPLE=~/.config/bash_completions
 
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PIP_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+
 export OPENAI_BASE_URL="https://api.deepseek.com/v1"
 export OPENAI_API_KEY=$(pass show deepseek)
 export DEEPSEEK_API_KEY=$(pass show deepseek)
@@ -70,27 +70,26 @@ alias sioyek='source $HOME/pyvenv/bin/activate && sioyek'
 alias sclean='sudo bash -c "eclean-dist -d && eclean-pkg -d"'
 # alias ediff='eix-update && eix-diff'
 alias less="less -R --use-color -Dd+r -Du+b"
-alias bm='STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam" STEAM_COMPAT_DATA_PATH="$HOME/.local/share/Steam/steamapps/compatdata/2358720" WINEPREFIX="$HOME/.local/share/Steam/steamapps/compatdata/2358720/pfx" "$HOME/.local/share/Steam/steamapps/common/Proton Hotfix/proton" run "$HOME/Downloads/Black Myth Wukong v1.0-v1.0.20 Plus 44 Trainer.exe"'
 
-
+alias bm='STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam"\
+STEAM_COMPAT_DATA_PATH="$HOME/.local/share/Steam/steamapps/compatdata/2358720"\
+WINEPREFIX="$HOME/.local/share/Steam/steamapps/compatdata/2358720/pfx" \
+"$HOME/.local/share/Steam/steamapps/common/Proton Hotfix/proton"\
+run "$HOME/Downloads/Black Myth Wukong v1.0-v1.0.20 Plus 44 Trainer.exe"'
 
 voc() {
-    # command fy "$1" | sed -e '1d'| tee -a ~/Documents/notes/vocaulary/voc1.org
     command fy "$1" | sed -e "2s/+/**/" | tee -a ~/Documents/notes/vocaulary/voc1.org
 }
 phra() {
     command fy "$1" | sed -e "2s/+/**/" | tee -a ~/Documents/notes/vocaulary/phrase1.org
 }
 
-
-
-
 eval "$(pandoc --completion=bash)"
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 [ -n "$EAT_SHELL_INTEGRATION_DIR" ] && source "$EAT_SHELL_INTEGRATION_DIR/bash"
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [ -f "$USER_BASH_COMPLE/zoxide" ] && source "$USER_BASH_COMPLE/zoxide"
 [ -f "$USER_BASH_COMPLE/niri" ] && source "$USER_BASH_COMPLE/niri"
 # [ -f "$USER_BASH_COMPLE/starship" ] && source "$USER_BASH_COMPLE/starship"
