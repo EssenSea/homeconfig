@@ -28,11 +28,7 @@ vim.g.vimtex_imap_enable = 1
 vim.g.vimtex_view_method = 'sioyek'
 vim.g.vimtex_compiler_method = 'latexmk'
 vim.g.vimtex_compiler_latexmk_engine = { ['_'] = '-lualatex' }
-vim.g.vimtex_ui_method = {
-  ['confirm'] = 'nvim',
-  ['input'] = 'nvim',
-  ['select'] = 'nvim',
-}
+vim.g.vimtex_ui_method = { confirm = 'nvim', input = 'nvim', select = 'nvim' }
 
 -- vim.pack.add { gh 'stevearc/aerial.nvim' }
 -- require('aerial').setup {
@@ -49,9 +45,6 @@ vim.g.vimtex_ui_method = {
 -- require('mini.pairs').setup()
 
 require('mini.files').setup {
-  content = {
-    -- filter = true,
-  },
   windows = {
     max_number = 2,
     preview = true,
@@ -59,10 +52,7 @@ require('mini.files').setup {
     width_focus = 40,
     width_nofocus = 20,
   },
-  mappings = {
-    go_in = 'L',
-    go_in_plus = 'l',
-  },
+  mappings = { go_in = 'L', go_in_plus = 'l' },
 }
 vim.keymap.set({ 'n', 'v' }, '<leader>mf', function()
   if MiniFiles.close() == nil then
@@ -101,12 +91,11 @@ vim.pack.add { gh 'aserowy/tmux.nvim' }
 require('tmux').setup()
 
 require('mini.starter').setup {}
+
 vim.pack.add { gh 'folke/snacks.nvim' }
+
 require('mini.diff').setup {
-  view = {
-    style = 'sign',
-    signs = { add = '+', change = '~', delete = '-' },
-  },
+  view = { style = 'sign', signs = { add = '+', change = '~', delete = '-' } },
 }
 require('snacks').setup {
   ---@type snacks.Config
@@ -114,74 +103,48 @@ require('snacks').setup {
   bigfile = { enabled = true },
   dashboard = { enabled = false },
   dim = { enabled = true },
-  explorer = {
-    enabled = true,
-    replace_netrw = true,
-    follow_file = true,
-  },
-  image = {
-    enabled = true,
-  },
+  explorer = { enabled = true, replace_netrw = true, follow_file = true },
+  image = { enabled = true },
   indent = {
     enabled = true,
     chunk = {
       enabled = true,
-      char = {
-        corner_top = '╭',
-        corner_bottom = '╰',
-      },
+      char = { corner_top = '╭', corner_bottom = '╰' },
     },
   },
   input = { enabled = true },
-  ---@class snacks.picker
   ---@class snacks.picker.Config
-  ---@class snacks.picker.layout.Config
   picker = {
     enabled = true,
-    layout = {
-      reverse = false,
-      fullscreen = true,
-      preset = 'ivy',
-    },
+    layout = { reverse = false, fullscreen = true, preset = 'ivy' },
     sources = {
       explorer = {
         layout = { reverse = false, fullscreen = false, preset = 'sidebar' },
       },
     },
   },
-  notifier = {
-    enabled = true,
-    timeout = 9000,
-  },
+  notifier = { enabled = true, timeout = 9000 },
   quickfile = { enabled = true },
   scope = { enabled = true },
   scroll = { enabled = false },
   statuscolumn = { enabled = true },
   words = { enabled = true },
   styles = {
-    zen = {
-      keys = { q = 'close' },
-    },
-    zoom_indicator = {
-      enter = true,
-      focusable = true,
-    },
+    zen = { keys = { q = 'close' } },
+    zoom_indicator = { enter = true, focusable = true },
   },
-  toggle = {
-    map = vim.keymap.set,
-  },
+  toggle = { map = vim.keymap.set },
   zen = {
-    toggles = {
-      dim = false,
-      mini_diff_signs = true,
-    },
+    toggles = { dim = true, mini_diff_signs = true },
     win = {
       width = 90,
-      height = 30,
-      backdrop = {
-        transparent = false,
-        blend = 99,
-      },
+      height = 32,
+      backdrop = { transparent = false, blend = 99 },
+    },
+    zoom = {
+      toggles = { dim = true, mini_diff_signs = true },
+      center = true,
+      win = { backdrop = { transparent = true, blend = 90 }, width = 100 },
     },
   },
 }
@@ -493,7 +456,6 @@ vim.keymap.set(
   function() Snacks.picker.lsp_declarations() end,
   { desc = 'Goto Declaration' }
 )
--- vim.keymap.set({'n'}, "gr", function() Snacks.picker.lsp_references() end, nowait = true, {desc = "References" })
 vim.keymap.set(
   { 'n' },
   'gI',
@@ -558,23 +520,10 @@ vim.keymap.set(
   { desc = 'message history(Snacks)' }
 )
 
--- vim.cmd.packadd { 'nvim.undotree', bang = true }
--- vim.keymap.set(
---   { 'n', 'v' },
---   '<leader>uu',
---   '<cmd>Undotree<CR>',
---   { desc = 'nvim_pack_undotree' }
--- )
-
 -- vim.pack.add { gh 'folke/zen-mode.nvim', gh 'folke/twilight.nvim' }
 -- require('zen-mode').setup {
---   window = {
---     backdrop = 0.3,
---   },
---   plugins = {
---     options = { enabled = true },
---     twilight = { enabled = true },
---   },
+--   window = { backdrop = 0.3 },
+--   plugins = { options = { enabled = true }, twilight = { enabled = true } },
 -- }
 
 -- vim.api.nvim_create_augroup('zen', )
