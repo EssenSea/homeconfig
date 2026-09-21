@@ -180,7 +180,7 @@ call plug#begin()
 
     " --- file / project -------------------------------
     " --- 文件 / 工程 ----------------------------------
-    Plug 'preservim/nerdtree'
+    " Plug 'preservim/nerdtree'
     Plug 'tpope/vim-eunuch'
 
     " --- UI ------------------------------------------
@@ -188,7 +188,7 @@ call plug#begin()
     Plug 'majutsushi/tagbar'
     Plug 'frazrepo/vim-rainbow'
     Plug 'liuchengxu/vim-which-key'
-    " Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatus
+    Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatus
     " (removed) machakann/vim-highlightedyank -> built-in packadd! hlyank
     " （已移除）machakann/vim-highlightedyank -> 内置 packadd! hlyank
     Plug 'andymass/vim-matchup'
@@ -209,7 +209,7 @@ call plug#begin()
     " --- language / syntax / lint ----------------------
     " --- 语言 / 语法 / 检查 ----------------------------
     Plug 'w0rp/ale'
-    " Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatus
+    Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatus
     Plug 'lervag/vimtex'
     " (removed) kaarmu/typst.vim -> built-in autoload/typst.vim
     " （已移除）kaarmu/typst.vim -> 内置 autoload/typst.vim
@@ -220,7 +220,7 @@ call plug#begin()
 
     " --- writing --------------------------------------
     " --- 写作 / 专注 ------------------------------------
-    Plug 'junegunn/goyo.vim'
+    " Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
 
     " --- native helpers -------------------------------
@@ -303,8 +303,8 @@ set relativenumber
 set cursorline
 set cursorlineopt=both
 set colorcolumn=+1,+2
-set list
-set listchars=tab:>\ ,trail:-,extends:>,precedes:<
+" set list
+" set listchars=tab:>\ ,trail:-,extends:>,precedes:<
 set shortmess+=I
 set showmatch
 set scrolloff=2
@@ -412,7 +412,7 @@ nnoremap <Leader>u  :MundoToggle<CR>
 " 开关可视化撤销树（vim-mundo）
 
 " NERDTree toggle / NERDTree 开关
-nnoremap <silent> <C-n> :NERDTreeToggle<CR>
+" nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 
 " Tagbar toggle / Tagbar 开关（函数/类列表）
 nnoremap <silent> <C-u> :TagbarToggle<CR>
@@ -702,39 +702,39 @@ let g:ft_man_open_mode = "vert"
 "   let g:mutedstatus#invert = 1           " swap fg/bg when 1
 "   let g:mutedstatus#fg     = '#D3C6AA'   " explicit foreground
 "   let g:mutedstatus#bg     = 'NONE'      " explicit background
-let g:mutedstatus#invert = 1
+" let g:mutedstatus#invert = 1
 " Install the statusline and its refresh autocmds.
 " 安装状态栏及其刷新自动命令。
-call mutedstatus#Setup()
+" call mutedstatus#Setup()
 
 " ============================================================================
 " 12b. (legacy) lightline configuration, kept for reference
 " 12b.（旧）lightline 配置，保留作参考
 " ============================================================================
 " " Lightline + ALE status
-" let g:lightline#colorscheme#muted#invert = 1
-" let g:lightline = {
-"     \ 'colorscheme': 'muted',
-"     \ 'component_expand': {
-"     \     'linter_warnings': 'lightline#ale#warnings',
-"     \     'linter_errors': 'lightline#ale#errors',
-"     \ },
-"     \ 'component_type': {
-"     \     'linter_warnings': 'warning',
-"     \     'linter_errors': 'error',
-"     \ },
-"     \ 'active': {
-"     \     'left': [
-"     \         ['mode', 'paste'],
-"     \         ['readonly', 'filename', 'modified'],
-"     \         ['linter_warnings', 'linter_errors'],
-"     \     ],
-"     \ },
-"     \}
-" augroup vimrc_status
-"     autocmd!
-"     autocmd User ALELint,LightlineUpdate call lightline#update()
-" augroup END
+let g:lightline#colorscheme#muted#invert = 1
+let g:lightline = {
+    \ 'colorscheme': 'muted',
+    \ 'component_expand': {
+    \     'linter_warnings': 'lightline#ale#warnings',
+    \     'linter_errors': 'lightline#ale#errors',
+    \ },
+    \ 'component_type': {
+    \     'linter_warnings': 'warning',
+    \     'linter_errors': 'error',
+    \ },
+    \ 'active': {
+    \     'left': [
+    \         ['mode', 'paste'],
+    \         ['readonly', 'filename', 'modified'],
+    \         ['linter_warnings', 'linter_errors'],
+    \     ],
+    \ },
+    \}
+augroup vimrc_status
+    autocmd!
+    autocmd User ALELint,LightlineUpdate call lightline#update()
+augroup END
 
 " Limelight is integrated with Goyo / Limelight 与 Goyo 联动
 " let g:limelight_conceal_ctermfg = "gray"
@@ -747,25 +747,29 @@ call mutedstatus#Setup()
 
 " Open NERDTree when Vim starts with a directory argument
 " 当以目录参数启动 Vim 时自动打开 NERDTree
-function! StartNerdTreeFromArg()
-    if argc() != 1 || !isdirectory(argv()[0])
-        return
-    endif
-    execute 'NERDTree' argv()[0]
-    wincmd p
-    enew
-    execute 'cd ' . argv()[0]
-endfunction
-augroup vimrc_nerdtree
-    autocmd!
-    autocmd VimEnter * call StartNerdTreeFromArg()
-augroup END
+" function! StartNerdTreeFromArg()
+"     if argc() != 1 || !isdirectory(argv()[0])
+"         return
+"     endif
+"     execute 'NERDTree' argv()[0]
+"     wincmd p
+"     enew
+"     execute 'cd ' . argv()[0]
+" endfunction
+" augroup vimrc_nerdtree
+"     autocmd!
+"     autocmd VimEnter * call StartNerdTreeFromArg()
+" augroup END
 
 " Open help and man pages in a vertical split on the LEFT side
 " 帮助与 man 页面在左侧纵向分割中打开
 augroup vimrc_help_man_left
     autocmd!
-    autocmd FileType help wincmd H
+    " goyo 激活时不移动 help 窗口，由 goyo 把它限制在内容列内
+    autocmd FileType help if !exists('#goyo') | wincmd H | endif
 "     autocmd FileType man wincmd H
 augroup END
 autocmd FileType help setlocal bufhidden=hide buflisted
+
+" Local Vim9script goyo (autoload/zen/goyo.vim)
+command! -nargs=? -bar -bang Goyo call zen#goyo#Execute(<bang>0, <q-args>)
