@@ -527,3 +527,11 @@ vim.keymap.set(
 -- }
 
 -- vim.api.nvim_create_augroup('zen', )
+if vim.g.neovide then
+  -- o.guifont = "libertinus mono:h14"
+  vim.o.guifont = 'Sarasa Term SC Nerd:h16'
+  vim.o.linespace = 0
+  vim.g.neovide_opacity = 1
+  vim.g.neovide_normal_opacity = 0.8
+  vim.g.transparency = 1
+end
