@@ -188,7 +188,7 @@ call plug#begin()
     Plug 'majutsushi/tagbar'
     Plug 'frazrepo/vim-rainbow'
     Plug 'liuchengxu/vim-which-key'
-    Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatus
+    " Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatus
     " (removed) machakann/vim-highlightedyank -> built-in packadd! hlyank
     " （已移除）machakann/vim-highlightedyank -> 内置 packadd! hlyank
     Plug 'andymass/vim-matchup'
@@ -209,7 +209,7 @@ call plug#begin()
     " --- language / syntax / lint ----------------------
     " --- 语言 / 语法 / 检查 ----------------------------
     Plug 'w0rp/ale'
-    Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatus
+    " Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatus
     Plug 'lervag/vimtex'
     " (removed) kaarmu/typst.vim -> built-in autoload/typst.vim
     " （已移除）kaarmu/typst.vim -> 内置 autoload/typst.vim
@@ -702,39 +702,39 @@ let g:ft_man_open_mode = "vert"
 "   let g:mutedstatus#invert = 1           " swap fg/bg when 1
 "   let g:mutedstatus#fg     = '#D3C6AA'   " explicit foreground
 "   let g:mutedstatus#bg     = 'NONE'      " explicit background
-" let g:mutedstatus#invert = 1
+let g:mutedstatus#invert = 1
 " Install the statusline and its refresh autocmds.
 " 安装状态栏及其刷新自动命令。
-" call mutedstatus#Setup()
+call mutedstatus#Setup()
 
 " ============================================================================
 " 12b. (legacy) lightline configuration, kept for reference
 " 12b.（旧）lightline 配置，保留作参考
 " ============================================================================
 " " Lightline + ALE status
-let g:lightline#colorscheme#muted#invert = 1
-let g:lightline = {
-    \ 'colorscheme': 'muted',
-    \ 'component_expand': {
-    \     'linter_warnings': 'lightline#ale#warnings',
-    \     'linter_errors': 'lightline#ale#errors',
-    \ },
-    \ 'component_type': {
-    \     'linter_warnings': 'warning',
-    \     'linter_errors': 'error',
-    \ },
-    \ 'active': {
-    \     'left': [
-    \         ['mode', 'paste'],
-    \         ['readonly', 'filename', 'modified'],
-    \         ['linter_warnings', 'linter_errors'],
-    \     ],
-    \ },
-    \}
-augroup vimrc_status
-    autocmd!
-    autocmd User ALELint,LightlineUpdate call lightline#update()
-augroup END
+" let g:lightline#colorscheme#muted#invert = 1
+" let g:lightline = {
+"     \ 'colorscheme': 'muted',
+"     \ 'component_expand': {
+"     \     'linter_warnings': 'lightline#ale#warnings',
+"     \     'linter_errors': 'lightline#ale#errors',
+"     \ },
+"     \ 'component_type': {
+"     \     'linter_warnings': 'warning',
+"     \     'linter_errors': 'error',
+"     \ },
+"     \ 'active': {
+"     \     'left': [
+"     \         ['mode', 'paste'],
+"     \         ['readonly', 'filename', 'modified'],
+"     \         ['linter_warnings', 'linter_errors'],
+"     \     ],
+"     \ },
+"     \}
+" augroup vimrc_status
+"     autocmd!
+"     autocmd User ALELint,LightlineUpdate call lightline#update()
+" augroup END
 
 " Limelight is integrated with Goyo / Limelight 与 Goyo 联动
 " let g:limelight_conceal_ctermfg = "gray"

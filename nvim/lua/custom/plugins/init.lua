@@ -90,18 +90,88 @@ end, { desc = 'MiniFiles' })
 vim.pack.add { gh 'aserowy/tmux.nvim' }
 require('tmux').setup()
 
-require('mini.starter').setup {}
+-- require('mini.starter').setup {}
 
 vim.pack.add { gh 'folke/snacks.nvim' }
 
-require('mini.diff').setup {
-  view = { style = 'sign', signs = { add = '+', change = '~', delete = '-' } },
-}
+-- use git_signs replaced mini_diff_signs in snacks.zen
+-- require('mini.diff').setup {
+--   view = { style = 'sign', signs = { add = '+', change = '~', delete = '-' } },
+-- }
 require('snacks').setup {
   ---@type snacks.Config
   -- your configuration comes here
   bigfile = { enabled = true },
-  dashboard = { enabled = false },
+  dashboard = {
+    enabled = true,
+    sections = {
+      { section = 'keys', gap = 1, padding = 1 },
+      {
+        pane = 2,
+        icon = ' ',
+        desc = 'Browse Repo',
+        padding = 1,
+        key = 'b',
+        action = function() Snacks.gitbrowse() end,
+      },
+      function()
+        local in_git = Snacks.git.get_root() ~= nil
+        local cmds = {
+          {
+            title = 'Notifications',
+            cmd = 'gh status',
+            action = function()
+              vim.ui.open 'https://github.com/notifications'
+            end,
+            key = 'n',
+            icon = ' ',
+            height = 5,
+            enabled = true,
+          },
+          {
+            title = 'Open Issues',
+            cmd = 'gh issue list -L 3',
+            key = 'i',
+            action = function()
+              vim.fn.jobstart('gh issue list --web', { detach = true })
+            end,
+            icon = ' ',
+            height = 3,
+          },
+          {
+            icon = ' ',
+            title = 'Open PRs',
+            cmd = 'gh pr list -L 3',
+            key = 'P',
+            action = function()
+              vim.fn.jobstart('gh pr list --web', { detach = true })
+            end,
+            height = 3,
+          },
+          {
+            icon = ' ',
+            title = 'Git Status',
+            cmd = 'git --no-pager diff --stat -B -M -C',
+            height = 3,
+          },
+        }
+        return vim.tbl_map(
+          function(cmd)
+            return vim.tbl_extend('force', {
+              pane = 2,
+              section = 'terminal',
+              enabled = in_git,
+              padding = 1,
+              ttl = 5 * 60,
+              indent = 3,
+            }, cmd)
+          end,
+          cmds
+        )
+      end,
+      { section = 'startup' },
+    },
+  },
   dim = { enabled = true },
   explorer = { enabled = true, replace_netrw = true, follow_file = true },
   image = { enabled = true },
@@ -121,6 +191,13 @@ require('snacks').setup {
       explorer = {
         layout = { reverse = false, fullscreen = false, preset = 'sidebar' },
       },
+      git_branches = {
+        all = true,
+      },
+      git_diff = {
+        group = true,
+        staged = true,
+      },
     },
   },
   notifier = { enabled = true, timeout = 9000 },
@@ -135,9 +212,9 @@ require('snacks').setup {
   },
   toggle = { map = vim.keymap.set },
   zen = {
-    toggles = { dim = true, mini_diff_signs = true },
+    toggles = { dim = true, git_signs = true },
     win = {
-      width = 90,
+      width = 120,
       height = 32,
       backdrop = { transparent = false, blend = 99 },
     },
@@ -520,6 +597,36 @@ vim.keymap.set(
   { desc = 'message history(Snacks)' }
 )
 
+vim.keymap.set(
+  { 'n', 'v' },
+  '<leader>bd',
+  function() Snacks.bufdelete.delete() end,
+  { desc = 'Del current buf' }
+)
+vim.keymap.set(
+  { 'n', 'v' },
+  '<leader>bo',
+  function() Snacks.bufdelete.other() end,
+  { desc = 'Del other buf' }
+)
+vim.keymap.set(
+  { 'n', 'v' },
+  '<leader>bi',
+  function() Snacks.bufdelete.invisible() end,
+  { desc = 'Del invisible buf' }
+)
+vim.keymap.set(
+  { 'n', 'v' },
+  '<leader>bD',
+  function() Snacks.bufdelete.all() end,
+  { desc = 'Del all buf' }
+)
+vim.keymap.set(
+  { 'n', 'v' },
+  '<leader>tt',
+  function() Snacks.terminal.toggle() end,
+  { desc = 'Snacks terminal' }
+)
 -- vim.pack.add { gh 'folke/zen-mode.nvim', gh 'folke/twilight.nvim' }
 -- require('zen-mode').setup {
 --   window = { backdrop = 0.3 },
@@ -527,6 +634,8 @@ vim.keymap.set(
 -- }
 
 -- vim.api.nvim_create_augroup('zen', )
+
+-- neovide
 if vim.g.neovide then
   -- o.guifont = "libertinus mono:h14"
   vim.o.guifont = 'Sarasa Term SC Nerd:h16'
@@ -535,3 +644,6 @@ if vim.g.neovide then
   vim.g.neovide_normal_opacity = 0.8
   vim.g.transparency = 1
 end
+
+-- snacks deps
+vim.pack.add { gh 'folke/lazy.nvim' }

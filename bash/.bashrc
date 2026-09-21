@@ -11,6 +11,7 @@ source /usr/share/fzf/key-bindings.bash
 [[ $- != *i* ]] && return
 # ssh-add ~/.ssh/auxread 2>/dev/null
 # ssh-add ~/.ssh/id_ed25519 2>/dev/null
+ssh-add ~/.ssh/ghcli 2>/dev/null
 # eval "$(atuin init bash)"
 # eval "$(thefuck --alias)"
 export HISTSIZE=100000
@@ -46,12 +47,9 @@ export USER_BASH_COMPLE=~/.config/bash_completions
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PIP_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
-export OPENAI_BASE_URL="https://api.deepseek.com/v1"
-export OPENAI_API_KEY=$(pass show deepseek)
 export DEEPSEEK_API_KEY=$(pass show deepseek)
 export GEMINI_API_KEY=$(pass show gemini)
 export MINIMAX_API_KEY=$(pass show minimax)
-export ANTHROPIC_API_KEY=$(pass show minimax)
 
 # shellcheck shell=bash
 # alias ls='ls --color=auto'
