@@ -651,12 +651,12 @@ g:ft_man_open_mode = 'vert'
 # mutedstl itself. Options live in the g:mutedstl#* namespace; there is no
 # lightline dependency anymore.
 # 颜色来自 mutedstl 取色后端；内容/刷新由 mutedstl 处理。选项位于
-# g:mutedstl#* 命名空间；已无 lightline 依赖。
-#   g:mutedstl#theme  = ''          " source theme; '' = current
-#   g:mutedstl#invert = 1           " swap fg/bg when 1
-#   g:mutedstl#fg     = '#D3C6AA'   " explicit foreground
-#   g:mutedstl#bg     = 'NONE'      " explicit background
-g:mutedstl#invert = 1
+# g:mutedstl_* 命名空间；已无 lightline 依赖。
+#   g:mutedstl_theme  = ''          " source theme; '' = current
+#   g:mutedstl_invert = 1           " swap fg/bg when 1
+#   g:mutedstl_fg     = '#D3C6AA'   " explicit foreground
+#   g:mutedstl_bg     = 'NONE'      " explicit background
+g:mutedstl_invert = 1
 
 # Install the highlight groups and refresh autocmds.  When no 'statusline' has
 # been set, Setup() also installs String() as the DEFAULT layout.
