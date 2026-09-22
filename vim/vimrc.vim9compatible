@@ -1,31 +1,13 @@
 vim9script
-# mutedstl is installed via vim-plug (see the Plug section below) and called
-# as mutedstl#Fn() (plain autoload naming, no import needed).
-# mutedstl 通过 vim-plug 安装（见下方 Plug 段），以 mutedstl#Fn() 老式命名调用，
-# 无需 import。
 # ============================================================================
 # File:        vimrc
-# Description: Main Vim configuration file (fully Vim9script)
-# 描述：Vim 主配置文件（完全 Vim9script 写法）
+# Description: Main Vim configuration file (Vim9script)
+# 描述：Vim 主配置文件（Vim9script）
 # ============================================================================
 #
 # HOW TO USE / 使用方法
 #   Put this at ~/.vimrc or $XDG_CONFIG_HOME/vim/vimrc and restart vim.
 #   将此文件放到 ~/.vimrc 或 $XDG_CONFIG_HOME/vim/vimrc，然后重启 Vim。
-#
-# STYLE NOTE / 写法说明
-#   This version is written in as pure Vim9script as possible:
-#     - options are set via `&opt = value` expressions
-#     - mappings are generated from typed lists with :execute
-#     - autocommands are registered through autocmd_add()
-#   Only constructs that have no Vim9 equivalent (the vim-plug `Plug` DSL,
-#   `packadd!`, `colorscheme`, `syntax`, `filetype`, `command!`, `highlight`)
-#   are still driven via :execute. Commented-out legacy code is kept and
-#   translated too.
-#   本版本尽量使用纯 Vim9script 写法：选项用 `&opt = value`，映射由带类型的
-#   列表 + :execute 生成，自动命令用 autocmd_add() 注册。仅对没有 Vim9 等价
-#   写法的构造（vim-plug 的 Plug、packadd!、colorscheme、syntax、filetype、
-#   command!、highlight）保留 :execute。被注释掉的旧代码也一并转译保留。
 #
 # EXTERNAL DEPENDENCIES / 外部依赖
 #   The following external commands are needed by some mappings/plugins.
@@ -60,19 +42,28 @@ vim9script
 #   syntax/indent; no build/preview)
 #
 # ============================================================================
-&compatible = false
+set nocompatible
 # Disable compatibility with Vi. / 关闭与 Vi 的兼容模式。
 
-execute 'packadd! justify'
-execute 'packadd! helptoc'
-execute 'packadd! comment'
-# execute 'packadd! nohlsearch' # vim-cool
-execute 'packadd! hlyank'
-execute 'packadd! helpcurwin'
-execute 'packadd! cfilter'
-execute 'packadd! shellmenu'
-execute 'packadd! editexisting'
-execute 'runtime ftplugin/man.vim'
+# if has("syntax") && has("eval")
+#     packadd! matchit
+# endif
+# Enable matchit when available. / 可用时启用 matchit（% 扩展匹配）。
+packadd! justify
+packadd! helptoc
+# Optimize justify and helptoc behaviour. / 优化 justify / helptoc 插件行为。
+# Built-in replacements for former plugins / 以下内置包替代了原先的插件：
+#   packadd! comment    replaces tpope/vim-commentary
+#   packadd! nohlsearch replaces romainl/vim-cool
+#   packadd! hlyank     replaces machakann/vim-highlightedyank
+packadd! comment
+# packadd! nohlsearch
+packadd! hlyank
+packadd! helpcurwin
+packadd! cfilter
+packadd! shellmenu
+packadd! editexisting
+runtime ftplugin/man.vim
 # Load the built-in man page ftplugin. / 加载内置 man 帮助文件类型插件。
 
 # ---------------------------------------------------------------------------
@@ -140,17 +131,15 @@ g:mundo_preview_height = 15
 
 g:matchup_matchparen_status_offscreen = 0
 
-execute 'filetype off'
-plug#begin()
-    # --- statusline / 状态栏 -------------------------
-    # mutedstl: clean two-colour statusline colour package. / 素洁两色状态栏取色包
-    Plug 'EssenSea/mutedstl'
-
+filetype off
+call plug#begin()
     # --- search / open ------------------------------
     # --- 搜索 / 打开 --------------------------------
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'romainl/vim-cool'
+    # -> built-in packadd! nohlsearch
+    # （已移除）romainl/vim-cool -> 内置 packadd! nohlsearch
 
     # --- movement ------------------------------------
     # --- 移动 --------------------------------------
@@ -199,7 +188,9 @@ plug#begin()
     Plug 'majutsushi/tagbar'
     Plug 'frazrepo/vim-rainbow'
     Plug 'liuchengxu/vim-which-key'
-    # Plug 'itchyny/lightline.vim'   " disabled: use native mutedstl
+    # Plug 'itchyny/lightline.vim'   " disabled: use native mutedstatus
+    # (removed) machakann/vim-highlightedyank -> built-in packadd! hlyank
+    # （已移除）machakann/vim-highlightedyank -> 内置 packadd! hlyank
     Plug 'andymass/vim-matchup'
     Plug 'kshenoy/vim-signature'
 
@@ -218,9 +209,10 @@ plug#begin()
     # --- language / syntax / lint ----------------------
     # --- 语言 / 语法 / 检查 ----------------------------
     Plug 'w0rp/ale'
-    # Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstl
+    # Plug 'maximbaz/lightline-ale'  " disabled: use native mutedstatus
     Plug 'lervag/vimtex'
     # (removed) kaarmu/typst.vim -> built-in autoload/typst.vim
+    # （已移除）kaarmu/typst.vim -> 内置 autoload/typst.vim
     Plug 'imsnif/kdl.vim'
     Plug 'plasticboy/vim-markdown'
     Plug 'chrisbra/colorizer'
@@ -241,11 +233,11 @@ plug#begin()
     Plug 'sainnhe/everforest'
     Plug 'catppuccin/vim', { 'as': 'catppuccin' }
     # Plug 'ghifarit53/tokyonight-vim'
-plug#end()
+call plug#end()
 
-execute 'filetype plugin on'
-execute 'filetype indent on'
-execute 'syntax on'
+filetype plugin on
+filetype indent on
+syntax on
 
 # ============================================================================
 # 2. Appearance / colorscheme / 外观与配色
@@ -263,162 +255,179 @@ if !has('gui_running') && &term =~# '^\%(screen\|tmux\)'
     execute "set <FocusLost>=\<Esc>[O"
 endif
 
-&termguicolors = true
-&t_Co = '256'
-&background = 'dark'
+set termguicolors
+set t_Co=256
+set background=dark
+# Use retrobox as the active colorscheme. / 启用 retrobox 配色。
 g:everforest_transparent_background = 0
-execute 'colorscheme novum'
+colorscheme novum
 
 g:rainbow_active = 1
 # Rainbow parentheses on. / 开启彩虹括号。
 
-&showmode = false
-&laststatus = 2
+set noshowmode
+set laststatus=2
 # Always show a statusline. / 始终显示状态栏。
 
-if has('gui_running')
-    &guifont = 'CodeNewRoman Nerd Font 15'
-    &guioptions = 'mgT'
+if has("gui_running")
+    set guifont=CodeNewRoman\ Nerd\ Font\ 15
+    set guioptions=mgT
 endif
 
 # ============================================================================
 # 3. Editor basics / 编辑器基础
 # ============================================================================
-&encoding = 'utf-8'
-&fileencodings = 'utf-8,gbk,gb2312,latin1'
-&textwidth = 78
-&linebreak = true
-&wrap = true
-&autoindent = true
-&cindent = true
-&smartindent = true
-&tabstop = 4
-&softtabstop = 4
-&shiftwidth = 4
-&expandtab = true
-&backspace = 'indent,eol,start'
-&spelllang = 'en,cjk'
+set encoding=utf-8
+set fileencodings=utf-8,gbk,gb2312,latin1
+set textwidth=78
+set linebreak
+set wrap
+set autoindent
+set cindent
+set smartindent
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set backspace=indent,eol,start
+set spelllang=en,cjk
 
-&mouse = 'a'
-&clipboard = 'unnamedplus'
-&modeline = true
+set mouse=a
+set clipboard=unnamedplus
+set modeline
 
-&ruler = true
-&showcmd = true
-&number = true
-&relativenumber = true
-&cursorline = true
-&cursorlineopt = 'both'
-&colorcolumn = '+1,+2'
-&list = true
-&listchars = 'tab::=>,trail:+,nbsp:-'
-&shortmess ..= 'I'
-&showmatch = true
-&scrolloff = 2
-&updatetime = 2000
-&ttyfast = true
-# &splitright = true
-&splitright = false
-&splitbelow = true
-&signcolumn = 'yes'
-&hidden = true
-&wildoptions = 'pum'
-&completeopt = 'fuzzy,menu,menuone,noselect,popup'
-&pumopt = 'opacity:100,width:30,height:15,border:round,margin'
-&completepopup = 'align:item,opacity:100,shadow:on,width:78,border:round'
-&confirm = true
-&virtualedit = 'block,onemore'
-&showbreak = '>'
+set ruler
+set showcmd
+set number
+set relativenumber
+set cursorline
+set cursorlineopt=both
+set colorcolumn=+1,+2
+set list
+set listchars=tab::=>,trail:+,nbsp:-
+set shortmess+=I
+set showmatch
+set scrolloff=2
+set updatetime=2000
+set ttyfast
+# set splitright
+set nosplitright
+set splitbelow
+set signcolumn=yes
+set hidden
+set wildoptions=pum
+set completeopt=fuzzy,menu,menuone,noselect,popup
+set pumopt=opacity:100,width:30,height:15,border:round,margin
+set completepopup=align:item,opacity:100,shadow:on,width:78,border:round
+set confirm
+set virtualedit=block,onemore
+set showbreak='>'
 
 # ============================================================================
 # 4. Search settings / 搜索设置
 # ============================================================================
-&incsearch = true
-&hlsearch = true
-&ignorecase = true
-&smartcase = true
-&wrapscan = false
-&wildignore ..= '*/.git/*,*/tmp/*,*.swp'
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set nowrapscan
+set wildignore+=*/.git/*,*/tmp/*,*.swp
 
 # Recenter after common search movements / 搜索/跳转后自动居中
-# Generated from a typed list to keep the pure-Vim9 style.
-var search_recenter: list<list<string>> = [
-    ['n', 'nzz'],
-    ['N', 'Nzz'],
-    ['*', '*zz'],
-    ['#', '#zz'],
-    ['g*', 'g*zz'],
-    ['<C-o>', '<C-o>zz'],
-    ['<C-i>', '<C-i>zz'],
-    ]
-for [lhs, rhs] in search_recenter
-    execute 'nnoremap <silent> ' .. lhs .. ' ' .. rhs
-endfor
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
+nnoremap <C-o> <C-o>zz
+nnoremap <C-i> <C-i>zz
 
 # ============================================================================
 # 5. Persistence: undo / backup / 持久化：撤销与备份
 # ============================================================================
-if has('persistent_undo')
+if has("persistent_undo")
     var undodir = expand('~/.config/vim/undodir')
     if !isdirectory(undodir)
-        mkdir(undodir, 'p')
+        mkdir(undodir, "p")
     endif
-    &undodir = '~/.config/vim/undodir'
-    &undofile = true
+    set undodir=~/.config/vim/undodir
+    set undofile
 endif
-&backup = false
-&writebackup = false
+set nobackup
+set nowritebackup
 
 # ============================================================================
 # 6. Folding / 折叠
 # ============================================================================
-&foldenable = true
-&foldlevelstart = 10
-&foldnestmax = 10
-&foldmethod = 'indent'
+set foldenable
+set foldlevelstart=10
+set foldnestmax=10
+set foldmethod=indent
 
 # ============================================================================
 # 7. Leader / general key mappings / Leader 与常用快捷键
 # ============================================================================
 g:mapleader = ' '
 g:maplocalleader = ','
-&timeoutlen = 1000
+set timeoutlen=1000
 
 # Window/tab/buffer basics / 窗口、标签页、缓冲区基础操作
-var win_tab_buf_maps: list<list<string>> = [
-    ['<Leader>tn', ':tabnew<CR>'],       # new tab / 新标签页
-    ['<Leader>x',  ':tabclose<CR>'],     # close tab / 关闭标签页
-    ['<Leader>bn', ':bn<CR>'],           # next buffer / 下一个缓冲区
-    ['<Leader>bp', ':bp<CR>'],           # previous buffer / 上一个缓冲区
-    ['<Leader>bd', ':bd<CR>'],           # delete buffer / 删除缓冲区
-    ['<Leader>hc', '<Plug>HelpCurwin;'],
-    ['<Leader>ht', '<Cmd>HelpToc<CR>'],  # HelpToc / help 文档目录开关
-    ['<Leader>hx', ':helpclose<CR>'],    # close help / 关闭帮助窗口
-    ['<Leader>bl', ':ls<CR>'],           # list buffers / 列出缓冲区
-    ['<Leader>e',  ':edit $MYVIMRC<CR>'],  # edit vimrc / 编辑 vimrc
-    ['<Leader>u',  ':MundoToggle<CR>'],  # toggle the visual undo tree (vim-mundo) / 开关可视化撤销树
-    ]
-for [lhs, rhs] in win_tab_buf_maps
-    execute 'nnoremap ' .. lhs .. ' ' .. rhs
-endfor
+nnoremap <Leader>tn :tabnew<CR>
+# new tab
+# 新标签页
+
+nnoremap <Leader>x  :tabclose<CR>
+# close tab
+# 关闭标签页
+
+nnoremap <Leader>bn :bn<CR>
+# next buffer
+# 下一个缓冲区
+
+nnoremap <Leader>bp :bp<CR>
+# previous buffer
+# 上一个缓冲区
+
+nnoremap <Leader>bd :bd<CR>
+# delete buffer
+# 删除缓冲区
+
+nnoremap <Leader>hc <Plug>HelpCurwin;
+nnoremap <Leader>ht <Cmd>HelpToc<CR>
+# HelpToc
+# help 文档目录开关
+nnoremap <Leader>hx :helpclose<CR>
+# close help
+# 关闭帮助窗口
+nnoremap <Leader>bl :ls<CR>
+# list buffers
+# 列出缓冲区
+
+nnoremap <Leader>e  :edit $MYVIMRC<CR>
+# edit vimrc
+# 编辑 vimrc
+
+nnoremap <Leader>u  :MundoToggle<CR>
+# toggle the visual undo tree (vim-mundo)
+# 开关可视化撤销树（vim-mundo）
 
 # NERDTree toggle / NERDTree 开关
 # nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 
 # Tagbar toggle / Tagbar 开关（函数/类列表）
-execute 'nnoremap <silent> <C-u> :TagbarToggle<CR>'
+nnoremap <silent> <C-u> :TagbarToggle<CR>
 
 # Goyo: distraction-free writing
 # Goyo：无干扰写作模式
-execute 'nnoremap <silent> <Leader>go :Goyo<CR>'
+nnoremap <silent> <Leader>go :Goyo<CR>
 
 # Translation / 翻译（vim-translator）
 # <Leader>tt = translate word/selection / 翻译单词或选区
-execute 'nmap <silent> <Leader>tt <Plug>Translate'
-execute 'vmap <silent> <Leader>tt <Plug>TranslateV'
+nmap <silent> <Leader>tt <Plug>Translate
+vmap <silent> <Leader>tt <Plug>TranslateV
 # <Leader>tw = translate word under cursor / 翻译光标下单词
-execute 'nnoremap <silent> <Leader>tw <Plug>TranslateW'
-execute 'vnoremap <silent> <Leader>tw <Plug>TranslateWV'
+nnoremap <silent> <Leader>tw <Plug>TranslateW
+vnoremap <silent> <Leader>tw <Plug>TranslateWV
 
 # --- alignment / argument wrapping -------------------
 # --- 对齐 / 参数折行 --------------------------------
@@ -426,87 +435,108 @@ execute 'vnoremap <silent> <Leader>tw <Plug>TranslateWV'
 #              Visual mode: selection already made.
 # <Leader>ag：vim-easy-align 对齐。普通模式先触发再给 motion；
 #             可视模式选中后触发即可。
-execute 'nmap <silent> <Leader>ag <Plug>(EasyAlign)'
-execute 'xmap <silent> <Leader>ag <Plug>(EasyAlign)'
+nmap <silent> <Leader>ag <Plug>(EasyAlign)
+xmap <silent> <Leader>ag <Plug>(EasyAlign)
 # <Leader>aw : vim-argwrap toggle between single-line and multi-line args.
 # <Leader>aw：vim-argwrap 在“函数参数单行/多行”之间切换。
-execute 'nnoremap <silent> <Leader>aw :ArgWrap<CR>'
+nnoremap <silent> <Leader>aw :ArgWrap<CR>
 
 # --- git (fugitive / gv.vim) -------------------------
 # --- Git（fugitive / gv.vim）-------------------------
 # <Leader>gs = git status / git 状态窗口
+nnoremap <silent> <Leader>gs  :G<CR>
 # <Leader>gd = diff current file / 比较当前文件改动
+nnoremap <silent> <Leader>gd  :Gdiffsplit<CR>
 # <Leader>gb = blame current file / 查看当前文件 blame
+nnoremap <silent> <Leader>gb  :Git blame<CR>
 # <Leader>gl = commit graph / 仓库提交历史图
+nnoremap <silent> <Leader>gl  :GV<CR>
 # <Leader>gw = stage/write file / 暂存并写入当前文件
-var git_maps: list<list<string>> = [
-    ['<Leader>gs', ':G<CR>'],
-    ['<Leader>gd', ':Gdiffsplit<CR>'],
-    ['<Leader>gb', ':Git blame<CR>'],
-    ['<Leader>gl', ':GV<CR>'],
-    ['<Leader>gw', ':Gwrite<CR>'],
-    ]
-for [lhs, rhs] in git_maps
-    execute 'nnoremap <silent> ' .. lhs .. ' ' .. rhs
-endfor
+nnoremap <silent> <Leader>gw  :Gwrite<CR>
 
 # --- fzf.vim shortcuts -------------------------------
 # --- fzf.vim 快捷键 --------------------------------
 # Multi-key chords: NO space after the prefix, e.g. <Leader>fi = <Space> f i.
 # 多键组合写法：<Leader> 后不加空格，如 <Leader>fi 即依次按 <Space> f i。
 # <Leader>f + <identifier> for the main fzf commands / 主要 fzf 命令：
+nnoremap <silent> <Leader>ff  :Files<CR>
+# Files
+# 文件搜索
+nnoremap <silent> <Leader>fi  :History<CR>
+# History
+# 最近文件历史
+nnoremap <silent> <Leader>fb  :Buffers<CR>
+# Buffers
+# 缓冲区切换
+nnoremap <silent> <Leader>fc  :Commands<CR>
+# Commands
+# Ex 命令面板
+nnoremap <silent> <Leader>fl  :BLines<CR>
+# BLines
+# 当前文件行搜索
+nnoremap <silent> <Leader>fr  :Rg<CR>
+# Rg
+# ripgrep 全文搜索
+nnoremap <silent> <Leader>fg  :GitFiles<CR>
+# GitFiles
+# git 跟踪文件
+nnoremap <silent> <Leader>ft  :Tags<CR>
+# Tags
+# 项目 tags 符号
+nnoremap <silent> <Leader>fs  :Snippets<CR>
+# Snippets
+# 代码片段
+nnoremap <silent> <Leader>fj  :Jumps<CR>
+# Jumps
+# 跳转历史
+nnoremap <silent> <Leader>fm  :Marks<CR>
+# Marks
+# 标记列表
+nnoremap <silent> <Leader>fw  :Windows<CR>
+# Windows
+# 窗口列表
 # Other fzf entry points / 其它 fzf 入口：
-var fzf_maps: list<list<string>> = [
-    ['<Leader>ff', ':Files<CR>',     'Files / 文件搜索'],
-    ['<Leader>fi', ':History<CR>',   'History / 最近文件历史'],
-    ['<Leader>fb', ':Buffers<CR>',   'Buffers / 缓冲区切换'],
-    ['<Leader>fc', ':Commands<CR>',  'Commands / Ex 命令面板'],
-    ['<Leader>fl', ':BLines<CR>',    'BLines / 当前文件行搜索'],
-    ['<Leader>fr', ':Rg<CR>',        'Rg / ripgrep 全文搜索'],
-    ['<Leader>fg', ':GitFiles<CR>',  'GitFiles / git 跟踪文件'],
-    ['<Leader>ft', ':Tags<CR>',      'Tags / 项目 tags 符号'],
-    ['<Leader>fs', ':Snippets<CR>',  'Snippets / 代码片段'],
-    ['<Leader>fj', ':Jumps<CR>',     'Jumps / 跳转历史'],
-    ['<Leader>fm', ':Marks<CR>',     'Marks / 标记列表'],
-    ['<Leader>fw', ':Windows<CR>',   'Windows / 窗口列表'],
-    ['<Leader>tf', ':Filetypes<CR>', 'Filetypes / 文件类型'],
-    ['<Leader>lf', ':Lines<CR>',     'Lines / 所有 buffer 行'],
-    ['<Leader>ll', ':Locate<CR>',    'Locate / locate 系统文件'],
-    ['<Leader>hh', ':Helptags<CR>',  'Helptags / 帮助标签'],
-    ['<Leader>th', ':Colors<CR>',    'Colors / 配色主题'],
-    ['<Leader>mm', ':Maps<CR>',      'Maps / 按键映射列表'],
-    ]
-for [lhs, rhs, _desc] in fzf_maps
-    execute 'nnoremap <silent> ' .. lhs .. ' ' .. rhs
-endfor
-execute 'noremap <silent> <leader>f: :History:<CR>'
-execute 'noremap <silent> <leader>f/ :History/<CR>'
+nnoremap <silent> <Leader>tf  :Filetypes<CR>
+# Filetypes
+# 文件类型
+nnoremap <silent> <Leader>lf  :Lines<CR>
+# Lines
+# 所有 buffer 行
+nnoremap <silent> <Leader>ll  :Locate<CR>
+# Locate
+# locate 系统文件
+nnoremap <silent> <Leader>hh  :Helptags<CR>
+# Helptags
+# 帮助标签
+nnoremap <silent> <Leader>th  :Colors<CR>
+# Colors
+# 配色主题
+nnoremap <silent> <Leader>mm  :Maps<CR>
+# Maps
+# 按键映射列表
+noremap <silent> <leader>f: :History:<CR>
+noremap <silent> <leader>f/ :History/<CR>
 
 # HardMode toggle: <Leader>ht
 # HardMode 开关：<Leader>ht
-execute 'nnoremap <silent> <Leader>ha :call ToggleHardMode()<CR>'
+nnoremap <silent> <Leader>ha :call ToggleHardMode()<CR>
 
 # easymotion / 快速跳转
 # <Leader><Leader> + f/s/l/w 开头的跳转
-var easymotion_maps: list<list<string>> = [
-    ['f', '<Plug>(easymotion-overwin-f)'],
-    ['s', '<Plug>(easymotion-overwin-f2)'],
-    ['l', '<Plug>(easymotion-overwin-line)'],
-    ['w', '<Plug>(easymotion-overwin-w)'],
-    ]
-for [key, plug] in easymotion_maps
-    execute 'nmap <Leader><Leader>' .. key .. ' ' .. plug
-endfor
+nmap <Leader><Leader>f <Plug>(easymotion-overwin-f)
+nmap <Leader><Leader>s <Plug>(easymotion-overwin-f2)
+nmap <Leader><Leader>l <Plug>(easymotion-overwin-line)
+nmap <Leader><Leader>w <Plug>(easymotion-overwin-w)
 
 # ============================================================================
 # 8. Which-key / 按键提示
 # ============================================================================
 # <Leader> (space) opens WhichKey for the space prefix. / 空格键打开按键引导。
+nnoremap <silent> <leader>      :WhichKey ' ' <CR>
+xnoremap <silent> <leader>      :WhichKeyVisual ' ' <CR>
 # , is used as localleader for buffer-local keys. / 逗号为局部 leader。
-execute 'nnoremap <silent> <leader>      :WhichKey '' '' <CR>'
-execute 'xnoremap <silent> <leader>      :WhichKeyVisual '' '' <CR>'
-execute 'nnoremap <silent> <localleader> :WhichKey '','' <CR>'
-execute 'xnoremap <silent> <localleader> :WhichKeyVisual '','' <CR>'
+nnoremap <silent> <localleader> :WhichKey ',' <CR>
+xnoremap <silent> <localleader> :WhichKeyVisual ',' <CR>
 
 # ============================================================================
 # 9. Completion optimization (mucomplete + UltiSnips + auto-pairs)
@@ -516,8 +546,8 @@ execute 'xnoremap <silent> <localleader> :WhichKeyVisual '','' <CR>'
 # 插件级变量必须在 plug#end() 前设置才会生效。
 # Tab / S-Tab: forward/backward in the mucomplete popup.
 # Tab / S-Tab：在 mucomplete 补全菜单中前后选择。
-execute 'imap <silent> <Tab>   <Plug>(MUcompleteFwd)'
-execute 'imap <silent> <S-Tab> <Plug>(MUcompleteBwd)'
+imap <silent> <Tab>   <Plug>(MUcompleteFwd)
+imap <silent> <S-Tab> <Plug>(MUcompleteBwd)
 
 # <CR> cooperation logic:
 #   - if popup visible: accept candidate; if it is a [snip] item, expand it.
@@ -533,13 +563,15 @@ def g:CompleteCRUltiExpand(): string
     endif
     return "\<CR>\<Plug>AutoPairsReturn"
 enddef
-execute 'inoremap <silent> <expr> <Plug>UltiExpand CompleteCRUltiExpand()'
-execute 'imap <CR> <Plug>UltiExpand'
+inoremap <silent> <expr> <Plug>UltiExpand CompleteCRUltiExpand()
+imap <CR> <Plug>UltiExpand
 
 # Space handling: give mucomplete/Space priority when popup is open,
 # otherwise call auto-pairs' Space logic.
 # 空格处理：补全菜单打开时原样输出空格，否则调用 auto-pairs 的空格逻辑。
-execute 'imap <silent> <expr> <Space> pumvisible() ? "\<Space>" : "\<C-r>=AutoPairsSpace()\<CR>"'
+imap <silent> <expr> <Space> pumvisible()
+\ ? "\<Space>"
+\ : "\<C-r>=AutoPairsSpace()\<CR>"
 
 # ============================================================================
 # 10. ALE / 异步代码检查 / 修复
@@ -560,19 +592,18 @@ g:ale_fixers = {
     'yaml': ['prettier'],
     }
 # Jump to previous / next ALE diagnostic / 跳转到上/下一个诊断
-execute 'nmap <silent> [a <Plug>(ale_previous_wrap)'
-execute 'nmap <silent> ]a <Plug>(ale_next_wrap)'
+nmap <silent> [a <Plug>(ale_previous_wrap)
+nmap <silent> ]a <Plug>(ale_next_wrap)
 
 # ============================================================================
 # 11. VimTeX / TeX / LaTeX 配置
 # ============================================================================
 g:tex_flavor = 'lualatex'
 g:tex_conceal = 'abdmg'
-&conceallevel = 1
-&ambiwidth = 'single'
-execute 'highlight Conceal ctermbg=none'
-execute 'syntax enable'
-# (syntax enable routes through :execute, see style note at the top)
+set conceallevel=1
+set ambiwidth=single
+highlight Conceal ctermbg=none
+syntax enable
 g:vimtex_indent_enabled = 1
 g:vimtex_format_enabled = 1
 g:vimtex_imap_enable = 1
@@ -587,8 +618,11 @@ g:vimtex_compiler_latexmk = {
     }
 g:vimtex_compiler_latexmk_engines = { '_': '-lualatex' }
 
-autocmd_add([{group: 'vimrc_tex', event: 'FileType', pattern: 'tex', cmd: 'setlocal conceallevel=0'}])
-autocmd_add([{group: 'vimrc_tex', event: 'FileType', pattern: 'tex', cmd: 'setlocal spell'}])
+augroup vimrc_tex
+    autocmd!
+    autocmd FileType tex setlocal conceallevel=0
+    autocmd FileType tex setlocal spell
+augroup END
 
 # Disable backtick auto-pair in TeX files (single and triple backticks).
 # 在 TeX 文件中禁用反引号自动成对（单个和三个反引号）。
@@ -612,38 +646,45 @@ def RemoveTexBacktickPairs(timer: number): void
     # 必须同时 unmap，使 TeX 中输入 ` 不再被 auto-pairs 拦截。
     silent! execute 'iunmap <buffer> `'
 enddef
-# The BufEnter hook must only fire the remover for TeX buffers, so it stays a
-# one-line autocmd expression; autocmd_add() cmd is a command string, so the
-# condition is expressed with :if / :call inside the command.
-autocmd_add([{group: 'vimrc_autopairs_tex', event: 'BufEnter', pattern: '*',
-    cmd: "if &filetype ==# 'tex' | call timer_start(0, function('RemoveTexBacktickPairs')) | endif"}])
+augroup vimrc_autopairs_tex
+    autocmd!
+    autocmd BufEnter *
+        \ if &filetype ==# 'tex' |
+        \   timer_start(0, function('RemoveTexBacktickPairs')) |
+        \ endif
+augroup END
 
 # ============================================================================
 # 12. Filetype specific augroups (grouped; no naked autocmd)
 #     按文件类型分组的自动命令（全部收纳于 augroup，无游离 autocmd）
 # ============================================================================
-autocmd_add([{group: 'vimrc_text', event: 'FileType', pattern: 'text,markdown,tex', cmd: 'setlocal textwidth=78'}])
-autocmd_add([{group: 'vimrc_text', event: 'FileType', pattern: 'text,markdown,tex', cmd: 'setlocal linebreak'}])
-autocmd_add([{group: 'vimrc_text', event: 'FileType', pattern: 'text,markdown,tex', cmd: 'setlocal spell'}])
-autocmd_add([{group: 'vimrc_text', event: 'FileType', pattern: 'text,markdown,tex', cmd: 'nnoremap <buffer> j gj'}])
-autocmd_add([{group: 'vimrc_text', event: 'FileType', pattern: 'text,markdown,tex', cmd: 'nnoremap <buffer> k gk'}])
+augroup vimrc_text
+    autocmd!
+    autocmd FileType text,markdown,tex setlocal textwidth=78
+    autocmd FileType text,markdown,tex setlocal linebreak
+    autocmd FileType text,markdown,tex setlocal spell
+    autocmd FileType text,markdown,tex nnoremap <buffer> j gj
+    autocmd FileType text,markdown,tex nnoremap <buffer> k gk
+augroup END
 
-# Refresh the native mutedstl colours.
+# Refresh the native mutedstatus colours.
 # Highlight groups only depend on the theme and 'background' (active/inactive
 # is resolved per-window at render time), so a refresh just recomputes the
-# groups.  mutedstl#Setup() installs both the statusline and the
+# groups. mutedstatus#Setup() installs both the statusline and the
 # refresh autocmds.
-# 刷新原生 mutedstl 的颜色。高亮组只依赖主题与 'background'（活动/
-# 非活动在渲染时逐窗口解析），因此刷新只需重算高亮组。mutedstl#Setup()
+# 刷新原生 mutedstatus 的颜色。高亮组只依赖主题与 'background'（活动/
+# 非活动在渲染时逐窗口解析），因此刷新只需重算高亮组。mutedstatus#Setup()
 # 会同时安装状态栏与刷新自动命令。
 def g:RefreshStatusline(): void
-    silent! mutedstl#Refresh()
+    silent! mutedstatus#Refresh()
 enddef
 
-# Reload config while editing itself, then refresh the statusline.
-# 编辑本 vimrc 时保存即自动加载，然后刷新状态栏。
-autocmd_add([{group: 'vimrc_overwrite', event: 'BufWritePost', pattern: '.vimrc,vimrc',
-    cmd: 'source <afile> | call RefreshStatusline()'}])
+augroup vimrc_overwrite
+    autocmd!
+    # Reload config while editing itself, then refresh the statusline.
+    # 编辑本 vimrc 时保存即自动加载，然后刷新状态栏。
+    autocmd BufWritePost .vimrc,vimrc source <afile> | call RefreshStatusline()
+augroup END
 
 # ============================================================================
 # 13. Misc / convenience / 其它便捷设置
@@ -652,30 +693,19 @@ autocmd_add([{group: 'vimrc_overwrite', event: 'BufWritePost', pattern: '.vimrc,
 g:ft_man_open_mode = 'vert'
 
 # Native statusline (replaces lightline) / 原生状态栏（替代 lightline）
-# Colors come from the mutedstl backend; content/refresh are handled by
-# mutedstl itself. Options live in the g:mutedstl#* namespace; there is no
+# Colors come from the mutedstatus backend; content/refresh are handled by
+# mutedstatus itself. Options live in the g:mutedstatus#* namespace; there is no
 # lightline dependency anymore.
-# 颜色来自 mutedstl 取色后端；内容/刷新由 mutedstl 处理。选项位于
-# g:mutedstl#* 命名空间；已无 lightline 依赖。
-#   g:mutedstl#theme  = ''          " source theme; '' = current
-#   g:mutedstl#invert = 1           " swap fg/bg when 1
-#   g:mutedstl#fg     = '#D3C6AA'   " explicit foreground
-#   g:mutedstl#bg     = 'NONE'      " explicit background
-g:mutedstl#invert = 1
-
-# Install the highlight groups and refresh autocmds.  When no 'statusline' has
-# been set, Setup() also installs String() as the DEFAULT layout.
-# 安装高亮组与刷新自动命令。若尚未设置 'statusline'，Setup() 会把 String()
-# 作为默认布局安装。
-mutedstl#Setup()
-
-# To use your own layout instead, set 'statusline' BEFORE Setup() (an explicit
-# value is never overwritten) and build it from mutedstl's groups, e.g.:
-# 若要自定义布局，请在 Setup() 之前设置 'statusline'（显式值不会被覆盖），
-# 用 mutedstl 的组拼装，例如：
-#   &statusline = mutedstl#GroupMark('emphasis') .. ' %{mutedstl#Mode()} '
-#       \ .. mutedstl#GroupMark('ordinary') .. ' %f %m%r %= %y | Buf:%n | [%l:%c]'
-# Groups / 组: %#MutedstlEmphasis#  %#MutedstlOrdinary#  %#MutedstlInactive#
+# 颜色来自 mutedstatus 取色后端；内容/刷新由 mutedstatus 处理。选项位于
+# g:mutedstatus#* 命名空间；已无 lightline 依赖。
+#   g:mutedstatus#theme  = ''          " source theme; '' = current
+#   g:mutedstatus#invert = 1           " swap fg/bg when 1
+#   g:mutedstatus#fg     = '#D3C6AA'   " explicit foreground
+#   g:mutedstatus#bg     = 'NONE'      " explicit background
+g:mutedstatus#invert = 1
+# Install the statusline and its refresh autocmds.
+# 安装状态栏及其刷新自动命令。
+mutedstatus#Setup()
 
 # ============================================================================
 # 12b. (legacy) lightline configuration, kept for reference
@@ -701,10 +731,18 @@ mutedstl#Setup()
 #         ],
 #     },
 #     }
-# autocmd_add([
-#     {group: 'vimrc_status', event: 'User', pattern: 'ALELint,LightlineUpdate',
-#         cmd: 'call lightline#update()'},
-#     ])
+# augroup vimrc_status
+#     autocmd!
+#     autocmd User ALELint,LightlineUpdate call lightline#update()
+# augroup END
+
+# Limelight is integrated with Goyo / Limelight 与 Goyo 联动
+# g:limelight_conceal_ctermfg = 'gray'
+# augroup vimrc_goyo
+#     autocmd!
+#     autocmd User GoyoEnter Limelight
+#     autocmd User GoyoLeave Limelight!
+# augroup END
 
 
 # Open NERDTree when Vim starts with a directory argument
@@ -718,18 +756,20 @@ mutedstl#Setup()
 #     enew
 #     execute 'cd ' .. argv()[0]
 # enddef
-# autocmd_add([
-#     {group: 'vimrc_nerdtree', event: 'VimEnter', pattern: '*', cmd: 'call StartNerdTreeFromArg()'},
-#     ])
+# augroup vimrc_nerdtree
+#     autocmd!
+#     autocmd VimEnter * call StartNerdTreeFromArg()
+# augroup END
 
 # Open help and man pages in a vertical split on the LEFT side
 # 帮助与 man 页面在左侧纵向分割中打开
-# goyo 激活时不移动 help 窗口，由 goyo 把它限制在内容列内
-autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'help',
-    cmd: 'if !exists(''#goyo'') | wincmd H | endif'}])
-# autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'man',
-#     cmd: 'wincmd H'}])
-autocmd_add([{event: 'FileType', pattern: 'help', cmd: 'setlocal bufhidden=hide buflisted'}])
+augroup vimrc_help_man_left
+    autocmd!
+    # goyo 激活时不移动 help 窗口，由 goyo 把它限制在内容列内
+    autocmd FileType help if !exists('#goyo') | wincmd H | endif
+#     autocmd FileType man wincmd H
+augroup END
+autocmd FileType help setlocal bufhidden=hide buflisted
 
 # Local Vim9script goyo (autoload/zen/goyo.vim)
-execute 'command! -nargs=? -bar -bang Goyo call zen#goyo#Execute(<bang>0, <q-args>)'
+command! -nargs=? -bar -bang Goyo call zen#goyo#Execute(<bang>0, <q-args>)

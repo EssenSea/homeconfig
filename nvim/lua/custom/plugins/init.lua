@@ -215,7 +215,7 @@ require('snacks').setup {
   zen = {
     toggles = { dim = true, git_signs = true },
     win = {
-      width = 120,
+      width = 100,
       height = 32,
       backdrop = { transparent = false, blend = 99 },
     },
