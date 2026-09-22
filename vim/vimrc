@@ -1,8 +1,4 @@
 vim9script
-# mutedstl is installed via vim-plug (see the Plug section below) and called
-# as mutedstl#Fn() (plain autoload naming, no import needed).
-# mutedstl 通过 vim-plug 安装（见下方 Plug 段），以 mutedstl#Fn() 老式命名调用，
-# 无需 import。
 # ============================================================================
 # File:        vimrc
 # Description: Main Vim configuration file (fully Vim9script)
@@ -61,7 +57,6 @@ vim9script
 #
 # ============================================================================
 &compatible = false
-# Disable compatibility with Vi. / 关闭与 Vi 的兼容模式。
 
 execute 'packadd! justify'
 execute 'packadd! helptoc'
