@@ -85,7 +85,7 @@ g:UltiSnipsEditSplit = 'vertical'
 g:mucomplete#no_mappings = 1
 g:mucomplete#enable_auto_at_startup = 1
 g:mucomplete#chains = {
-    'vim':     ['ulti', 'omni', 'path', 'keyn'],
+    'vim':     ['omni', 'ulti', 'path', 'keyn'],
     'default': ['omni', 'ulti', 'path', 'keyn', 'dict', 'uspl'],
     'tex':     ['omni', 'ulti', 'path'],
     }
@@ -132,19 +132,15 @@ plug#begin()
     Plug 'easymotion/vim-easymotion'
     Plug 'wikitopian/hardmode'
     # hardmode: disables arrow/hjkl navigation to force advanced motions
-    # hardmode：禁用方向键/hjkl 移动，逼自己使用高级移动命令
 
     # --- text objects / editing -----------------------
     # --- 文本对象 / 编辑 ------------------------------
     Plug 'machakann/vim-sandwich'
     # Use 'sandwich' replaces 'surround'.
-    # Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
     # let . repeat plugin actions
-    # 让 . 可重复部分插件操作
     Plug 'simnalamburt/vim-mundo'
     # visual undo tree (undo history graph)
-    # 可视化撤销树（撤销历史图）
     Plug 'junegunn/vim-easy-align'
     # alignment tool
     # 对齐工具
@@ -211,7 +207,7 @@ plug#begin()
     # --- 配色方案（everforest 当前启用，其余通过 :Colors 切换）
     Plug 'cocopon/iceberg.vim'
     Plug 'sainnhe/everforest'
-    Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+    # Plug 'catppuccin/vim', { 'as': 'catppuccin' }
     # Plug 'ghifarit53/tokyonight-vim'
 plug#end()
 
@@ -503,17 +499,19 @@ execute 'imap <silent> <S-Tab> <Plug>(MUcompleteBwd)'
 # (Name already defined), which aborts the rest of the reload.
 # 定义前加守卫：本文件也会在 :w 时由 BufWritePost source。对已存在的名字
 # 再次 `def g:...` 会触发 E1073（名称已定义），中断后续重载。
+
+# 避免作用域解析歧义
 if !exists('*g:CompleteCRUltiExpand')
     def g:CompleteCRUltiExpand(): string
         if pumvisible()
-            # Deal with both plain completion and [snip] expansion.
-            # 同时处理普通补全与 [snip] 片段展开。
             return mucomplete#ultisnips#expand_snippet('')
         endif
         return "\<CR>\<Plug>AutoPairsReturn"
     enddef
 endif
-execute 'inoremap <silent> <expr> <Plug>UltiExpand CompleteCRUltiExpand()'
+
+# 使用函数引用
+execute 'inoremap <silent> <expr> <Plug>UltiExpand g:CompleteCRUltiExpand()'
 execute 'imap <CR> <Plug>UltiExpand'
 
 # Space handling: give mucomplete/Space priority when popup is open,
