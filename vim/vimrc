@@ -239,7 +239,7 @@ endif
 &t_Co = '256'
 &background = 'dark'
 g:everforest_transparent_background = 0
-execute 'colorscheme novum'
+execute 'colorscheme everforest'
 
 g:rainbow_active = 1
 # Rainbow parentheses on. / 开启彩虹括号。
@@ -498,14 +498,21 @@ execute 'imap <silent> <S-Tab> <Plug>(MUcompleteBwd)'
 # <CR> 协同逻辑：
 #   - 补全菜单出现时：接受候选；若为 [snip] 片段则展开 UltiSnips。
 #   - 无菜单时：先执行普通回车，再执行 auto-pairs 的括号内缩进逻辑。
-def g:CompleteCRUltiExpand(): string
-    if pumvisible()
-        # Deal with both plain completion and [snip] expansion.
-        # 同时处理普通补全与 [snip] 片段展开。
-        return mucomplete#ultisnips#expand_snippet('')
-    endif
-    return "\<CR>\<Plug>AutoPairsReturn"
-enddef
+# Guard the definition: this file is also sourced from BufWritePost on :w.
+# A second `def g:...` for a name that is already defined raises E1073
+# (Name already defined), which aborts the rest of the reload.
+# 定义前加守卫：本文件也会在 :w 时由 BufWritePost source。对已存在的名字
+# 再次 `def g:...` 会触发 E1073（名称已定义），中断后续重载。
+if !exists('*g:CompleteCRUltiExpand')
+    def g:CompleteCRUltiExpand(): string
+        if pumvisible()
+            # Deal with both plain completion and [snip] expansion.
+            # 同时处理普通补全与 [snip] 片段展开。
+            return mucomplete#ultisnips#expand_snippet('')
+        endif
+        return "\<CR>\<Plug>AutoPairsReturn"
+    enddef
+endif
 execute 'inoremap <silent> <expr> <Plug>UltiExpand CompleteCRUltiExpand()'
 execute 'imap <CR> <Plug>UltiExpand'
 
@@ -609,14 +616,62 @@ autocmd_add([{group: 'vimrc_text', event: 'FileType', pattern: 'text,markdown,te
 # 刷新原生 mutedstl 的颜色。高亮组只依赖主题与 'background'（活动/
 # 非活动在渲染时逐窗口解析），因此刷新只需重算高亮组。mutedstl#Setup()
 # 会同时安装状态栏与刷新自动命令。
-def g:RefreshStatusline(): void
-    silent! mutedstl#Refresh()
-enddef
+# Same guard as above.
+# 同上守卫。
+if !exists('*g:RefreshStatusline')
+    def g:RefreshStatusline(): void
+        silent! mutedstl#Refresh()
+    enddef
+endif
 
 # Reload config while editing itself, then refresh the statusline.
 # 编辑本 vimrc 时保存即自动加载，然后刷新状态栏。
+#
+# Only reload when the file actually changed.  A write can still fail (for
+# example a read-only file) or be a no-op (:w on an unmodified buffer), and
+# Vim fires BufWritePost in both cases.  Comparing the file content against
+# the content that was last loaded skips those, so a failed or no-op :w does
+# not re-run the whole vimrc (colorscheme, mutedstl, ...).  A real change is
+# still reloaded; the reload runs from a Vim9 def because this file is
+# `vim9script` (a raw `:let` in an autocommand command raises E1126).
+# 仅在文件确实变化时重载。写入可能失败（如只读文件）或为空操作（未修改的
+# 缓冲区 :w），这两种情况 Vim 都会触发 BufWritePost。用“文件内容 vs 上次
+# 加载内容”比较即可跳过它们，避免失败的/无变化的 :w 重跑整个 vimrc。
+# 真正变化仍然重载；逻辑放在 Vim9 def 中（`vim9script` 的自动命令命令里
+# 直接用 `:let` 会触发 E1126）。
+if !exists('*g:VimrcHash')
+    def g:VimrcHash(path: string): string
+        var p = resolve(fnamemodify(path, ':p'))
+        if !filereadable(p)
+            return ''
+        endif
+        return sha256(join(readfile(p, 'b'), "\n"))
+    enddef
+endif
+
+if !exists('*g:ReloadVimrc')
+    def g:ReloadVimrc(): void
+        if get(g:, 'vimrc_reloading', false)
+            return
+        endif
+        var target = expand('<afile>')
+        var hash = g:VimrcHash(target)
+        # No real change: a failed write or a no-op :w.  Nothing to reload.
+        if hash ==# get(g:, 'vimrc_loaded_hash', '')
+            return
+        endif
+        g:vimrc_loaded_hash = hash
+        g:vimrc_reloading = true
+        try
+            execute 'source ' .. fnameescape(target)
+        finally
+            g:vimrc_reloading = false
+        endtry
+        call g:RefreshStatusline()
+    enddef
+endif
 autocmd_add([{group: 'vimrc_overwrite', event: 'BufWritePost', pattern: '.vimrc,vimrc',
-    cmd: 'source <afile> | call RefreshStatusline()'}])
+    cmd: 'call g:ReloadVimrc()'}])
 
 # ============================================================================
 # 13. Misc / convenience / 其它便捷设置
@@ -708,3 +763,8 @@ mutedstl#Setup()
 
 # # Local Vim9script goyo (autoload/zen/goyo.vim)
 # execute 'command! -nargs=? -bar -bang Goyo call zen#goyo#Execute(<bang>0, <q-args>)'
+
+# Remember the content we just loaded, so the next :w can tell whether it
+# really changed (see g:ReloadVimrc).
+# 记下本次加载的内容，供下次 :w 判断是否真的变化（见 g:ReloadVimrc）。
+g:vimrc_loaded_hash = g:VimrcHash(expand('<sfile>:p'))
