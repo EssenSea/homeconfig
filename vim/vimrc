@@ -5,24 +5,7 @@ vim9script
 # 描述：Vim 主配置文件（完全 Vim9script 写法）
 # ============================================================================
 #
-# HOW TO USE / 使用方法
-#   Put this at ~/.vimrc or $XDG_CONFIG_HOME/vim/vimrc and restart vim.
-#   将此文件放到 ~/.vimrc 或 $XDG_CONFIG_HOME/vim/vimrc，然后重启 Vim。
-#
-# STYLE NOTE / 写法说明
-#   This version is written in as pure Vim9script as possible:
-#     - options are set via `&opt = value` expressions
-#     - mappings are generated from typed lists with :execute
-#     - autocommands are registered through autocmd_add()
-#   Only constructs that have no Vim9 equivalent (the vim-plug `Plug` DSL,
-#   `packadd!`, `colorscheme`, `syntax`, `filetype`, `command!`, `highlight`)
-#   are still driven via :execute. Commented-out legacy code is kept and
-#   translated too.
-#   本版本尽量使用纯 Vim9script 写法：选项用 `&opt = value`，映射由带类型的
-#   列表 + :execute 生成，自动命令用 autocmd_add() 注册。仅对没有 Vim9 等价
-#   写法的构造（vim-plug 的 Plug、packadd!、colorscheme、syntax、filetype、
-#   command!、highlight）保留 :execute。被注释掉的旧代码也一并转译保留。
-#
+
 # EXTERNAL DEPENDENCIES / 外部依赖
 #   The following external commands are needed by some mappings/plugins.
 #   以下外部命令会被某些映射 / 插件调用，需提前安装：
@@ -43,8 +26,6 @@ vim9script
 #   godlygeek/tabular             - vim-easy-align covers alignment; 对齐由
 #   vim-easy-align 提供
 #   wellle/context.vim            - nice but heavy; 功能好但偏重
-#   vim-startify                  - fzf entry points cover recent files;
-#   启动页由 fzf 相关入口承担
 #
 # BUILT-IN REPLACEMENTS / 由 Vim 内置功能替代的插件
 #   tpope/vim-commentary          -> packadd! comment   (gc/gcc, ic/ac text
@@ -138,7 +119,6 @@ g:matchup_matchparen_status_offscreen = 0
 execute 'filetype off'
 plug#begin()
     # --- statusline / 状态栏 -------------------------
-    # mutedstl: clean two-colour statusline colour package. / 素洁两色状态栏取色包
     Plug 'EssenSea/mutedstl'
 
     # --- search / open ------------------------------
@@ -159,16 +139,12 @@ plug#begin()
     Plug 'machakann/vim-sandwich'
     # Use 'sandwich' replaces 'surround'.
     # Plug 'tpope/vim-surround'
-    # surround text: ys/cs/ds, plus text objects as/is
-    # 包围文本操作：ys 添加、cs 修改、ds 删除；文本对象 as/is
     Plug 'tpope/vim-repeat'
     # let . repeat plugin actions
     # 让 . 可重复部分插件操作
     Plug 'simnalamburt/vim-mundo'
     # visual undo tree (undo history graph)
     # 可视化撤销树（撤销历史图）
-    # (removed) tpope/vim-commentary -> built-in packadd! comment
-    # （已移除）tpope/vim-commentary -> 内置 packadd! comment
     Plug 'junegunn/vim-easy-align'
     # alignment tool
     # 对齐工具
@@ -223,6 +199,7 @@ plug#begin()
 
     # --- writing --------------------------------------
     # --- 写作 / 专注 ------------------------------------
+    Plug 'EssenSea/zen.vim'
     # Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
 
@@ -391,7 +368,7 @@ var win_tab_buf_maps: list<list<string>> = [
     ['<Leader>hx', ':helpclose<CR>'],    # close help / 关闭帮助窗口
     ['<Leader>bl', ':ls<CR>'],           # list buffers / 列出缓冲区
     ['<Leader>e',  ':edit $MYVIMRC<CR>'],  # edit vimrc / 编辑 vimrc
-    ['<Leader>u',  ':MundoToggle<CR>'],  # toggle the visual undo tree (vim-mundo) / 开关可视化撤销树
+    ['<Leader>u',  ':MundoToggle<CR>'],  # toggle the visual undo tree
     ]
 for [lhs, rhs] in win_tab_buf_maps
     execute 'nnoremap ' .. lhs .. ' ' .. rhs
@@ -405,7 +382,8 @@ execute 'nnoremap <silent> <C-u> :TagbarToggle<CR>'
 
 # Goyo: distraction-free writing
 # Goyo：无干扰写作模式
-execute 'nnoremap <silent> <Leader>go :Goyo<CR>'
+# execute 'nnoremap <silent> <Leader>go :Goyo<CR>'
+execute 'nnoremap <silent> <Leader>ze <Plug>(zen-toggle)'
 
 # Translation / 翻译（vim-translator）
 # <Leader>tt = translate word/selection / 翻译单词或选区
@@ -720,11 +698,13 @@ mutedstl#Setup()
 # Open help and man pages in a vertical split on the LEFT side
 # 帮助与 man 页面在左侧纵向分割中打开
 # goyo 激活时不移动 help 窗口，由 goyo 把它限制在内容列内
-autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'help',
-    cmd: 'if !exists(''#goyo'') | wincmd H | endif'}])
-# autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'man',
-#     cmd: 'wincmd H'}])
-autocmd_add([{event: 'FileType', pattern: 'help', cmd: 'setlocal bufhidden=hide buflisted'}])
+# autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'help',
+#     cmd: 'if !exists(''#goyo'') | wincmd H | endif'}])
+# autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'help',
+#     cmd: 'if !exists(''#zen'') | wincmd H | endif'}])
+# # autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'man',
+# #     cmd: 'wincmd H'}])
+# autocmd_add([{event: 'FileType', pattern: 'help', cmd: 'setlocal bufhidden=hide buflisted'}])
 
-# Local Vim9script goyo (autoload/zen/goyo.vim)
-execute 'command! -nargs=? -bar -bang Goyo call zen#goyo#Execute(<bang>0, <q-args>)'
+# # Local Vim9script goyo (autoload/zen/goyo.vim)
+# execute 'command! -nargs=? -bar -bang Goyo call zen#goyo#Execute(<bang>0, <q-args>)'
