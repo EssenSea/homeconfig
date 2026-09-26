@@ -60,33 +60,6 @@ vim.keymap.set({ 'n', 'v' }, '<leader>mf', function()
   end
 end, { desc = 'MiniFiles' })
 
--- vim.pack.add {
--- gh 'MunifTanjim/nui.nvim',
--- gh 'rcarriga/nvim-notify',
--- gh 'folke/noice.nvim',
--- }
---
--- vim.notify = require 'notify'
---
--- require('noice').setup {
---   lsp = {
---     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
---     override = {
---       ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
---       ['vim.lsp.util.stylize_markdown'] = true,
---       ['cmp.entry.get_documentation'] = false, -- requires hrsh7th/nvim-cmp
---     },
---   },
---   -- you can enable a preset for easier configuration
---   presets = {
---     bottom_search = false, -- use a classic bottom cmdline for search
---     command_palette = true, -- position the cmdline and popupmenu together
---     long_message_to_split = true, -- long messages will be sent to a split
---     inc_rename = false, -- enables an input dialog for inc-rename.nvim
---     lsp_doc_border = true, -- add a border to hover docs and signature help
---   },
--- }
-
 vim.pack.add { gh 'aserowy/tmux.nvim' }
 require('tmux').setup()
 
@@ -94,10 +67,6 @@ require('tmux').setup()
 
 vim.pack.add { gh 'folke/snacks.nvim' }
 
--- use git_signs replaced mini_diff_signs in snacks.zen
--- require('mini.diff').setup {
---   view = { style = 'sign', signs = { add = '+', change = '~', delete = '-' } },
--- }
 require('snacks').setup {
   ---@type snacks.Config
   -- your configuration comes here
@@ -105,73 +74,6 @@ require('snacks').setup {
   dashboard = {
     enabled = true,
     example = 'compact_files',
-    -- sections = {
-    --   { section = 'keys', gap = 1, padding = 1 },
-    --   {
-    --     pane = 2,
-    --     icon = ' ',
-    --     desc = 'Browse Repo',
-    --     padding = 1,
-    --     key = 'b',
-    --     action = function() Snacks.gitbrowse() end,
-    --   },
-    --   function()
-    --     local in_git = Snacks.git.get_root() ~= nil
-    --     local cmds = {
-    --       {
-    --         title = 'Notifications',
-    --         cmd = 'gh status',
-    --         action = function()
-    --           vim.ui.open 'https://github.com/notifications'
-    --         end,
-    --         key = 'n',
-    --         icon = ' ',
-    --         height = 5,
-    --         enabled = true,
-    --       },
-    --       {
-    --         title = 'Open Issues',
-    --         cmd = 'gh issue list -L 3',
-    --         key = 'i',
-    --         action = function()
-    --           vim.fn.jobstart('gh issue list --web', { detach = true })
-    --         end,
-    --         icon = ' ',
-    --         height = 3,
-    --       },
-    --       {
-    --         icon = ' ',
-    --         title = 'Open PRs',
-    --         cmd = 'gh pr list -L 3',
-    --         key = 'P',
-    --         action = function()
-    --           vim.fn.jobstart('gh pr list --web', { detach = true })
-    --         end,
-    --         height = 3,
-    --       },
-    --       {
-    --         icon = ' ',
-    --         title = 'Git Status',
-    --         cmd = 'git --no-pager diff --stat -B -M -C',
-    --         height = 3,
-    --       },
-    -- }
-    --   return vim.tbl_map(
-    --     function(cmd)
-    --       return vim.tbl_extend('force', {
-    --         pane = 2,
-    --         section = 'terminal',
-    --         enabled = in_git,
-    --         padding = 1,
-    --         ttl = 5 * 60,
-    --         indent = 3,
-    --       }, cmd)
-    --     end,
-    --     cmds
-    --   )
-    -- end,
-    -- { section = 'startup' },
-    -- },
   },
   dim = { enabled = true },
   explorer = { enabled = true, replace_netrw = true, follow_file = true },
@@ -570,21 +472,15 @@ vim.keymap.set(
   function() Snacks.picker.lsp_workspace_symbols() end,
   { desc = 'LSP Workspace Symbols' }
 )
--- require('todo-comments').setup{}
-vim.keymap.set(
-  { 'n' },
-  '<leader>st',
-  function() Snacks.picker.todo_comments() end,
-  { desc = 'Todo' }
-)
-vim.keymap.set(
-  { 'n' },
-  '<leader>sT',
-  function()
-    Snacks.picker.todo_comments { keywords = { 'TODO', 'FIX', 'FIXME' } }
-  end,
-  { desc = 'Todo/Fix/Fixme' }
-)
+vim.keymap.set({ 'n' }, '<leader>st', function()
+  local picker = Snacks.picker
+  ---@diagnostic disable-next-line: undefined-field
+  picker.todo_comments()
+end, { desc = 'Todo' })
+vim.keymap.set({ 'n' }, '<leader>sT', function()
+  ---@diagnostic disable-next-line: undefined-field
+  Snacks.picker.todo_comments { keywords = { 'TODO', 'FIX', 'FIXME' } }
+end, { desc = 'Todo/Fix/Fixme' })
 vim.keymap.set(
   { 'n', 'v' },
   '<leader>sz',
@@ -628,14 +524,6 @@ vim.keymap.set(
   function() Snacks.terminal.toggle() end,
   { desc = 'Snacks terminal' }
 )
--- vim.pack.add { gh 'folke/zen-mode.nvim', gh 'folke/twilight.nvim' }
--- require('zen-mode').setup {
---   window = { backdrop = 0.3 },
---   plugins = { options = { enabled = true }, twilight = { enabled = true } },
--- }
-
--- vim.api.nvim_create_augroup('zen', )
-
 -- neovide
 if vim.g.neovide then
   -- o.guifont = "libertinus mono:h14"

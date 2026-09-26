@@ -67,7 +67,7 @@
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-lspconfig": {
-      "rev": "ffd261c09c3dabd0bf1a438f47a8ae3b22f3c3ff",
+      "rev": "046b1a797af1effe8e0474b9af9657a3761ec58a",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
@@ -96,7 +96,7 @@
       "src": "https://github.com/datsfilipe/vesper.nvim"
     },
     "vimtex": {
-      "rev": "42dcf1699e45725bd3b366ecab2ae06f6e0f8118",
+      "rev": "16a5609d17a436db7f48046d91747fd6a9d75c74",
       "src": "https://github.com/lervag/vimtex"
     },
     "which-key.nvim": {
