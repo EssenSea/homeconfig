@@ -64,7 +64,7 @@ alias mpv='mpv --loop'
 alias mv='mv -i'
 alias untar='tar -zxvf '
 # alias rip="expac --timefmt='%Y-%m-%d %T' '%l\t%n %v' | sort | tail -200 | nl"
-alias sioyek='source $HOME/pyvenv/bin/activate && sioyek'
+alias sioyek='source $HOME/pyvenv/bin/activate && sioyek --instance-name sioyek'
 alias sclean='sudo bash -c "eclean-dist -d && eclean-pkg -d"'
 # alias ediff='eix-update && eix-diff'
 alias less="less -R --use-color -Dd+r -Du+b"
