@@ -1,1 +1,3 @@
-return { { 'aserowy/tmux.nvim', event = 'VeryLazy', opts = {} } }
+return {
+  { 'aserowy/tmux.nvim', event = 'VeryLazy', opts = {} },
+}

@@ -158,7 +158,7 @@ return {
   },
   {
     'folke/todo-comments.nvim',
-    event = {'BufReadPost', 'BufNewFile'},
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = { sign = true },
   },
   {

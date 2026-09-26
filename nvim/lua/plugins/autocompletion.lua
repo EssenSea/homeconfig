@@ -8,7 +8,7 @@ return {
       {
         'L3MON4D3/LuaSnip',
         opts = {},
-        veriosn = '2.*',
+        versoin = '2.*',
         config = function()
           require('luasnip.loaders.from_vscode').lazy_load()
           if vim.fn.has 'win32' ~= 1 and vim.fn.executable 'make' == 1 then
@@ -20,7 +20,7 @@ return {
   },
   {
     'saghen/blink.cmp',
-    event = {'InsertEnter', 'CmdlineEnter'},
+    event = { 'InsertEnter', 'CmdlineEnter' },
     version = '1.*',
     opts = {
       keymap = { preset = 'default' },
