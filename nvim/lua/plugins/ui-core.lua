@@ -6,7 +6,7 @@ return {
   },
   {
     'lewis6991/gitsigns.nvim',
-    lazy = true,
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = {
       attach_to_untracked = true,
       signs = {
@@ -151,7 +151,8 @@ return {
       spec = {
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
+        -- Enable gitsigns recommended keymaps first
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { 'gr', group = 'LSP Actions', mode = { 'n' } },
       },
     },
@@ -162,12 +163,11 @@ return {
     opts = { sign = true },
   },
   {
-    'nvim-tree/nvim-web-devicons',
-    opts = {},
-  },
-  {
     'nvim-lualine/lualine.nvim',
     event = 'VeryLazy',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons', opts = {} },
+    },
     opts = {
 
       -- options = {
@@ -176,9 +176,9 @@ return {
       -- }
     },
   },
-
   {
     'nvim-mini/mini.nvim',
+    event = 'VeryLazy',
     config = function()
       require('mini.ai').setup {
         -- NOTE: Avoid conflicts with the built-in incremental selection mappings
@@ -196,6 +196,7 @@ return {
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
       require('mini.files').setup {
+        options = { use_as_default_explorer = true },
         windows = {
           max_number = 2,
           preview = true,
@@ -224,7 +225,7 @@ return {
         accent = 'green',
       },
       editor = {
-        transparent_background = false,
+        transparent_background = true,
         sign = { color = 'none' },
         float = {
           color = 'mantle',

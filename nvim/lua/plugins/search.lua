@@ -12,7 +12,7 @@ return {
         example = 'compact_files',
       },
       dim = { enabled = true },
-      explorer = { enabled = true, replace_netrw = true, follow_file = true },
+      explorer = { enabled = true, replace_netrw = false, follow_file = true },
       image = { enabled = true },
       indent = {
         enabled = true,
@@ -34,12 +34,21 @@ return {
               preset = 'sidebar',
             },
           },
+          files = {
+            follow = true,
+          },
           git_branches = {
             all = true,
           },
           git_diff = {
             group = true,
             staged = true,
+          },
+          colorschemes = {
+            layout = {
+              fullscreen = false,
+              preset = 'select',
+            },
           },
         },
       },
@@ -86,11 +95,11 @@ return {
         function() Snacks.picker.command_history() end,
         desc = 'Command History',
       },
-      {
-        '<leader>n',
-        function() Snacks.picker.notifications() end,
-        desc = 'Notification History',
-      },
+      -- {
+      --   '<leader>n',
+      --   function() Snacks.picker.notifications() end,
+      --   desc = 'Notification History',
+      -- },
       {
         '<leader>e',
         function() Snacks.explorer() end,
@@ -217,11 +226,6 @@ return {
         '<leader>sa',
         function() Snacks.picker.autocmds() end,
         desc = 'Autocmds',
-      },
-      {
-        '<leader>sb',
-        function() Snacks.picker.lines() end,
-        desc = 'Buffer Lines',
       },
       {
         '<leader>sc',
