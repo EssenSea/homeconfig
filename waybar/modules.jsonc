@@ -34,7 +34,7 @@
 
 	"disk":{
         "path": "/home",
-		"interval": 1,
+		"interval": 15,
 		"format": "{used}({percentage_used}%) ",
 		"unit": "GB",
 		"on-click": "yazi"
@@ -46,7 +46,7 @@
 	},
 
 	"memory":{
-		"interval":1,
+		"interval":3,
 		"format":"{percentage}% "
 	},
 
@@ -69,7 +69,7 @@
     },
 	"battery": {
 		// "bat": "BAT1",
-		"interval":1,
+		"interval":5,
 		"states": {
 			// "good": 95,
 			"warning": 30,
@@ -85,38 +85,20 @@
 	},
 
 	"temperature": {
-		"thermal-zone" : "/sys/class/thermal/cooling_device0/",
-		"hwmon-path" : [
-			"/sys/class/hwmon/howmon5/temp1_input",
-			"/sys/class/hwmon/howmon5/temp2_input",
-			"/sys/class/hwmon/howmon5/temp3_input",
-			"/sys/class/hwmon/howmon5/temp4_input",
-			"/sys/class/hwmon/howmon5/temp5_input",
-			"/sys/class/hwmon/howmon5/temp6_input",
-			"/sys/class/hwmon/howmon5/temp7_input",
-			"/sys/class/thermal/cooling_device0/temp",
-			"/sys/class/thermal/cooling_device1/temp",
-			"/sys/class/thermal/cooling_device2/temp",
-			"/sys/class/thermal/cooling_device3/temp",
-			"/sys/class/thermal/cooling_device4/temp",
-			"/sys/class/thermal/cooling_device5/temp",
-			"/sys/class/thermal/cooling_device6/temp",
-			"/sys/class/thermal/cooling_device7/temp",
-			"/sys/class/thermal/cooling_device8/temp",
-			"/sys/class/thermal/cooling_device9/temp",
-			"/sys/class/thermal/cooling_device10/temp",
-			"/sys/class/thermal/cooling_device11/temp",
-			"/sys/class/thermal/cooling_device12/temp"
-		  ],
-		// "critical-threshold": 80,
-		// "format-critical": "{temperatureC}°C ",
-		"interval": 1,
+		// CPU 温度源: coretemp. 原配置 howmon5 为拼写错误, 且 hwmon5 实为网卡(iwlwifi_1).
+		// 用 hwmon-path-abs + sensor-name 按名称匹配, 避免 hwmonN 编号随内核/启动顺序变化.
+		// 查看可用: for h in /sys/class/hwmon/hwmon*; do echo "$h: $(cat $h/name)"; done
+		"hwmon-path-abs": "/sys/class/hwmon",
+		"sensor-name": "coretemp",
+		"critical-threshold": 85,
+		"interval": 5,
+		"format-critical": "{temperatureC}°C ",
 		"format": "{temperatureC}°C "
 	},
 
 	"network": {
 		"interface": "wlan0",
-        "interval": 1,
+        "interval": 2,
 		"format": "{ifname}",
 		"format-wifi": "   {bandwidthUpBits} {bandwidthDownBits} {signalStrength}% ",
 		"format-ethernet": "{ifname} ",

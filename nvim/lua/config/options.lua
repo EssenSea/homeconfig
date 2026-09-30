@@ -72,3 +72,5 @@ vim.o.textwidth = 78
 vim.o.colorcolumn = '+1,+2'
 vim.o.shortmess = vim.o.shortmess .. 'I'
 vim.o.virtualedit = 'block,onemore'
+
+if vim.g.neovide then vim.o.guifont = 'Sarasa Term SC Nerd:h16' end

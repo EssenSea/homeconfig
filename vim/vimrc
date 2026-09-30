@@ -135,6 +135,7 @@ plug#begin()
 
     # --- text objects / editing -----------------------
     # --- 文本对象 / 编辑 ------------------------------
+    Plug 'tpope/vim-unimpaired'
     Plug 'machakann/vim-sandwich'
     # Use 'sandwich' replaces 'surround'.
     Plug 'tpope/vim-repeat'
@@ -142,6 +143,7 @@ plug#begin()
     Plug 'simnalamburt/vim-mundo'
     # visual undo tree (undo history graph)
     Plug 'junegunn/vim-easy-align'
+    Plug 'godlygeek/tabular'
     # alignment tool
     # 对齐工具
     Plug 'foosoft/vim-argwrap'
@@ -687,7 +689,7 @@ g:ft_man_open_mode = 'vert'
 #   g:mutedstl_invert = 1           " swap fg/bg when 1
 #   g:mutedstl_fg     = '#D3C6AA'   " explicit foreground
 #   g:mutedstl_bg     = 'NONE'      " explicit background
-g:mutedstl_invert = 1
+g:mutedstl_invert = 0
 
 # Install the highlight groups and refresh autocmds.  When no 'statusline' has
 # been set, Setup() also installs String() as the DEFAULT layout.

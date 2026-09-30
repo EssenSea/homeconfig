@@ -18,7 +18,6 @@ export HISTSIZE=100000
 export HISTFILESIZE=500000
 export HISTTIMEFORMAT="%F %T "
 
-export WLR_BACKEND=headless
 export WLR_RENDERER=vulkan
 export WLR_NO_HARDWARE_CURSORS=1
 export GBM_BACKEND=nvidia-drm

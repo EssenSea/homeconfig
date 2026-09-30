@@ -4,6 +4,15 @@
 @define-color active	#ff8075;
 @define-color alter		#6791C9;
 
+@keyframes gradient_f_nh {
+  0% {
+    background-position: 0% 200%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
 * {
   font-family:
     FiraCode Nerd Font,
@@ -76,39 +85,6 @@ window#waybar.hidden {
   color: @active;
   border: 0px solid @fg;
 }
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 30%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes gradient_f {
-  0% {
-    background-position: 0% 200%;
-  }
-  50% {
-    background-position: 200% 0%;
-  }
-  100% {
-    background-position: 400% 200%;
-  }
-}
-
-@keyframes gradient_f_nh {
-  0% {
-    background-position: 0% 200%;
-  }
-  100% {
-    background-position: 200% 200%;
-  }
-}
-
 #workspaces {
   /* background-color:transparent; */
   padding-left: 10px;
@@ -150,22 +126,22 @@ window#waybar.hidden {
 }
 
 #window {
-    background: @bg;
-    background-clip: padding-box;
-    border: 3px solid transparent;
-    background-image: linear-gradient(
-        120deg,
-        rgba(255, 128, 117, 1) 15%,
-        rgba(103, 145, 201, 1) 15%,
-        rgba(103, 145, 201, 1) 38%,
-        rgba(255, 128, 117, 1) 38%,
-        rgba(255, 128, 117, 1) 61%,
-        rgba(103, 145, 201, 1) 61%,
-        rgba(103, 145, 201, 1) 85%,
-        rgba(255, 128, 117, 1) 85%
+  background: @bg;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  background-image: linear-gradient(
+    120deg,
+    rgba(255, 128, 117, 1) 15%,
+    rgba(103, 145, 201, 1) 15%,
+    rgba(103, 145, 201, 1) 38%,
+    rgba(255, 128, 117, 1) 38%,
+    rgba(255, 128, 117, 1) 61%,
+    rgba(103, 145, 201, 1) 61%,
+    rgba(103, 145, 201, 1) 85%,
+    rgba(255, 128, 117, 1) 85%
   );
   background-size: 200% 300%;
-  animation: gradient_f_nh 5s linear infinite;
+  animation: gradient_f_nh 10s linear infinite;
   color: @fg;
   border-radius: 99px;
   font-weight: bolder;
@@ -187,20 +163,7 @@ window#waybar.hidden {
 }
 
 #taskbar button.active {
-    background: rgb(255, 128, 117);
-    background-image: linear-gradient(
-        120deg,
-        rgba(255, 128, 117, 1) 15%,
-        rgba(103, 145, 201, 1) 15%,
-        rgba(103, 145, 201, 1) 38%,
-        rgba(255, 128, 117, 1) 38%,
-        rgba(255, 128, 117, 1) 61%,
-        rgba(103, 145, 201, 1) 61%,
-        rgba(103, 145, 201, 1) 85%,
-        rgba(255, 128, 117, 1) 85%
-  );
-  background-size: 200% 300%;
-  animation: gradient_f_nh 4s linear infinite;
+  background: @bg;
   color: @fg;
 }
 
@@ -210,24 +173,10 @@ window#waybar.hidden {
 }
 
 #clock {
-    background: @bg;
-    background-clip: padding-box;
-    border: 3px solid transparent;
-    background-image: linear-gradient(
-        1200deg,
-        rgba(255, 128, 117, 1) 15%,
-        rgba(103, 145, 201, 1) 15%,
-        rgba(103, 145, 201, 1) 38%,
-        rgba(255, 128, 117, 1) 38%,
-        rgba(255, 128, 117, 1) 61%,
-        rgba(103, 145, 201, 1) 61%,
-        rgba(103, 145, 201, 1) 85%,
-        rgba(255, 128, 117, 1) 85%
-  );
-  background-size: 200% 300%;
-  animation: gradient_f_nh 5s linear infinite;
-  color: @fg;
+  background: @bg;
+  border: 3px solid transparent;
   border-radius: 99px;
+  color: @fg;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
   padding-right: 15px;
   padding-left: 15px;
@@ -263,23 +212,17 @@ window#waybar.hidden {
 }
 
 #network.disconnected {
-  background: rgb(243, 139, 168);
-  background: linear-gradient(45deg, @active 0%, @alter 100%);
-  animation: gradient_f_nh 5s linear infinite;
+  background-image: linear-gradient(45deg, @active 0%, @alter 100%);
+  background-size: 200% 300%;
+  animation: gradient_f_nh 10s linear infinite;
   color: @fg;
   font-weight: bolder;
 }
 
 #network.linked,
-#network.wifi {
-  background-color: #a6e3a1;
-}
-
+#network.wifi,
 #network.ethernet {
-  background-color: #f9e2af;
-}
-#network.wifi {
-  background-color: @bg;
+  background: @bg;
   color: @fg;
   font-weight: bolder;
 }
@@ -288,7 +231,6 @@ window#waybar.hidden {
   padding-right: 20px;
 }
 #mpd.playing {
-  background: rgb(255, 128, 117);
   background: linear-gradient(
     120deg,
     rgba(255, 128, 117, 1) 5%,
@@ -305,31 +247,12 @@ window#waybar.hidden {
     rgba(255, 128, 117, 1) 95%
   );
   background-size: 200% 300%;
-  animation: gradient_f_nh 5s linear infinite;
-  /* background-color: @active; */
+  animation: gradient_f_nh 10s linear infinite;
   color: @fg;
   font-weight: bolder;
 }
 #mpd.paused {
-  background: rgb(255, 128, 117);
-  background: linear-gradient(
-    120deg,
-    rgba(255, 128, 117, 1) 5%,
-    rgba(103, 145, 201, 1) 5%,
-    rgba(103, 145, 201, 1) 20%,
-    rgba(255, 128, 117, 1) 20%,
-    rgba(255, 128, 117, 1) 40%,
-    rgba(103, 145, 201, 1) 40%,
-    rgba(103, 145, 201, 1) 60%,
-    rgba(255, 128, 117, 1) 60%,
-    rgba(255, 128, 117, 1) 80%,
-    rgba(103, 145, 201, 1) 80%,
-    rgba(103, 145, 201, 1) 95%,
-    rgba(255, 128, 117, 1) 95%
-  );
-  background-size: 200% 300%;
-  animation: gradient_f_nh 5s linear infinite;
-  /* background-color: @active; */
+  background: @bg;
   color: @fg;
   font-weight: bolder;
 }

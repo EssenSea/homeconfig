@@ -1,5 +1,10 @@
 return {
   {
+    'NMAC427/guess-indent.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    opts = {},
+  },
+  {
     'stevearc/conform.nvim',
     lazy = true,
     opts = {

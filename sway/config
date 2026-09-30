@@ -4,8 +4,7 @@
 #
 # Read `man 5 sway` for a complete reference.
 
-# exec export WLR_BACKEND=headless,libinput
-exec export WLR_BACKEND=headless
+# 会话环境变量 (按原样保留)
 exec export WLR_RENDERER=vulkan
 exec export WLR_NO_HARDWARE_CURSORS=1
 exec export GBM_BACKEND=nvidia-drm
@@ -22,6 +21,7 @@ set $up k
 set $right l
 # Your preferred terminal emulator
 set $term kitty --hold tmux
+# set $term kitty
 # Your preferred application launcher
 set $menu fuzzel
 set $web firefox-bin
@@ -266,4 +266,4 @@ title_align center
 gaps inner 4
 gaps outer 8
 
-# include ~/dotfiles/homeconfig/sway/fxconf
+include ~/dotfiles/homeconfig/sway/fxconf
