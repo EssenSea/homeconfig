@@ -468,7 +468,8 @@
   (magit-diff-visit-prefer-worktree t)   ; 打开 diff 中文件时优先工作区内容
   :config
   ;; 在非 macOS / 终端以外系统也提供 M-F12 打开任意已登记仓库
-  (global-set-key [(meta f12)] #'magit-status))
+  (global-set-key [(meta f12)] #'magit-status)
+  (setq magit-clone-default-directory "/home/moonsea/SrcRepo/"))
 
 ;; Magit 一站式显示未处理 TODO 标记
 (use-package magit-todos

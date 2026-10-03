@@ -21,6 +21,7 @@ return {
           color = 'surface0',
         },
       },
+      cache = true,
     },
     config = function() vim.cmd.colorscheme 'evergarden-winter' end,
   },

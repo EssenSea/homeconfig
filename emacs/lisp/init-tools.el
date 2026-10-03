@@ -85,6 +85,15 @@
 ;; use vc for version control?
 (use-package magit
   :ensure t
+  :bind (("C-x g"   . magit-status)
+         ("C-x M-g" . magit-dispatch))
+  :custom
+  (magit-diff-refine-hunk 'all)          ; diff 中自动精化 hunk 高亮
+  (magit-diff-visit-prefer-worktree t)   ; 打开 diff 中文件时优先工作区内容
+  :config
+  ;; 在非 macOS / 终端以外系统也提供 M-F12 打开任意已登记仓库
+  ;; (global-set-key [(meta f12)] #'magit-status)
+  (setq magit-clone-default-directory "/home/moonsea/SrcRepo/")
   )
 
 (use-package vlf

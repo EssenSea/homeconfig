@@ -38,7 +38,8 @@ white = "#B5BFE2"
 yellow = "#E5C890"
 
 [cursor]
-style = { shape = "Underline", blinking = "Always" }
+style = { shape = "Underline", blinking = "Always"  }
+thickness = 0.4
 
 [mouse]
 hide_when_typing = true

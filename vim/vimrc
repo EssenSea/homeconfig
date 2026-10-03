@@ -5,6 +5,27 @@ vim9script
 # 描述：Vim 主配置文件（完全 Vim9script 写法）
 # ============================================================================
 #
+# STYLE / 写法约定
+#   At the TOP LEVEL of a sourced script a bare name is a COMMAND, not a
+#   variable: `foo = 1` raises E492 (Not an editor command). Either prefix it
+#   with `g:`, or use `var`:
+#       g:ale_enabled = 1     # OK  -> global option variable
+#       var x = 1             # OK  -> script-local, NOT visible as g:x
+#       x = 1                 # ERROR: E492
+#   脚本顶层写裸名字会被当成命令解析，`foo = 1` 报 E492（Not an editor
+#   command）。必须加 `g:` 前缀或用 `var`：
+#       g:ale_enabled = 1     # 可以 -> 全局插件选项变量
+#       var x = 1             # 可以 -> 脚本局部，不会变成 g:x
+#       x = 1                 # 错误：E492
+#   `var` is script-local, so NEVER use it for plugin option variables.
+#   `var` 是脚本局部的，插件选项变量绝对不能用它。
+#
+#   KEY POINTS / 要点
+#   - Plugin option variables must be set BEFORE plug#end() loads them.
+#   - 插件选项变量必须在 plug#end() 之前设置才会生效。
+#   - Inside a `def` function a bare name is a local; globals need `g:` there.
+#   - 在 `def` 函数内部裸名是局部变量，要访问全局必须写 `g:`。
+#
 
 # EXTERNAL DEPENDENCIES / 外部依赖
 #   The following external commands are needed by some mappings/plugins.
@@ -166,7 +187,7 @@ plug#begin()
     # --- UI ------------------------------------------
     # --- 界面 ----------------------------------------
     Plug 'majutsushi/tagbar'
-    Plug 'frazrepo/vim-rainbow'
+    Plug 'luochen1990/rainbow'
     Plug 'liuchengxu/vim-which-key'
     # Plug 'itchyny/lightline.vim'   " disabled: use native mutedstl
     Plug 'andymass/vim-matchup'
@@ -193,13 +214,14 @@ plug#begin()
     Plug 'imsnif/kdl.vim'
     Plug 'plasticboy/vim-markdown'
     Plug 'chrisbra/colorizer'
-    Plug 'isobit/vim-caddyfile'
+    # Plug 'isobit/vim-caddyfile'
 
     # --- writing --------------------------------------
     # --- 写作 / 专注 ------------------------------------
     Plug 'EssenSea/zen.vim'
+    Plug 'tpope/vim-obsession'
     # Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim'
+    # Plug 'junegunn/limelight.vim'
 
     # --- native helpers -------------------------------
     # --- 原生辅助工具 ----------------------------------
@@ -237,7 +259,7 @@ endif
 &t_Co = '256'
 &background = 'dark'
 g:everforest_transparent_background = 0
-execute 'colorscheme everforest'
+execute 'colorscheme iceberg'
 
 g:rainbow_active = 1
 # Rainbow parentheses on. / 开启彩虹括号。
@@ -287,7 +309,6 @@ endif
 &scrolloff = 2
 &updatetime = 2000
 &ttyfast = true
-# &splitright = true
 &splitright = false
 &splitbelow = true
 &signcolumn = 'yes'
@@ -333,7 +354,20 @@ if has('persistent_undo')
     if !isdirectory(undodir)
         mkdir(undodir, 'p')
     endif
-    &undodir = '~/.config/vim/undodir'
+    # Assign the EXPANDED path (the variable), never a '~' literal.
+    # expand() resolves '~' immediately via the current $HOME, whereas a '~'
+    # stored in &undodir is resolved later by Vim's own directory-list logic.
+    # The two can disagree (e.g. $HOME differs at startup), and since the undo
+    # directory is NOT auto-created, a mismatch makes Vim silently fail to
+    # write undo files without raising any error. Reusing the value mkdir()
+    # just created guarantees both point at the very same directory.
+    # 这里必须赋 expand() 展开后的变量值，不要写成 '~' 字面量：
+    # expand() 在赋值时按当前 $HOME 立即展开，而 &undodir 里的 '~' 由 Vim
+    # 自身的目录列表逻辑稍后解析。两者在某些情况下结果不同（例如启动时
+    # $HOME 不一致），而撤销目录不会自动创建，一旦路径对不上，Vim 会静默
+    # 写不进撤销文件且不报错。复用 mkdir() 刚创建的同一个值，可确保两处
+    # 指向完全相同的目录。
+    &undodir = undodir
     &undofile = true
 endif
 &backup = false
@@ -427,9 +461,57 @@ endfor
 # 多键组合写法：<Leader> 后不加空格，如 <Leader>fi 即依次按 <Space> f i。
 # <Leader>f + <identifier> for the main fzf commands / 主要 fzf 命令：
 # Other fzf entry points / 其它 fzf 入口：
+# fzf window layout / fzf 窗口布局
+#   MUST be g:fzf_layout — the plugin reads the GLOBAL variable (fzf.vim
+#   calls fzf#wrap(), which looks up `g:fzf_layout`). A script-local `var`
+#   is silently ignored: no error, but the option never takes effect.
+#   必须写 g:fzf_layout —— 插件读的是全局变量（fzf#wrap() 内部取
+#   `g:fzf_layout`）。用 `var` 声明只会创建脚本局部变量，被静默忽略：
+#   不报错，但设置永远不生效。
+#   The dict form MUST include width/height! Without them opts.width is 0, and
+#   s:popup_bounds() clamps it via max([8, ...]) / max([4, ...]), collapsing
+#   the popup to the 8x4 minimum — a tiny box showing nothing useful.
+#   字典形式 MUST 给出 width/height！缺省时取值为 0，被 s:popup_bounds() 里的
+#   max([8, ...]) / max([4, ...]) 兜底成 8x4 的最小浮窗，就是"团成一小团"、
+#   什么都显示不了的效果。
+#   Value types / 取值类型（两者不可混用 / do not mix them up）:
+#     'window' = { 'width': <0-1 比例 或 >1 列数>, 'height': ..., 'border': ... }
+#                Border: 'rounded' -> ╭╮╰╯, 'sharp' -> ┌┐└┘, 'none' 关闭；
+#                需要 fzf >= 0.24.0。字体不区分渲染时两者看起来一样。
+#     'popup'  = '90%,60%'  <- a STRING, never a dict.
+#                'popup' 是字符串，写成字典会在 tmux 分支触发
+#                E735: Can only compare Dictionary with Dictionary。
+#   Upstream default / 官方默认: { 'width': 0.9, 'height': 0.6 }
+g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8, 'border': 'rounded' } }
+# g:fzf_layout = { 'popup': 'center,90%,60%' }
+
+# fzf.vim preview window / fzf.vim 预览窗口
+#   Value contract / 取值契约:
+#     g:fzf_vim.preview_window = [<preview-window opts>, <toggle key>]
+#   A 2-element list, passed straight to fzf#vim#with_preview().
+#   两元素列表，原样传给 fzf#vim#with_preview()。
+#   Plugin default / 插件默认值: ['right,50%', 'ctrl-/']
+#   Note / 注意: `hidden,right,50%,<70(up,40%)` shows on the right, but above
+#   the list when the width is under 70 columns.
+#   `hidden,right,50%,<70(up,40%)` 表示默认隐藏、显示在右侧，
+#   宽度不足 70 列时改为显示在上方。
+#
+#   The dictionary MUST be initialized first, then keyed / 必须先初始化再赋值：
+#     g:fzf_vim = {}
+#     g:fzf_vim.preview_window = ['right,70%', 'ctrl-p']
+#   The commented-out line below did BOTH in one assignment; that also works
+#   because the key is created together with the dict, but two steps match the
+#   upstream docs. / 下面注释掉的写法把初始化与赋值合并成一句；因为键是随字典
+#   一起创建的，所以同样可行，但官方文档推荐上面分两步的写法。
+#
+#   `ctrl-/` needs a terminal that reports it as a distinct key; on terminals
+#   that swallow it the preview never toggles, so `ctrl-p` is used here.
+#   `ctrl-/` 需要终端能发出独立按键，被终端吞掉时预览无法切换，故此处用
+#   `ctrl-p`。
+g:fzf_vim = { 'preview_window': ['right,60%', 'ctrl-/'] }
 var fzf_maps: list<list<string>> = [
     ['<Leader>ff', ':Files<CR>',     'Files / 文件搜索'],
-    ['<Leader>fi', ':History<CR>',   'History / 最近文件历史'],
+    ['<Leader>fh', ':History<CR>',   'History / 最近文件历史'],
     ['<Leader>fb', ':Buffers<CR>',   'Buffers / 缓冲区切换'],
     ['<Leader>fc', ':Commands<CR>',  'Commands / Ex 命令面板'],
     ['<Leader>fl', ':BLines<CR>',    'BLines / 当前文件行搜索'],
@@ -547,8 +629,8 @@ execute 'nmap <silent> ]a <Plug>(ale_next_wrap)'
 # 11. VimTeX / TeX / LaTeX 配置
 # ============================================================================
 g:tex_flavor = 'lualatex'
-g:tex_conceal = 'abdmg'
-&conceallevel = 1
+# g:tex_conceal = 'abdmg'
+&conceallevel = 0
 &ambiwidth = 'single'
 execute 'highlight Conceal ctermbg=none'
 execute 'syntax enable'
@@ -689,7 +771,7 @@ g:ft_man_open_mode = 'vert'
 #   g:mutedstl_invert = 1           " swap fg/bg when 1
 #   g:mutedstl_fg     = '#D3C6AA'   " explicit foreground
 #   g:mutedstl_bg     = 'NONE'      " explicit background
-g:mutedstl_invert = 0
+g:mutedstl_invert = 1
 
 # Install the highlight groups and refresh autocmds.  When no 'statusline' has
 # been set, Setup() also installs String() as the DEFAULT layout.

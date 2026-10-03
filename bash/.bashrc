@@ -51,6 +51,7 @@ export DEEPSEEK_API_KEY=$(pass show deepseek)
 export GEMINI_API_KEY=$(pass show gemini)
 export MINIMAX_API_KEY=$(pass show minimax)
 
+export FZF_DEFAULT_OPTS='--border=rounded --style full'
 # shellcheck shell=bash
 # alias ls='ls --color=auto'
 alias grep='grep --color=auto'
