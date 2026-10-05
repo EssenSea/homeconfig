@@ -35,9 +35,4 @@ return {
       -- }
     },
   },
-  {
-    url = 'https://codeberg.org/vi6jm/scry.nvim',
-    ft = 'markdown',
-    opts = {},
-  },
 }

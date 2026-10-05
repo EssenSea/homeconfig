@@ -318,7 +318,7 @@ endif
 &pumopt = 'opacity:100,width:30,height:15,border:round,margin'
 &completepopup = 'align:item,opacity:100,shadow:on,width:78,border:round'
 &confirm = true
-&virtualedit = 'block,onemore'
+&virtualedit = 'block'
 &showbreak = '>'
 
 # ============================================================================
@@ -496,7 +496,7 @@ g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8, 'border': 'rounded' } 
 #   `hidden,right,50%,<70(up,40%)` 表示默认隐藏、显示在右侧，
 #   宽度不足 70 列时改为显示在上方。
 #
-#   The dictionary MUST be initialized first, then keyed / 必须先初始化再赋值：
+#   The dictionary MUST be initialized first, then keyed / 必须先初始化再赋值:
 #     g:fzf_vim = {}
 #     g:fzf_vim.preview_window = ['right,70%', 'ctrl-p']
 #   The commented-out line below did BOTH in one assignment; that also works
