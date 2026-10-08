@@ -47,7 +47,7 @@ return {
           colorschemes = {
             layout = {
               fullscreen = false,
-              preset = 'vertical',
+              preset = 'select',
             },
           },
         },
