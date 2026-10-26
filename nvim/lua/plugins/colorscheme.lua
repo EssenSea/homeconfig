@@ -1,5 +1,11 @@
 return {
-  { 'datsfilipe/vesper.nvim', lazy = true, opts = {} },
+  {
+    'datsfilipe/vesper.nvim',
+    lazy = true,
+    opts = {
+      transparent = true,
+    },
+  },
   {
     url = 'https://codeberg.org/evergarden/nvim.git',
     name = 'evergarden',
@@ -7,23 +13,22 @@ return {
     priority = 1000,
     opts = {
       theme = {
-        variant = 'winter', -- 'winter'|'fall'|'spring'|'summer'
+        variant = 'winter',
         accent = 'green',
       },
       editor = {
         transparent_background = true,
+        override_terminal = true,
         sign = { color = 'none' },
-        float = {
-          color = 'mantle',
-          solid_border = false,
-        },
-        completion = {
-          color = 'surface0',
-        },
+        float = { color = 'none', solid_border = false }, -- 浮窗透明（单独控制）
+        completion = { color = 'none' }, -- 补全菜单透明（单独控制）
       },
       cache = true,
     },
-    config = function() vim.cmd.colorscheme 'evergarden-winter' end,
+    config = function(_, opts)
+      require('evergarden').setup(opts)
+      vim.cmd.colorscheme 'evergarden'
+    end,
   },
   {
     'sainnhe/everforest',
@@ -35,6 +40,7 @@ return {
       vim.g.everforest_better_performance = 1
       vim.g.everforest_show_eob = 1
       vim.g.everforest_dim_inactive_windows = 0
+      -- vim.cmd.colorscheme 'everforest'
     end,
   },
 }

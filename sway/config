@@ -33,8 +33,8 @@ set $web firefox-bin
 # Example configuration:
 #
 # output HDMI-A-1 resolution 1920x1080 pos 0 0  bg ~/Pictures/abstract_waves.png fill
-output HDMI-A-1 resolution 1920x1080 pos 0 0  bg ~/Pictures/Plane_design.png fill
-output eDP-1 resolution 1920x1080 pos 1920 0 bg ~/Pictures/abstract_cloud.png fill
+output HDMI-A-1 resolution 1920x1080 pos 0 0  bg ~/Pictures/red_knight.png fill
+output eDP-1 resolution 1920x1080 pos 1920 0 bg ~/Pictures/wolfs_and_lion_warrior.png fill
 workspace 1 output HDMI-A-1
 workspace 2 output HDMI-A-1
 workspace 3 output HDMI-A-1

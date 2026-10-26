@@ -258,8 +258,8 @@ endif
 &termguicolors = true
 &t_Co = '256'
 &background = 'dark'
-g:everforest_transparent_background = 0
-execute 'colorscheme iceberg'
+g:everforest_transparent_background = 2
+execute 'colorscheme everforest'
 
 g:rainbow_active = 1
 # Rainbow parentheses on. / 开启彩虹括号。
@@ -771,6 +771,7 @@ g:ft_man_open_mode = 'vert'
 #   g:mutedstl_invert = 1           " swap fg/bg when 1
 #   g:mutedstl_fg     = '#D3C6AA'   " explicit foreground
 #   g:mutedstl_bg     = 'NONE'      " explicit background
+g:mutedstl_theme = 'everforest'
 g:mutedstl_invert = 1
 
 # Install the highlight groups and refresh autocmds.  When no 'statusline' has
@@ -841,7 +842,7 @@ mutedstl#Setup()
 #     cmd: 'if !exists(''#zen'') | wincmd H | endif'}])
 # # autocmd_add([{group: 'vimrc_help_man_left', event: 'FileType', pattern: 'man',
 # #     cmd: 'wincmd H'}])
-# autocmd_add([{event: 'FileType', pattern: 'help', cmd: 'setlocal bufhidden=hide buflisted'}])
+autocmd_add([{event: 'FileType', pattern: 'help', cmd: 'setlocal bufhidden=hide buflisted'}])
 
 # # Local Vim9script goyo (autoload/zen/goyo.vim)
 # execute 'command! -nargs=? -bar -bang Goyo call zen#goyo#Execute(<bang>0, <q-args>)'

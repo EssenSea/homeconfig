@@ -50,14 +50,23 @@ export PIP_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 export DEEPSEEK_API_KEY=$(pass show deepseek)
 export GEMINI_API_KEY=$(pass show gemini)
 export MINIMAX_API_KEY=$(pass show minimax)
+export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+export ANTHROPIC_AUTH_TOKEN=$(pass show deepseek)
+export ANTHROPIC_MODEL=deepseek-flash[1m]
+export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-flash[1m]
+export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-flash[1m]
+export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-flash
+export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-flash
+export CLAUDE_CODE_EFFORT_LEVEL=auto
+export CLAUDE_CODE_AUTO_COMPACT_WINDOW=786432
 
 export FZF_DEFAULT_OPTS='--border=rounded --style full'
 # shellcheck shell=bash
 # alias ls='ls --color=auto'
 alias grep='grep --color=auto'
-alias ls="lsd"
-alias ll="lsd -la"
-alias la="lsd -a"
+# alias ls="lsd"
+alias ll="ls -laFh"
+alias la="ls -a"
 alias c="clear"
 alias wget='wget -c '
 alias hw='hwinfo --short'

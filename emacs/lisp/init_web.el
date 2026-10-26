@@ -202,6 +202,7 @@
           ("https://oremacs.com/atom.xml" oremacs)
           ("https://pinecast.com/feed/emacscast" emacscast)
           ("https://emacstil.com/feed.xml" Emacs TIL)
+          ("https://github.com/MetaCubeX/metacubexd/releases.atom" metacubexd)
           ;; ("https://www.reddit.com/r/emacs.rss" reddit emacs)
           ;; ("https://www.reddit.com/r/Gentoo.rss" Gentoo)
           ("https://www.chiply.dev/rss.xml" chiply)

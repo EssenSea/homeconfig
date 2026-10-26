@@ -35,4 +35,26 @@ return {
       -- }
     },
   },
+  -- rubbish , just looks pretty.
+  -- {
+  --   'nvzone/floaterm',
+  --   dependencies = 'nvzone/volt',
+  --   cmd = 'FloatermToggle',
+  --   keys = {
+  --     { '<leader>tt', '<cmd>FloatermToggle<CR>', desc = 'Floaterm toggle' },
+  --     -- {
+  --     --   '<leader>tt',
+  --     --   function() require('floaterm').toggle() end,
+  --     --   mode = { 'n', 'v' },
+  --     --   desc = 'float term toggle',
+  --     -- },
+  --   },
+  --   opts = {
+  --     border = true,
+  --     mappings = {
+  --       sidebar = nil,
+  --       term = nil,
+  --     },
+  --   },
+  -- },
 }

@@ -1,6 +1,6 @@
 {
 	"clock": {
-		"format": "  {:%d %a %R %Z}",
+		"format": "{:%d %a %R %Z}",
 		"format-alt": "{:%W %A %B %d %Y (%R %Z)}",
 		"tooltip": true,
 		"tooltip-format": "<big>{:%W %A %B %d %Y (%R %Z)}\n{tz_list}</big>\n<tt><small>{calendar}</small></tt>",
@@ -35,32 +35,34 @@
 	"disk":{
         "path": "/home",
 		"interval": 15,
-		"format": "{used}({percentage_used}%) ",
+		// "format": "DISK: {used}({percentage_used}%)",
+		"format": "D: {percentage_used}%",
 		"unit": "GB",
 		"on-click": "yazi"
 	},
 
 	"cpu":{
 		"interval": 1,
-		"format":"{usage}% ",
+		"format":"C: {usage}%",
 	},
 
 	"memory":{
 		"interval":3,
-		"format":"{percentage}% "
+		"format":"M: {percentage}%"
 	},
 
 	"wireplumber": {
-		"format": "{volume}% {icon}",
-		"format-muted": "",
+		// "format": "VOL: {volume}% {icon}",
+		"format": "V: {volume}%",
+		// "format-muted": "",
 		"on-click": "pavucontrol",
-		"format-icons": ["", "", ""],
-		"format-bluetooth": "{volume}% "
+		// "format-icons": ["", "", ""],
+		// "format-bluetooth": "{volume}% "
     },
     "bluetooth": {
-    	"format": "{status} ",
-    	"format-connected": "{device_alias} ",
-    	"format-connected-battery": "{device_alias}  {device_battery_percentage}%",
+    	"format": "B: {status}",
+    	"format-connected": "B: {device_alias}",
+    	"format-connected-battery": "B: {device_alias} {device_battery_percentage}%",
     	"format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
     	"tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
     	"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
@@ -75,13 +77,15 @@
 			"warning": 30,
 			"critical": 15
 		},
-		"format": "{capacity}% {icon}",
-		"format-charging": "{capacity}% ",
-		"format-plugged": "{capacity}% ",
-		"format-alt": "{time}{icon}",
+		// "format": "{capacity}% {icon}",
+		"format": "B: {capacity}%",
+		"format-charging": "C: {capacity}%",
+		"format-plugged": "P: {capacity}%",
+		// "format-alt": "{time}{icon}",
+		"format-alt": "CHARGING: {time}",
 		// "format-good": "", // An empty format will hide the module
 		// "format-full": "",
-		"format-icons": ["", "", "", "", ""]
+		// "format-icons": ["", "", "", "", ""]
 	},
 
 	"temperature": {
@@ -92,23 +96,23 @@
 		"sensor-name": "coretemp",
 		"critical-threshold": 85,
 		"interval": 5,
-		"format-critical": "{temperatureC}°C ",
-		"format": "{temperatureC}°C "
+		"format-critical": "T: {temperatureC}°C",
+		"format": "T: {temperatureC}°C"
 	},
 
 	"network": {
 		"interface": "wlan0",
         "interval": 2,
 		"format": "{ifname}",
-		"format-wifi": "   {bandwidthUpBits} {bandwidthDownBits} {signalStrength}% ",
-		"format-ethernet": "{ifname} ",
+		"format-wifi": " WIFI: ↑{bandwidthUpBytes} ↓{bandwidthDownBytes} {signalStrength}% ",
+		"format-ethernet": "ETH: {ifname}",
 	// "format-disconnected": "", //An empty format will hide the module.
-		"format-disconnected": "disconnected ",
+		"format-disconnected": "Disconnected",
 		"tooltip-format": "{ifname}",
-		"tooltip-format-wifi" : "{essid} ({signalStrength}%)  ",
-		"tooltip-format-ethernet" : "{ifname}  ",
+		"tooltip-format-wifi" : "WIFI: {essid} ({signalStrength}%)",
+		"tooltip-format-ethernet" : "ETH {ifname}",
 		"tooltip-format-disconnected" : "Disconnected",
-		"max-length": 40
+		"max-length": 60
 	},
 
 	"backlight": {
@@ -217,7 +221,8 @@
 
 	"sway/workspaces": {
 		// "format": "<span size=’larger’>{name}</span> {windows}",
-		"format": "{icon} <sub>{index}</sub>",
+		// "format": "{icon} <sub>{index}</sub>",
+		"format": "{icon} {index}",
 		"format-icons": {
 			"focused": "",
 			"default": ""
