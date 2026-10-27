@@ -256,7 +256,7 @@ bar {
     #     inactive_workspace #32323200 #32323200 #5c5c5c
     # }
 }
-for_window [app_id="emacs"] opacity 0.95
+for_window [app_id="emacs"] opacity 0.8
 # for_window [app_id="sioyek"] opacity 0.90
 for_window [app_id="zathura"] opacity 0.90
 # for_window [app_id="chrome"] opacity 0.90
