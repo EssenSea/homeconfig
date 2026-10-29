@@ -1,18 +1,10 @@
-/* @import "ayu.css"; */
-@define-color bg	#000000;
-@define-color fg	#edeff0;
-@define-color active	#ff8075;
-@define-color alter		#6791C9;
+/* ---------- 配色 ---------- */
+@define-color bg     #000000;
+@define-color fg     #edeff0;
+@define-color active #ff8075;
+@define-color alter  #6791C9;
 
-@keyframes gradient_f_nh {
-  0% {
-    background-position: 0% 200%;
-  }
-  100% {
-    background-position: 200% 200%;
-  }
-}
-
+/* ---------- 全局 ---------- */
 * {
   font-family:
     Sarasa Term SC Nerd,
@@ -27,23 +19,29 @@ window#waybar {
 
 window#waybar.hidden {
   opacity: 0.2;
-  background-color: transparent;
 }
 
-#tooltip {
-  background: @bg;
+/* tooltip 的节点名是元素 tooltip，没有 #tooltip 这个 id */
+tooltip.background {
+  background-color: @bg;
+  border-radius: 20px;
+}
+
+tooltip label {
   color: @fg;
 }
 
+/* ---------- 模块通用外观 ---------- */
 #workspaces,
 #window,
 #taskbar,
+#focused,
 #clock,
 #disk,
 #cpu,
 #memory,
 #battery,
-#battery.charging,
+#custom-temperature,
 #bluetooth,
 #wireplumber,
 #hardware,
@@ -51,209 +49,152 @@ window#waybar.hidden {
 #mpd,
 #tray {
   background-color: @bg;
-  color: @fg;
+  border: 0px;
   border-radius: 99px;
+  color: @fg;
+  margin: 5px;
   padding-left: 10px;
   padding-right: 10px;
-  margin-top: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  /* border: 4px solid @fg; */
-  border: 0px;
 }
 
-#window,
-#taskbar,
-#clock {
-  border: 0px transparent;
-}
-
+/* ---------- 组内模块：横向贴紧 ---------- */
 #wireplumber,
 #disk,
 #cpu,
 #memory,
 #bluetooth,
-#temperature,
+#custom-temperature,
 #battery {
   margin-left: 0px;
   margin-right: 0px;
-  padding-left: 10px;
-  padding-right: 10px;
-  border: 0px solid transparent;
 }
-#battery.charging {
-  color: @active;
-  border: 0px solid @fg;
+
+#workspaces,
+#window {
+  margin: 0px;
 }
+
+/* ---------- 各模块微调 ---------- */
 #workspaces {
-  /* background-color:transparent; */
-  padding-left: 10px;
-  padding-right: 10px;
-}
-#workspaces button {
-  padding: 6px;
-  border-radius: 20px;
-  background-color: @bg;
-  color: @fg;
-  font-weight: bold;
-}
-
-#workspaces button:hover {
-  background-color: @bg;
-  color: @alter;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#workspaces button.active {
-  color: @active;
-  font-weight: bolder;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-#workspaces button.focused{
-  color: @active;
-  font-weight: bolder;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-#workspaces button.urgent {
-  /*background-color: @bg;*/
-  /*background: @alter;*/
-  color: @alter;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-right: 2px;
 }
 
 #window {
-  background: @bg;
-  background-clip: padding-box;
-  border: 3px solid transparent;
-  background-image: linear-gradient(
-    120deg,
-    rgba(255, 128, 117, 1) 15%,
-    rgba(103, 145, 201, 1) 15%,
-    rgba(103, 145, 201, 1) 38%,
-    rgba(255, 128, 117, 1) 38%,
-    rgba(255, 128, 117, 1) 61%,
-    rgba(103, 145, 201, 1) 61%,
-    rgba(103, 145, 201, 1) 85%,
-    rgba(255, 128, 117, 1) 85%
-  );
-  background-size: 200% 300%;
-  animation: gradient_f_nh 10s linear infinite;
-  color: @fg;
-  border-radius: 99px;
-  font-weight: bolder;
-}
-
-#taskbar {
-  background-color: @bg;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
-
-#taskbar button {
-  border-radius: 99px;
-  /* background-clip: padding-box; */
-  color: @fg;
-  border: none;
-}
-
-#taskbar button.active {
-  background: @bg;
-  color: @fg;
-}
-
-#clock label {
-  color: #11111b;
+  padding-left: 2px;
+  color: @active;
   font-weight: bolder;
 }
 
 #clock {
-  background: @bg;
   border: 3px solid transparent;
-  border-radius: 99px;
-  color: @fg;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
-  padding-right: 15px;
   padding-left: 15px;
+  padding-right: 15px;
   font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
 }
 
 #tray {
-  background-color: @bg;
-  font-weight: bolder;
-  color: @active;
   padding-left: 15px;
   padding-right: 15px;
-}
-#tray > .active {
   color: @active;
-}
-#tray > .passive {
-  color: @fg;
-}
-#tray > .needs-attention {
-  color: @alter;
-}
-/* #wireplumber { */
-/*   padding-left: 15px; */
-/*   padding-right: 15px; */
-/* } */
-#network {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-#network.disabled {
-  background-color: @bg;
-}
-
-#network.disconnected {
-  background-image: linear-gradient(45deg, @active 0%, @alter 100%);
-  background-size: 200% 300%;
-  animation: gradient_f_nh 10s linear infinite;
-  color: @fg;
   font-weight: bolder;
 }
 
-#network.linked,
-#network.wifi,
-#network.ethernet {
+#taskbar {
+  padding: 0px;
+}
+
+#taskbar button {
+  border: none;
+  border-radius: 99px;
+  color: @fg;
+}
+
+#taskbar button.active {
   background: @bg;
-  color: @fg;
-  font-weight: bolder;
 }
+
 #mpd {
   padding-left: 15px;
   padding-right: 20px;
 }
-#mpd.playing {
-  background: linear-gradient(
-    120deg,
-    rgba(255, 128, 117, 1) 5%,
-    rgba(103, 145, 201, 1) 5%,
-    rgba(103, 145, 201, 1) 20%,
-    rgba(255, 128, 117, 1) 20%,
-    rgba(255, 128, 117, 1) 40%,
-    rgba(103, 145, 201, 1) 40%,
-    rgba(103, 145, 201, 1) 60%,
-    rgba(255, 128, 117, 1) 60%,
-    rgba(255, 128, 117, 1) 80%,
-    rgba(103, 145, 201, 1) 80%,
-    rgba(103, 145, 201, 1) 95%,
-    rgba(255, 128, 117, 1) 95%
-  );
-  background-size: 200% 300%;
-  animation: gradient_f_nh 10s linear infinite;
-  color: @fg;
+
+/* ---------- 模块状态 ---------- */
+#battery.charging {
+  color: @active;
+}
+
+#custom-temperature.warning {
+  color: #f9e2af;
+}
+
+#custom-temperature.critical {
+  color: @active;
+}
+
+#network.disconnected,
+#network.linked,
+#network.wifi,
+#network.ethernet,
+#mpd.playing,
+#mpd.paused {
   font-weight: bolder;
 }
-#mpd.paused {
-  background: @bg;
+
+/* ---------- 工作区按钮 ---------- */
+/* 状态规则只改颜色，不改 padding / background-image：
+   否则按钮宽度会跳动，且 GTK 主题会在 :hover、:active 上叠加渐变底色 */
+#workspaces button {
+  background-color: @bg;
+  background-image: none;
+  border-radius: 20px;
   color: @fg;
+  font-weight: bold;
+  padding: 4px;
+}
+
+#workspaces button:hover {
+  background-color: @bg;
+  background-image: none;
+  border-color: transparent;
+  box-shadow: none;
+  color: @alter;
+  text-shadow: none;
+  transition: none;
+  -gtk-icon-shadow: none;
+  -gtk-icon-effect: none;
+}
+
+#workspaces button:active {
+  background-color: @bg;
+  background-image: none;
+  border-color: transparent;
+  box-shadow: none;
+  color: @alter;
+  text-shadow: none;
+  transition: none;
+  -gtk-icon-shadow: none;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+  color: @active;
   font-weight: bolder;
+}
+
+#workspaces button.urgent {
+  color: @alter;
+}
+
+/* ---------- tray 图标状态 ---------- */
+#tray > .active {
+  color: @active;
+}
+
+#tray > .passive {
+  color: @fg;
+}
+
+#tray > .needs-attention {
+  color: @alter;
 }

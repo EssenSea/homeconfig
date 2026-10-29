@@ -9,3 +9,6 @@ go/telemetry/
 # Temporary upstream checkouts used for preparing the mucomplete PR
 vim/vim-mucomplete/
 vim/vim-mucomplete-codeberg/
+
+# Upstream source checkout used for reference
+waybar/Waybar-*/

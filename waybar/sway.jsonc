@@ -1,40 +1,48 @@
 {
-	"layer": "top",
-	// "output":"eDP-1",
-	"position": "top",
-	// "height": 40,
-	// "weight": 1920,
-	// "margin": 8,
-	// "padding":8,
-	// "spacing": 8,
-	// "mode": "top",
-	"fixed-center": true,
-	// "passthrough":"true",
-	"reload-style-on-change": true,
-	"include": "/home/moonsea/.config/waybar/modules.jsonc",
-	"modules-left":[
-		"sway/workspaces",
-		"network",
-		"sway/window"
-	],
-	"modules-center":[
-		"clock",
-	],
-	"modules-right":[
-		// "mpd",
-		"group/hardware",
-		"tray"
-	],
-	"group/hardware": {
-		"orientation": "horizontal",
-		"modules": [
-		    "wireplumber",
-            "bluetooth",
-			"disk",
-			"cpu",
-			"memory",
-			"temperature",
-			"battery"
-		]
-	}
+"layer": "top",
+// "output": "eDP-1",
+"position": "top",
+// "height": 40,
+// "weight": 1920,
+// "margin": 8,
+// "padding": 8,
+// "spacing": 8,
+// "mode": "top",
+"fixed-center": true,
+// "passthrough": "true",
+"reload_style_on_change": true,
+"include": "/home/moonsea/.config/waybar/modules.jsonc",
+
+"modules-left": [
+"group/focused",
+"network"
+],
+"modules-center": [
+"clock"
+],
+"modules-right": [
+// "mpd",
+"group/hardware",
+"tray"
+],
+
+"group/focused": {
+"orientation": "horizontal",
+"modules": [
+"sway/workspaces",
+"sway/window"
+]
+},
+"group/hardware": {
+"orientation": "horizontal",
+"modules": [
+"wireplumber",
+"bluetooth",
+"disk",
+"cpu",
+"memory",
+"custom/temperature",
+"battery"
+]
+}
 }
