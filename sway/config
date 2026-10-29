@@ -130,7 +130,7 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # ───────────── 窗口外观 ─────────────
-# for_window [app_id="emacs"]  opacity 0.8
+for_window [app_id="emacs"]  opacity 0.8
 # for_window [app_id="zathura"] opacity 0.90
 
 client.focused #a7c080 #2e3339 #d3c6aa #d3c6aa #a7c080
@@ -146,4 +146,4 @@ bar {
 }
 
 # ───────────── swayfx ─────────────
-# include ~/dotfiles/homeconfig/sway/fxconf
+include ~/dotfiles/homeconfig/sway/fxconf

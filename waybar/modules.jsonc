@@ -197,9 +197,9 @@
 		"tooltip": true,
 		"all-outputs": true,
 		"rewrite": {
-			"(.*) — Mozilla Firefox" : "🌎 $1",
-			"(.*) — GNU Emacs at Gentoo"  : "ξ $1",
-			"(.*) - GNU Emacs at Gentoo"  : "ξ $1",
+			"👉(.*) — Mozilla Firefox" : "🌎$1",
+			"👉(.*) - Google Chrome" : "🌎$1",
+			"(.*) - GNU Emacs at Gentoo"  : "ξ$1",
 			"(.*) - bash": "> [$1]"
 			}
 	},
