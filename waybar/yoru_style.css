@@ -6,7 +6,7 @@
 
 /* ---------- 全局 ---------- */
 * {
-  font-family: Sarasa Term SC Nerd, FiraCode Nerd Font, Roboto Nerd Font;
+  font-family: Sarasa Term SC Nerd;
   font-size: 15pt;
 }
 
@@ -18,9 +18,22 @@ tooltip.background { background-color: @bg; border-radius: 20px; }
 tooltip label      { color: @fg; }
 
 /* ---------- 模块通用外观 ---------- */
-#workspaces, #window, #taskbar, #focused, #clock, #disk, #cpu,
-#memory, #battery, #custom-temperature, #bluetooth, #wireplumber,
-#hardware, #network, #mpd, #tray {
+#workspaces, 
+#window, 
+#taskbar, 
+#focused, 
+#clock, 
+#disk, 
+#cpu,
+#memory, 
+#battery, 
+#custom-temperature, 
+#bluetooth, 
+#wireplumber,
+#hardware, 
+#network, 
+#mpd, 
+#tray {
   background-color: @bg;
   border: 0px;
   border-radius: 99px;
@@ -31,8 +44,13 @@ tooltip label      { color: @fg; }
 }
 
 /* ---------- 组内模块：横向贴紧 ---------- */
-#wireplumber, #disk, #cpu, #memory, #bluetooth,
-#custom-temperature, #battery {
+#wireplumber, 
+#disk, 
+#cpu, 
+#memory, 
+#bluetooth,
+#custom-temperature, 
+#battery {
   margin-left: 0px;
   margin-right: 0px;
 }
@@ -48,10 +66,10 @@ tooltip label      { color: @fg; }
 }
 
 #clock {
-  border: 3px solid transparent;
+  border: 0px solid transparent;
   padding-left: 15px;
   padding-right: 15px;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
+  /* text-shadow: 0 0 5px rgba(0, 0, 0, 0.377); */
 }
 
 #tray {
@@ -76,9 +94,15 @@ tooltip label      { color: @fg; }
 }
 
 /* ---------- 加粗 ---------- */
-#window, #clock, #tray,
-#network.disconnected, #network.linked, #network.wifi, #network.ethernet,
-#mpd.playing, #mpd.paused {
+#window, 
+#clock, 
+#tray,
+#network.disconnected, 
+#network.linked, 
+#network.wifi, 
+#network.ethernet,
+#mpd.playing, 
+#mpd.paused {
   font-weight: bolder;
 }
 

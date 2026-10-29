@@ -192,15 +192,16 @@
 	},
 
 	"sway/window": {
-		"format": "👉 {}",
+		"format": " {}",
 		"max-length": 50,
 		"tooltip": true,
 		"all-outputs": true,
 		"rewrite": {
-			"👉(.*) — Mozilla Firefox" : "🌎$1",
-			"👉(.*) - Google Chrome" : "🌎$1",
-			"(.*) - GNU Emacs at Gentoo"  : "ξ$1",
-			"(.*) - bash": "> [$1]"
+			"(.*) — Mozilla Firefox" : "🌎$1",
+			"(.*) - Google Chrome" : "🌎$1",
+			"(.*) - GNU Emacs at Gentoo"  : "ξ$1",
+			"(.*) - bash": "> [$1]",
+			" ": " blank workspace",
 			}
 	},
 
@@ -224,7 +225,7 @@
 	"sway/workspaces": {
 		// "format": "<span size=’larger’>{name}</span> {windows}",
 		// "format": "{icon} <sub>{index}</sub>",
-		"format": "{icon} {index}",
+		"format": "<big>{icon}</big>",
 		"format-icons": {
 			"focused": "",
 			"default": ""
