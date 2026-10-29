@@ -6,48 +6,21 @@
 
 /* ---------- 全局 ---------- */
 * {
-  font-family:
-    Sarasa Term SC Nerd,
-    FiraCode Nerd Font,
-    Roboto Nerd Font;
+  font-family: Sarasa Term SC Nerd, FiraCode Nerd Font, Roboto Nerd Font;
   font-size: 15pt;
 }
 
-window#waybar {
-  background-color: transparent;
-}
-
-window#waybar.hidden {
-  opacity: 0.2;
-}
+window#waybar        { background-color: transparent; }
+window#waybar.hidden { opacity: 0.2; }
 
 /* tooltip 的节点名是元素 tooltip，没有 #tooltip 这个 id */
-tooltip.background {
-  background-color: @bg;
-  border-radius: 20px;
-}
-
-tooltip label {
-  color: @fg;
-}
+tooltip.background { background-color: @bg; border-radius: 20px; }
+tooltip label      { color: @fg; }
 
 /* ---------- 模块通用外观 ---------- */
-#workspaces,
-#window,
-#taskbar,
-#focused,
-#clock,
-#disk,
-#cpu,
-#memory,
-#battery,
-#custom-temperature,
-#bluetooth,
-#wireplumber,
-#hardware,
-#network,
-#mpd,
-#tray {
+#workspaces, #window, #taskbar, #focused, #clock, #disk, #cpu,
+#memory, #battery, #custom-temperature, #bluetooth, #wireplumber,
+#hardware, #network, #mpd, #tray {
   background-color: @bg;
   border: 0px;
   border-radius: 99px;
@@ -58,51 +31,36 @@ tooltip label {
 }
 
 /* ---------- 组内模块：横向贴紧 ---------- */
-#wireplumber,
-#disk,
-#cpu,
-#memory,
-#bluetooth,
-#custom-temperature,
-#battery {
+#wireplumber, #disk, #cpu, #memory, #bluetooth,
+#custom-temperature, #battery {
   margin-left: 0px;
   margin-right: 0px;
 }
 
-#workspaces,
-#window {
-  margin: 0px;
-}
+#workspaces, #window { margin: 0px; }
 
 /* ---------- 各模块微调 ---------- */
-#workspaces {
-  padding-right: 2px;
-}
+#workspaces { padding-right: 2px; }
 
 #window {
-  padding-left: 2px;
   color: @active;
-  font-weight: bolder;
+  padding-left: 2px;
 }
 
 #clock {
   border: 3px solid transparent;
   padding-left: 15px;
   padding-right: 15px;
-  font-weight: bolder;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
 }
 
 #tray {
+  color: @active;
   padding-left: 15px;
   padding-right: 15px;
-  color: @active;
-  font-weight: bolder;
 }
 
-#taskbar {
-  padding: 0px;
-}
+#taskbar { padding: 0px; }
 
 #taskbar button {
   border: none;
@@ -110,36 +68,31 @@ tooltip label {
   color: @fg;
 }
 
-#taskbar button.active {
-  background: @bg;
-}
+#taskbar button.active { background: @bg; }
 
 #mpd {
   padding-left: 15px;
   padding-right: 20px;
 }
 
-/* ---------- 模块状态 ---------- */
-#battery.charging {
-  color: @active;
-}
-
-#custom-temperature.warning {
-  color: #f9e2af;
-}
-
-#custom-temperature.critical {
-  color: @active;
-}
-
-#network.disconnected,
-#network.linked,
-#network.wifi,
-#network.ethernet,
-#mpd.playing,
-#mpd.paused {
+/* ---------- 加粗 ---------- */
+#window, #clock, #tray,
+#network.disconnected, #network.linked, #network.wifi, #network.ethernet,
+#mpd.playing, #mpd.paused {
   font-weight: bolder;
 }
+
+/* ---------- 状态配色 ---------- */
+#battery.charging,
+#custom-temperature.critical,
+#tray > .active {
+  color: @active;
+}
+
+#custom-temperature.warning { color: #f9e2af; }
+
+#tray > .passive         { color: @fg; }
+#tray > .needs-attention { color: @alter; }
 
 /* ---------- 工作区按钮 ---------- */
 /* 状态规则只改颜色，不改 padding / background-image：
@@ -153,18 +106,7 @@ tooltip label {
   padding: 4px;
 }
 
-#workspaces button:hover {
-  background-color: @bg;
-  background-image: none;
-  border-color: transparent;
-  box-shadow: none;
-  color: @alter;
-  text-shadow: none;
-  transition: none;
-  -gtk-icon-shadow: none;
-  -gtk-icon-effect: none;
-}
-
+#workspaces button:hover,
 #workspaces button:active {
   background-color: @bg;
   background-image: none;
@@ -176,25 +118,12 @@ tooltip label {
   -gtk-icon-shadow: none;
 }
 
+#workspaces button:hover { -gtk-icon-effect: none; }
+
 #workspaces button.focused,
 #workspaces button.active {
   color: @active;
   font-weight: bolder;
 }
 
-#workspaces button.urgent {
-  color: @alter;
-}
-
-/* ---------- tray 图标状态 ---------- */
-#tray > .active {
-  color: @active;
-}
-
-#tray > .passive {
-  color: @fg;
-}
-
-#tray > .needs-attention {
-  color: @alter;
-}
+#workspaces button.urgent { color: @alter; }
